@@ -122,14 +122,14 @@ def main():
             "s_frac_logit": ["time"],
             # "f_nonzero": ["nonzero"],
             "m": ["time"],
-            "pseudo_batch_c": ["time"],
+            "pseudobatch_c": ["time"],
         },
         observed_data={"v": data["y_v"], "f": data["y_f"], "c": data["y_c"]},
     )
     idata.to_json(IDATA_FILE)
     df_out = df.copy().assign(
         c_Glucose=lambda df: df["m_Glucose"] / df["v_volume"],
-        pseudobatch_mean=idata.posterior["pseudo_batch_c"]
+        pseudobatch_mean=idata.posterior["pseudobatch_c"]
         .mean(dim=["chain", "draw"])
         .values,
     )

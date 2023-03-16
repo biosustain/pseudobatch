@@ -36,7 +36,7 @@ def accumulated_dilution_factor(
     return np.cumprod(dilution_factor)
 
 
-def pseudo_batch_transform(
+def pseudobatch_transform(
     measured_concentration: NDArray,
     reactor_volume: NDArray,
     accumulated_feed: NDArray,
@@ -126,7 +126,7 @@ def pseudo_batch_transform(
     return measured_concentration * adf - np.cumsum(fed_species_term_collection)
 
 
-def pseudo_batch_transform_multiple(
+def pseudobatch_transform_multiple(
     measured_concentrations: NDArray,
     reactor_volume: NDArray,
     accumulated_feed: NDArray,
@@ -170,7 +170,7 @@ def pseudo_batch_transform_multiple(
     assert len(concentration_in_feed.shape) == 2, bad_shape_msg
     out_list = list()
     for col in range(0, measured_concentrations.shape[1]):
-        transformed = pseudo_batch_transform(
+        transformed = pseudobatch_transform(
             measured_concentration=measured_concentrations[:, col],
             reactor_volume=reactor_volume,
             accumulated_feed=accumulated_feed,
@@ -181,7 +181,7 @@ def pseudo_batch_transform_multiple(
     return np.concatenate(out_list).transpose()
 
 
-def pseudo_batch_transform_pandas(
+def pseudobatch_transform_pandas(
     df: pd.DataFrame,
     measured_concentration_colnames: Union[str, Iterable[str]],
     reactor_volume_colname: str,
@@ -251,7 +251,7 @@ def pseudo_batch_transform_pandas(
     for species, conc in zip(
         measured_concentration_colnames, concentration_in_feed
     ):
-        out[species + pseudo_col_postfix] = pseudo_batch_transform(
+        out[species + pseudo_col_postfix] = pseudobatch_transform(
             measured_concentration=df[species].to_numpy(),
             reactor_volume=df[reactor_volume_colname].to_numpy(),
             accumulated_feed=df[accumulated_feed_colname].to_numpy(),

@@ -1,12 +1,12 @@
 import pytest
 
-from pseudobatch.data_correction import pseudo_batch_transform
+from pseudobatch.data_correction import pseudobatch_transform
 
 
 def test_input_contain_nan(simulated_fedbatch):
     # correct glucose data
     with pytest.raises(ValueError) as _:
-        pseudo_batch_transform(
+        pseudobatch_transform(
             measured_concentration=simulated_fedbatch["c_Glucose"].to_numpy(),
             reactor_volume=simulated_fedbatch[
                 "v_volume_before_sample"
