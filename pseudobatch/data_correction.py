@@ -3,59 +3,6 @@ import numpy as np
 from typing import Union, Iterable
 from numpy.typing import NDArray
 
-def mass_removal_correction(
-    c_meas: NDArray,
-    v_samples: NDArray,
-    v_meas: int,
-    v_init: int,
-    v_feed: int,
-    c_feed: int,
-):
-    """Correct for the removal of mass."""
-    current_conc = c_meas.iloc[-1]
-
-    return (
-        current_conc * v_meas - v_feed * c_feed + np.sum(c_meas * v_samples)
-    ) / v_init
-
-
-def mass_removal_correction_pandas_df(
-    df,
-    c_meas_colname: str,
-    v_samples_colname: str,
-    v_meas_colname: str,
-    v_feed_colname: str,
-    c_feed: int,
-) -> NDArray:
-    """Apply the pseudo_batch_transform function to a pandas dataframe.
-
-    Expanding windows on dataframes where tricky to make work, therefore this
-    manual implementation.
-    """
-    corrected_conc = np.array([])
-    first_idx = df.index[0]
-    for idx, _ in df.iterrows():
-        corrected_conc = np.append(
-            corrected_conc,
-            mass_removal_correction(
-                c_meas=df.loc[:idx, c_meas_colname],
-                v_samples=df.loc[:idx, v_samples_colname],
-                v_meas=df.loc[idx, v_meas_colname],
-                v_feed=df.loc[idx, v_feed_colname],
-                v_init=df.loc[first_idx, v_meas_colname]
-                + df.loc[first_idx, v_samples_colname],
-                # In the Timothy's implementation, he adds the t=0 measurement.
-                # I want to avoid that.
-                c_feed=c_feed,
-            ),
-        )
-
-    return corrected_conc
-
-
-def dilution_factor_correction(c_meas, adf, v_feed, c_feed, v_meas):
-    return c_meas * adf - ((v_feed * c_feed) / v_meas) * adf
-
 
 def shift(xs, n):
     """Shifts the elements of a numpy array by n steps.
@@ -239,7 +186,9 @@ def pseudo_batch_transform_pandas(
     measured_concentration_colnames: Union[str, Iterable[str]],
     reactor_volume_colname: str,
     accumulated_feed_colname: Union[str, Iterable[str]],
-    concentration_in_feed: Union[Iterable[float], Iterable[NDArray[np.float64]]],
+    concentration_in_feed: Union[
+        Iterable[float], Iterable[NDArray[np.float64]]
+    ],
     sample_volume_colname: str,
     pseudo_col_postfix: str = "_pseudo",
 ) -> pd.DataFrame:
