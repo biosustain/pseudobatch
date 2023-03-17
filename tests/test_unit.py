@@ -1,9 +1,15 @@
 import pytest
+import pandas as pd
 
-from pseudobatch.data_correction import pseudobatch_transform
+from pseudobatch import pseudobatch_transform
+from pseudobatch.datasets import (
+    load_standard_fedbatch,
+    load_product_inhibited_fedbatch,
+    load_cho_cell_like_fedbatch,
+)
 
 
-def test_input_contain_nan(simulated_fedbatch):
+def test_input_contain_nan(simulated_fedbatch: pd.DataFrame):
     # correct glucose data
     with pytest.raises(ValueError) as _:
         pseudobatch_transform(
@@ -17,3 +23,21 @@ def test_input_contain_nan(simulated_fedbatch):
                 "sample_volume"
             ].to_numpy(),  # the sample volume column contains nan when at times where no sample was taken
         )
+
+
+def test_load_standard_fedbatch_unique_timestamps():
+    df = load_standard_fedbatch()
+    assert df.empty is False
+    assert df["timestamp"].duplicated().sum() == 0
+
+
+def test_load_product_inhibited_fedbatch_unique_timestamps():
+    df = load_product_inhibited_fedbatch()
+    assert df.empty is False
+    assert df["timestamp"].duplicated().sum() == 0
+
+
+def test_load_cho_cell_like_fedbatch_unique_timestamps():
+    df = load_cho_cell_like_fedbatch()
+    assert df.empty is False
+    assert df["timestamp"].duplicated().sum() == 0
