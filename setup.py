@@ -175,4 +175,6 @@ setup(
         "bdist_wheel": WheelABINone,
         "clean": CleanModels,
     },
+    include_package_data=True,
+    package_data={'': ['datasets/data/*.csv']},
 )
