@@ -4,7 +4,7 @@ import pandas as pd
 from pseudobatch.data_correction import pseudo_batch_transform
 from pseudobatch.datasets import (
     load_standard_fedbatch,
-    load_product_inhibeted_fedbatch,
+    load_product_inhibited_fedbatch,
     load_cho_cell_like_fedbatch,
 )
 
@@ -31,8 +31,8 @@ def test_load_standard_fedbatch_unique_timestamps():
     assert df["timestamp"].duplicated().sum() == 0
 
 
-def test_load_product_inhibeted_fedbatch_unique_timestamps():
-    df = load_product_inhibeted_fedbatch()
+def test_load_product_inhibited_fedbatch_unique_timestamps():
+    df = load_product_inhibited_fedbatch()
     assert df.empty is False
     assert df["timestamp"].duplicated().sum() == 0
 

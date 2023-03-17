@@ -33,7 +33,7 @@ def load_standard_fedbatch():
     return _load_simulated_dataset("standard_fed-batch_process.csv")
 
 
-def load_product_inhibeted_fedbatch():
+def load_product_inhibited_fedbatch():
     """Load the product inhibition fed-batch process dataset. This dataset
     mimicks a substrate limited exponential fed-batch process utilizing
     a glucose feed. In this simulation the cell growth is inhibited by
