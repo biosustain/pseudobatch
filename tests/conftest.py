@@ -9,7 +9,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 )
 from pseudobatch.data_correction import shift
-from pseudobatch.datasets import load_cho_cell_like_fedbatch
+from pseudobatch import load_cho_cell_like_fedbatch
 
 
 ###################### SETUP SIMULATED DATA FIXTURES ################################

@@ -1,7 +1,7 @@
-"""This modules provides functions to load the simulated datasets that are used in the tests and examples."""
+"""This modules provides functions to load the simulated datasets that are used 
+in the tests and examples."""
 import pandas as pd
-import pathlib
-
+import importlib.resources
 
 def _load_simulated_dataset(filename: str) -> pd.DataFrame:
     """Load and prepare the simulated dataset. At the sampling time the 
@@ -9,7 +9,7 @@ def _load_simulated_dataset(filename: str) -> pd.DataFrame:
     When the the data is loaded only the first value is kept. This is the value 
     before the sample was taken."""
 
-    data_path = pathlib.Path(__file__).parent / "data" / filename
+    data_path = importlib.resources.files("pseudobatch.data").joinpath(filename)
     fedbatch_df = (
         pd.read_csv(data_path)
         .drop_duplicates(subset="timestamp", keep="first")

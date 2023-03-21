@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 
 from pseudobatch.data_correction import pseudo_batch_transform
-from pseudobatch.datasets import (
+from pseudobatch import (
     load_standard_fedbatch,
     load_product_inhibited_fedbatch,
     load_cho_cell_like_fedbatch,

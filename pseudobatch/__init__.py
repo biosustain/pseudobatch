@@ -4,6 +4,12 @@ from pathlib import Path
 
 import cmdstanpy
 
+from ._dataloaders import (
+    load_cho_cell_like_fedbatch,
+    load_product_inhibited_fedbatch,
+    load_standard_fedbatch,
+)
+
 STAN_FILES_FOLDER = Path(__file__).parent / "stan"
 CMDSTAN_VERSION = "2.31.0"
 
