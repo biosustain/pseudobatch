@@ -3,14 +3,27 @@ import numpy as np
 from typing import Union, Iterable
 from numpy.typing import NDArray
 
-
-def shift(xs, n):
+def _shift(xs, n):
     """Shifts the elements of a numpy array by n steps.
 
     Numpy version of pandas .shift method.
 
     Origin:
     https://stackoverflow.com/questions/30399534/shift-elements-in-a-numpy-array
+
+    Parameters
+    ----------
+    xs : NDArray
+        The array to be shifted
+    n : int
+        The number of steps to shift. Positive values shift to the right,
+        negative values shift to the left.
+
+    Returns
+    -------
+    NDArray
+        The shifted array. The first n elements are set to np.nan if n is
+        positive, the last n elements are set to np.nan if n is negative.
     """
     if n >= 0:
         return np.concatenate((np.full(n, np.nan), xs[:-n]))
@@ -23,11 +36,22 @@ def accumulated_dilution_factor(
 ) -> NDArray:
     """Calculates the accumulated dilution factor.
 
-    after_sample_reactor_volume is the volume of the bioreactor. At the sampling
-    time points, this has to be the volume AFTER the sample was taken.
+    Parameters
+    ----------
+    after_sample_reactor_volume : NDArray
+        The volume of the bioreactor. At the sampling time points, this has to 
+        be the volume AFTER the sample was taken.
+    sample_volume : NDArray
+        The volume of the sample taken at each time point.
+    
+    Returns
+    -------
+    NDArray
+        The accumulated dilution factor for each timepoint. The first value is
+        always 1.
     """
 
-    dilution_factor = (sample_volume + after_sample_reactor_volume) / shift(
+    dilution_factor = (sample_volume + after_sample_reactor_volume) / _shift(
         after_sample_reactor_volume, 1
     )
     dilution_factor = np.nan_to_num(
@@ -43,10 +67,8 @@ def pseudobatch_transform(
     concentration_in_feed: Union[NDArray, float],
     sample_volume: NDArray,
 ) -> NDArray:
-    """Does the pseudo batch transformation for one species.
-
-    The function returns a NDArray of the pseudo batch transformed
-    measurements.
+    """Pseudo batch transformation function for a single species. This function 
+    transforms the measured concentrations to the pseudo concentrations.
 
     Parameters
     ----------
@@ -73,6 +95,11 @@ def pseudobatch_transform(
 
         a NDArray of the sample volumes at given time points. The array should
     contain 0 at timepoints where no samples was taken
+
+    Returns
+    -------
+    NDArray
+        A NDArray with the pseudo concentrations of the species.
 
     """
     after_sample_reactor_volume = reactor_volume - sample_volume
@@ -130,38 +157,39 @@ def pseudobatch_transform_multiple(
     measured_concentrations: NDArray,
     reactor_volume: NDArray,
     accumulated_feed: NDArray,
-    concentration_in_feed: Union[NDArray, NDArray],
+    concentration_in_feed: Union[Iterable, NDArray],
     sample_volume: NDArray,
 ) -> NDArray:
-    """Does the pseudo batch transformation for several species.
+    """Perform the pseudo batch transformation on multiple species at once. This 
+    function simply wraps the `pseudobatch_transform()` function.
 
-    measured_concetration:
-
-    a NDArray with the measured concentration of the species that should be
-    transformed, e.g. biomass or compound. Each column should be a different
-    species.
-
-    reactor_volume:
-
-    a NDArray of bioreator volume. The volume MUST be the volumes just BEFORE
-    sampling.
-
-    feed_in_interval:
-
-    a NDArray of the feed volumen in the interval since last timepoint.
-
-    concentration_in_feed:
-
-    a NDArray with the concentrations of the species in the feed. The order has
-    to match the order of the species given in measured_concentration.
-    Alternatively an NDArray wich contain the concetration for each
-    individual time step. Again the order of the columns has to match in order
-    in measured_concentration.
-
-    sample_volume:
-
-    a NDArray of the sample volumes at given time points. The array should
-    contain 0 at timepoints where no samples was taken
+    Parameters
+    ----------
+    measured_concentrations : NDArray
+        a NDArray with the measured concentration of the species that should be
+        transformed, e.g. biomass or compound. Each column should be a different
+        species and the reach row a time point.
+    reactor_volume : NDArray
+        a NDArray of bioreator volume. The volume MUST be the volumes just BEFORE
+        sampling.
+    feed_in_interval : NDArray
+        a NDArray of the feed volumen in the interval since last timepoint.
+    concentration_in_feed : Iterable or NDArray
+        the concentration of each species in the feed medium. This can be an iterable 
+        of the same length as the number of columns in the measured_concentrations array. 
+        Alternatively an NDArray which contain the concetration for each
+        individual time step. Again the order of the columns has to match in order
+        in measured_concentration.
+    sample_volume : NDArray
+        a NDArray of the sample volumes at given time points. The array should
+        contain 0 at timepoints where no samples was taken
+    
+    Returns
+    -------
+    NDArray
+        A NDArray of the same shape as the measured_concentration argument with the 
+        pseudo concentrations of the species. The columns correspond to the columns 
+        in measured_concentration.
     """
     bad_shape_msg = (
         "concentration_in_feed needs to be 2D. Either a row vector or column"
