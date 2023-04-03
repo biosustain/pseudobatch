@@ -23,7 +23,7 @@ data {
   array[2] real prior_alpha_pump;
   array[2] real prior_alpha_s;
   array[2] real prior_v0;
-  array[S, 2] real prior_m;
+  array[2, S] real prior_m;
   array[2] real prior_f_nonzero;
   array[2] real prior_cfeed_nonzero;
   int<lower=0, upper=1> likelihood;
@@ -67,7 +67,7 @@ model {
   alpha_s ~ normal(prior_alpha_s[1], prior_alpha_s[2]);
   v0 ~ lognormal(prior_v0[1], prior_v0[2]);
   for (species_i in 1 : S){
-    m[,species_i] ~ lognormal(prior_m[species_i, 1], prior_m[species_i, 2]);
+    m[,species_i] ~ lognormal(prior_m[1, species_i], prior_m[2, species_i]);
   }
   f_nonzero ~ lognormal(prior_f_nonzero[1], prior_f_nonzero[2]);
   cfeed_nonzero ~ lognormal(prior_cfeed_nonzero[1], prior_cfeed_nonzero[2]);
