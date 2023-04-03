@@ -1,7 +1,9 @@
-import pandas as pd
+from typing import Iterable, Union
+
 import numpy as np
-from typing import Union, Iterable
+import pandas as pd
 from numpy.typing import NDArray
+
 
 def mass_removal_correction(
     c_meas: NDArray,
@@ -239,7 +241,9 @@ def pseudo_batch_transform_pandas(
     measured_concentration_colnames: Union[str, Iterable[str]],
     reactor_volume_colname: str,
     accumulated_feed_colname: Union[str, Iterable[str]],
-    concentration_in_feed: Union[Iterable[float], Iterable[NDArray[np.float64]]],
+    concentration_in_feed: Union[
+        Iterable[float], Iterable[NDArray[np.float64]]
+    ],
     sample_volume_colname: str,
     pseudo_col_postfix: str = "_pseudo",
 ) -> pd.DataFrame:

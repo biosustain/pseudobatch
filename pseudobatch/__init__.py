@@ -4,6 +4,13 @@ from pathlib import Path
 
 import cmdstanpy
 
+from pseudobatch.data_correction import (
+    pseudo_batch_transform,
+    pseudo_batch_transform_multiple,
+    pseudo_batch_transform_pandas,
+)
+from pseudobatch.error_propagation import run_error_propagation
+
 STAN_FILES_FOLDER = Path(__file__).parent / "stan"
 CMDSTAN_VERSION = "2.31.0"
 

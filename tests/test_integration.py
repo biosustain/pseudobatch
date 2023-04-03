@@ -1,13 +1,13 @@
 ## This scripts contain integration tests of all fedbatch data correction function.
-import pytest
-
 import numpy as np
+import pytest
+import statsmodels.api as sm
+from patsy import dmatrices
+
 from pseudobatch.data_correction import (
     pseudo_batch_transform,
     pseudo_batch_transform_pandas,
 )
-from patsy import dmatrices
-import statsmodels.api as sm
 
 
 ###################### INTEGRATION TESTS ##################################

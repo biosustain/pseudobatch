@@ -1,9 +1,10 @@
 # This file defines the fixtures for the pytest workflow
-import pytest
-import sys
 import os
-import pandas as pd
+import sys
+
 import numpy as np
+import pandas as pd
+import pytest
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))

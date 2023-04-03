@@ -14,7 +14,6 @@ data {
   array[N, S] real y_c;
   vector[N] y_s;
   vector[N] y_f;
-  vector[N] t;
   real y_cfeed;
   real<lower=0> sigma_v;
   vector<lower=0>[S] sigma_c;
