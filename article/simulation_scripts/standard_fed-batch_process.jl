@@ -38,4 +38,4 @@ df[[x in sampling_times for x in df.timestamp], "sample_volume"] .= sample_volum
 output_header = [:Kc_s, :mu_max, :Yxs, :Yxp, :Yxco2, :F0, :mu0, :s_f] 
 insertcols!(df, 1, (output_header .=> ode_input_p)...)
 
-CSV.write(string("simulated_data/standard_fed-batch_process.csv"), df)
+CSV.write(string("data/standard_fed-batch_process.csv"), df)

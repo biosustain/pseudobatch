@@ -5,8 +5,8 @@ This folder contains all information that is required to reproduce the results o
 - **figures** - figures used for the publication and extra figures for presentations.
 - **julia-env** - files that describe the required packages for Julia scripts.
 - **notebooks** - jyputer notebooks that reproduces the results and plots described in the paper.
-- **scripts** - Julia scripts used to generate the simulated data.
-- **simulated_data** - contains the data both simulated and real world data used in the article
+- **simulation_scripts** - Julia scripts used to generate the simulated data.
+- **data** - contains the data both simulated and real world data used in the article
 
 
 ## How to reproduce results

@@ -112,4 +112,4 @@ insertcols!(df, 1, (output_header .=> ode_input_p)...)
 
 # Substrate concentrations in feed
 
-CSV.write(string("simulated_data/multiple_impulse_feed_process.csv"), df)
+CSV.write(string("data/multiple_impulse_feed_process.csv"), df)
