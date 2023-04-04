@@ -17,12 +17,12 @@ RUN pip install --no-cache-dir -e "." && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# RUN julia --project=julia-env -e 'import Pkg; Pkg.update()' && \
-#     # I don;t know if the line below is required \
-#     julia -e 'import Pkg; Pkg.add("HDF5")' && \ 
-#     julia --project=julia-env -e 'using Pkg; pkg"activate"; pkg"precompile"' && \
-#     # move kernelspec out of home \
-#     #mv "${HOME}/.local/share/jupyter/kernels/julia"* "${CONDA_DIR}/share/jupyter/kernels/" && \
-#     chmod -R go+rx "${CONDA_DIR}/share/jupyter" && \
-#     #rm -rf "${HOME}/.local" && \
-#     fix-permissions "${JULIA_PKGDIR}" "${CONDA_DIR}/share/jupyter"
+RUN julia --project=article/julia-env -e 'import Pkg; Pkg.update()' && \
+    # I don;t know if the line below is required \
+    julia -e 'import Pkg; Pkg.add("HDF5")' && \ 
+    julia --project=julia-env -e 'using Pkg; pkg"activate"; pkg"precompile"' && \
+    # move kernelspec out of home \
+    #mv "${HOME}/.local/share/jupyter/kernels/julia"* "${CONDA_DIR}/share/jupyter/kernels/" && \
+    chmod -R go+rx "${CONDA_DIR}/share/jupyter" && \
+    #rm -rf "${HOME}/.local" && \
+    fix-permissions "${JULIA_PKGDIR}" "${CONDA_DIR}/share/jupyter"
