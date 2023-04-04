@@ -8,7 +8,7 @@ import numpy as np
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 )
-from pseudobatch.data_correction import shift
+from pseudobatch.datasets import load_cho_cell_like_fedbatch
 
 
 ###################### SETUP SIMULATED DATA FIXTURES ################################
@@ -63,17 +63,4 @@ def simulated_fedbatch_measurements_only():
 @pytest.fixture(scope="session")
 def simulated_multiple_feeds():
     """ """
-    fedbatch_file = os.path.join(
-        "pseudobatch", "simulated_data", "multiple_impulse_feed_process.csv"
-    )
-    # At the sampling time the simulation contains a value both before and after the sample was taken.
-    # When I load the data I keep only the first value, which is the value before the sample was taken.
-    fedbatch_df = (
-        pd.read_csv(fedbatch_file)
-        .drop_duplicates(subset="timestamp", keep="first")
-        .reset_index(
-            drop=True
-        )  # Reset the index to avoid gaps in index numbers from removed rows.
-        .fillna({"sample_volume": 0})
-    )
-    return fedbatch_df
+    return load_cho_cell_like_fedbatch()

@@ -3,17 +3,17 @@ import pytest
 
 import numpy as np
 from pseudobatch.data_correction import (
-    pseudo_batch_transform,
-    pseudo_batch_transform_pandas,
+    pseudobatch_transform,
+    pseudobatch_transform_pandas,
 )
 from patsy import dmatrices
 import statsmodels.api as sm
 
 
 ###################### INTEGRATION TESTS ##################################
-def test_pseudo_batch_transform_full_data_set(simulated_fedbatch):
+def test_pseudobatch_transform_full_data_set(simulated_fedbatch):
     # correct glucose data
-    simulated_fedbatch["corrected_glucose"] = pseudo_batch_transform(
+    simulated_fedbatch["corrected_glucose"] = pseudobatch_transform(
         measured_concentration=simulated_fedbatch["c_Glucose"].to_numpy(),
         reactor_volume=simulated_fedbatch["v_volume_before_sample"].to_numpy(),
         accumulated_feed=simulated_fedbatch["v_feed_accum"].to_numpy(),
@@ -24,7 +24,7 @@ def test_pseudo_batch_transform_full_data_set(simulated_fedbatch):
     )
 
     # correct biomass data
-    simulated_fedbatch["corrected_biomass"] = pseudo_batch_transform(
+    simulated_fedbatch["corrected_biomass"] = pseudobatch_transform(
         measured_concentration=simulated_fedbatch["c_Biomass"].to_numpy(),
         reactor_volume=simulated_fedbatch["v_volume_before_sample"].to_numpy(),
         accumulated_feed=simulated_fedbatch["v_feed_accum"].to_numpy(),
@@ -58,13 +58,13 @@ def test_pseudo_batch_transform_full_data_set(simulated_fedbatch):
     assert Yxs == pytest.approx(-3.70, 0.01)
 
 
-def test_pseudo_batch_transform_measurements_only(
+def test_pseudobatch_transform_measurements_only(
     simulated_fedbatch_measurements_only,
 ):
     # correct glucose data
     simulated_fedbatch_measurements_only[
         "corrected_glucose"
-    ] = pseudo_batch_transform(
+    ] = pseudobatch_transform(
         measured_concentration=simulated_fedbatch_measurements_only[
             "c_Glucose"
         ].to_numpy(),
@@ -83,7 +83,7 @@ def test_pseudo_batch_transform_measurements_only(
     # correct biomass data
     simulated_fedbatch_measurements_only[
         "corrected_biomass"
-    ] = pseudo_batch_transform(
+    ] = pseudobatch_transform(
         measured_concentration=simulated_fedbatch_measurements_only[
             "c_Biomass"
         ].to_numpy(),
@@ -123,7 +123,7 @@ def test_pseudo_batch_transform_measurements_only(
     assert Yxs == pytest.approx(-3.70, 0.01)
 
 
-def test_pseudo_batch_transform_multiple_feeds(simulated_multiple_feeds):
+def test_pseudobatch_transform_multiple_feeds(simulated_multiple_feeds):
     """
     Test if the correct Yxs can be retrieved from the pseudo batch transformed data from a simulation
     that contain multiple feeds.
@@ -131,7 +131,7 @@ def test_pseudo_batch_transform_multiple_feeds(simulated_multiple_feeds):
     glucose_in_feed1 = simulated_multiple_feeds["c_Glucose_feed1"].iloc[0]
     glucose_in_feed2 = 0
 
-    pseudo_df = pseudo_batch_transform_pandas(
+    pseudo_df = pseudobatch_transform_pandas(
         simulated_multiple_feeds.fillna({"sample_volume": 0}),
         ["c_Biomass", "c_Glucose"],
         "v_Volume",
