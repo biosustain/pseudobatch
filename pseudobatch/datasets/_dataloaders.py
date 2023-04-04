@@ -3,13 +3,12 @@ import pandas as pd
 import pathlib
 
 
-def _load_simulated_dataset(filename: str) -> pd.DataFrame:
+def _prepare_simulated_dataset(data_path: str) -> pd.DataFrame:
     """Load and prepare the simulated dataset. At the sampling time the 
     simulation contains a value both before and after the sample was taken.
     When the the data is loaded only the first value is kept. This is the value 
     before the sample was taken."""
 
-    data_path = pathlib.Path(__file__).parent / "data" / filename
     fedbatch_df = (
         pd.read_csv(data_path)
         .drop_duplicates(subset="timestamp", keep="first")
@@ -30,7 +29,8 @@ def load_standard_fedbatch():
     The parameters values use for the simulation is stored in the
     dataframe.
     """
-    return _load_simulated_dataset("standard_fed-batch_process.csv")
+    data_path = pathlib.Path(__file__).parent / "data" / "standard_fed-batch_process.csv"
+    return _prepare_simulated_dataset(data_path)
 
 
 def load_product_inhibited_fedbatch():
@@ -41,7 +41,8 @@ def load_product_inhibited_fedbatch():
     samples are withdrawn. The parameters values use for the simulation
     is stored in the dataframe.
     """
-    return _load_simulated_dataset("product_inhibition.csv")
+    data_path = pathlib.Path(__file__).parent / "data" / "product_inhibition.csv"
+    return _prepare_simulated_dataset(data_path)
 
 
 def load_cho_cell_like_fedbatch():
@@ -52,4 +53,5 @@ def load_cho_cell_like_fedbatch():
     During the fed-batch process, samples are withdrawn. The parameters
     values use for the simulation is stored in the dataframe.
     """
-    return _load_simulated_dataset("multiple_impulse_feed_process.csv")
+    data_path = pathlib.Path(__file__).parent / "data" / "multiple_impulse_feed_process.csv"
+    return _prepare_simulated_dataset(data_path)
