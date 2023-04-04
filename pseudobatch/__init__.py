@@ -1,6 +1,7 @@
 import shutil
 import warnings
 from pathlib import Path
+from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas
 
 import cmdstanpy
 
