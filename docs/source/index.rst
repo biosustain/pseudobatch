@@ -20,11 +20,8 @@ In the following figure, a simulated exponential fed-batch process of substrate 
    :caption: Contents:
 
    install
-   Tutorials/1 - Perform Pseudo batch transformation
-   Tutorials/2 - Estimate overall rates and yields
-   Tutorials/3 - Estimate time series parameters
-   Tutorials/4 - Dealing with multiple feeds
-   Tutorials/FAQ
+   Tutorials/index
+   FAQ
    api
    
 Indices and tables
