@@ -287,3 +287,104 @@ def pseudobatch_transform_pandas(
             sample_volume=df[sample_volume_colname].to_numpy(),
         )
     return out
+
+def reverse_pseudobatch_transform(
+        pseudo_concentration: NDArray, 
+        reactor_volume : NDArray,
+        accumulated_feed: NDArray, 
+        concentration_in_feed: Union[NDArray, float], 
+        sample_volume:NDArray
+) -> NDArray:
+    '''Does the reverse of the pseudobatch transform, i.e. transforms pseudo 
+    concentrations to real concentrations. The reverse transform is simply a
+    rearrangement of the pseudobatch transformation formula were the concentration
+    is isolated rather than the pseudo concentration. 
+
+    Parameters
+    ----------
+    pseudo_concentration: NDArray
+        a np.array with the pseudo concentrations of the species that should be transformed, e.g. biomass or compound.
+        reactor_volume : NDArray
+
+    reactor_volume : NDArray
+        a NDArray of bioreator volume. The volume MUST be the volumes just
+        BEFORE sampling.
+
+    accumulated_feed : NDArray
+
+        a NDArray of the accumulated volumen of feed added at this timepoint.
+
+    concentration_in_feed : Union[NDArray, float]
+
+        a NDArray OR a float of the concentration of the species in the feed,
+        for biomass and products this is 0
+
+    sample_volume : NDArray
+
+        a NDArray of the sample volumes at given time points. The array should
+        contain 0 at timepoints where no samples was taken
+
+    Returns
+    -------
+    NDArray
+        A NDArray with the reverse transformed concetrations.
+
+    Notes
+    -----
+    The reverse pseudo batch transformation formula is:
+
+    .. math::
+
+        \frac{G^{\star}_k + \sum_{i=1}^{k-1}ADF_i\frac{C_{feed}^{glucose}\cdot 
+        F_{i}}{V_i}}{ADF_k} = C^{glucose}_k
+
+    '''
+    after_sample_reactor_volume = reactor_volume - sample_volume
+
+    for i in [
+        pseudo_concentration,
+        reactor_volume,
+        accumulated_feed,
+        sample_volume,
+    ]:
+        if np.isnan(i).sum() > 0:
+            msg = (
+                "Nan was found in input data. Replace nan with an appropriate"
+                " number - this is often 0."
+            )
+            raise ValueError(msg)
+        adf = accumulated_dilution_factor(
+            after_sample_reactor_volume, sample_volume
+        )
+
+    def fed_species_term(
+        accum_feed: NDArray,
+        conc_in_feed: Union[NDArray, float],
+        reactor_vol: NDArray,
+    ) -> NDArray[np.float64]:
+        """Calculate the feed in interval.
+
+        Prepand 0 to make the length of the array the same as the other arrays.
+
+        """
+        feed_in_interval = np.diff(accum_feed, prepend=0)
+        return adf * feed_in_interval * conc_in_feed / reactor_vol
+
+    if len(np.shape(accumulated_feed)) == 1:
+        return pseudo_concentration + np.cumsum(
+            fed_species_term(
+                accumulated_feed, concentration_in_feed, reactor_volume
+            ) / adf
+        )
+
+    # Iterate over the columns of the accumulated feed to calculate
+    # fed_species_term for each feed. Then calculate the row-wise sum of the
+    # fed_species_term.
+
+    fed_species_term_collection = np.zeros(np.shape(accumulated_feed)[0])
+    for i in range(np.shape(accumulated_feed)[1]):
+        fed_species_term_collection += fed_species_term(
+            accumulated_feed[:, i], concentration_in_feed[i], reactor_volume
+        )
+
+    return pseudo_concentration + np.cumsum(fed_species_term_collection) / adf
