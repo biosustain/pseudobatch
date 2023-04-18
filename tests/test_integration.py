@@ -176,7 +176,7 @@ def test_accepts_nan():
         .reset_index(drop=True)
         # change every 2nd biomass measurement to nan
         .assign(c_Biomass = lambda df: pd.Series([
-            x if idx % 2 != 0 else np.nan for idx, x in df['c_Biomass'].iteritems()
+            x if idx % 2 != 0 else np.nan for idx, x in df['c_Biomass'].items()
         ]))
     )
     logging.debug(fedbatch_df.filter(['timestamp', 'c_Biomass', 'v_Volume']))
