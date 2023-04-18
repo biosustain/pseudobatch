@@ -393,3 +393,68 @@ def reverse_pseudobatch_transform(
             accumulated_feed[:, i], concentration_in_feed[i], reactor_volume
         )
     return (pseudo_concentration + np.cumsum(fed_species_term_collection)) / adf
+
+def reverse_pseudobatch_transform_pandas(
+    df: pd.DataFrame,
+    pseudo_concentration_colnames: Union[str, Iterable[str]],
+    reactor_volume_colname: str,
+    accumulated_feed_colname: Union[str, Iterable[str]],
+    concentration_in_feed: Union[
+        Iterable[float], Iterable[NDArray[np.float64]]
+    ],
+    sample_volume_colname: str,
+) -> pd.DataFrame:
+    """Apply reverse pseudo batch transformation for several species from a dataframe.
+
+    Parameters
+    ------------
+    df : pd.DataFrame
+        A dataframe with the data to be transformed.
+    pseudo_concentrations_colnames : Union[str, Iterable[str]]
+        a string or list of strings with the column names of the measured
+        concentration of the species that should be transformed, e.g. biomass or
+        glucose
+    reactor_volume_colname : str
+        a string with the column name of the reactor volume
+    accumulated_feed_colname : Union[str, Iterable[str]]
+        a string or list of strings with the column names of the accumulated feed
+    concentration_in_feed : Union[Iterable[float], Iterable[Iterable[float]]]
+        a list of floats or list of lists of floats with the concentrations of
+        the species in the feed. The order has to match the order of the species
+        given in measured_concentration_colnames. If multiple feed streams are
+        given, the concentration_in_feed should be a list of lists. E.g.
+        [[conc_Glc_feed1, conc_Glc_feed2], [conc_Biomass_feed1,
+        conc_Biomass_feed2]]. Thus, the outer list iterates over the feed
+        streams and the inner list iterates over the species. The order has to
+        match the order of the species, and accumulated feeds given in
+        measured_concentration_colnames and accumulated_feed_colname.
+    sample_volume_colname : str
+        a string with the column name of the sample volume
+
+    Returns
+    -------
+    NDArray
+        A NDArray with the reverse transformed concetrations.
+
+    Notes
+    -----
+    The reverse pseudo batch transformation formula is:
+
+    .. math::
+
+        \frac{G^{\star}_k + \sum_{i=1}^{k-1}ADF_i\frac{C_{feed}^{glucose}\cdot 
+                F_{i}}{V_i}}{ADF_k} = C^{glucose}_k
+
+    """
+    out = pd.DataFrame()
+    for species, conc in zip(
+        pseudo_concentration_colnames, concentration_in_feed
+    ):
+        out[species] = reverse_pseudobatch_transform(
+            pseudo_concentration=df[species].to_numpy(),
+            reactor_volume=df[reactor_volume_colname].to_numpy(),
+            accumulated_feed=df[accumulated_feed_colname].to_numpy(),
+            concentration_in_feed=conc,
+            sample_volume=df[sample_volume_colname].to_numpy(),
+        )
+    return out

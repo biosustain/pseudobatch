@@ -1,7 +1,12 @@
 import pytest
 import pandas as pd
 import numpy as np
-from pseudobatch import pseudobatch_transform, reverse_pseudobatch_transform
+from pseudobatch import (
+    pseudobatch_transform, 
+    reverse_pseudobatch_transform,
+    pseudobatch_transform_pandas,
+    reverse_pseudobatch_transform_pandas,
+)
 from pseudobatch.datasets import (
     load_standard_fedbatch,
     load_product_inhibited_fedbatch,
@@ -65,3 +70,39 @@ def test_reverse_pseudobatch_transform():
     )
 
     assert np.allclose(fedbatch_df["c_Glucose"].to_numpy(), c_Glucose_reverse_pseudo, atol=1e-7)
+
+
+def test_reverse_pseudobatch_transform_pandas():
+    """Test that the reverse pseudobatch transform pandas is the inverse of the 
+    pseudobatch transform."""
+
+    fedbatch_df = load_standard_fedbatch().query("sample_volume > 0").reset_index(drop=True)
+    fedbatch_df[['c_Glucose_pseudo', 'c_Biomass_pseudo']] = pseudobatch_transform_pandas(
+        df=fedbatch_df,
+        measured_concentration_colnames=['c_Glucose', 'c_Biomass'],
+        reactor_volume_colname="v_Volume",
+        accumulated_feed_colname="v_Feed_accum",
+        concentration_in_feed=[fedbatch_df.s_f.iloc[0], 0],
+        sample_volume_colname="sample_volume",
+    )
+
+    reverse_transformed_data = pd.DataFrame()
+    reverse_transformed_data[["c_Glucose", "c_Biomass"]] = reverse_pseudobatch_transform_pandas(
+        df=fedbatch_df,
+        pseudo_concentration_colnames=['c_Glucose_pseudo', 'c_Biomass_pseudo'],
+        reactor_volume_colname="v_Volume",
+        accumulated_feed_colname="v_Feed_accum",
+        concentration_in_feed=[fedbatch_df.s_f.iloc[0], 0],
+        sample_volume_colname="sample_volume",
+   )
+
+    assert np.allclose(
+        fedbatch_df["c_Glucose"].to_numpy(), 
+        reverse_transformed_data['c_Glucose'].to_numpy(),
+        atol=1e-7
+    )
+    assert np.allclose(
+        fedbatch_df["c_Biomass"].to_numpy(), 
+        reverse_transformed_data['c_Biomass'].to_numpy(),
+        atol=1e-7
+    )   
