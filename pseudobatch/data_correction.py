@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from typing import Union, Iterable
 from numpy.typing import NDArray
+import logging
 
 def _shift(xs, n):
     """Shifts the elements of a numpy array by n steps.
@@ -353,9 +354,13 @@ def reverse_pseudobatch_transform(
                 " number - this is often 0."
             )
             raise ValueError(msg)
-        adf = accumulated_dilution_factor(
-            after_sample_reactor_volume, sample_volume
-        )
+    
+    adf = accumulated_dilution_factor(
+        after_sample_reactor_volume, sample_volume
+    )
+    logging.debug(f"ADF: {adf}")
+    logging.debug(f"pseudobatch: {pseudo_concentration}")
+    logging.debug(f"pseudo conc/ADF: {pseudo_concentration/adf}")
 
     def fed_species_term(
         accum_feed: NDArray,
@@ -367,15 +372,16 @@ def reverse_pseudobatch_transform(
         Prepand 0 to make the length of the array the same as the other arrays.
 
         """
+        # adf * feed_in_interval * concentration_in_feed / reactor_volume
         feed_in_interval = np.diff(accum_feed, prepend=0)
         return adf * feed_in_interval * conc_in_feed / reactor_vol
 
     if len(np.shape(accumulated_feed)) == 1:
-        return pseudo_concentration + np.cumsum(
+        return (pseudo_concentration + np.cumsum(
             fed_species_term(
                 accumulated_feed, concentration_in_feed, reactor_volume
-            ) / adf
-        )
+            ))
+        ) / adf
 
     # Iterate over the columns of the accumulated feed to calculate
     # fed_species_term for each feed. Then calculate the row-wise sum of the
@@ -386,5 +392,4 @@ def reverse_pseudobatch_transform(
         fed_species_term_collection += fed_species_term(
             accumulated_feed[:, i], concentration_in_feed[i], reactor_volume
         )
-
-    return pseudo_concentration + np.cumsum(fed_species_term_collection) / adf
+    return (pseudo_concentration + np.cumsum(fed_species_term_collection)) / adf
