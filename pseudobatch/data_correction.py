@@ -287,4 +287,6 @@ def pseudobatch_transform_pandas(
             concentration_in_feed=conc,
             sample_volume=df[sample_volume_colname].to_numpy(),
         )
+    # Copy the index from the original dataframe
+    out.index = df.index
     return out
