@@ -1,8 +1,13 @@
 import shutil
 import warnings
 from pathlib import Path
+<<<<<<< Updated upstream
 from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas
 
+=======
+from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas, reverse_pseudobatch_transform, accumulated_dilution_factor, reverse_pseudobatch_transform_pandas
+from .import_from_excel import process_excel_template
+>>>>>>> Stashed changes
 import cmdstanpy
 
 STAN_FILES_FOLDER = Path(__file__).parent / "stan"
