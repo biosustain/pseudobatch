@@ -1,7 +1,7 @@
 import shutil
 import warnings
 from pathlib import Path
-from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas, reverse_pseudobatch_transform, accumulated_dilution_factor, reverse_pseudobatch_transform_pandas
+from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas, accumulated_dilution_factor, convert_volumetric_rates_from_pseudo_to_real
 import cmdstanpy
 
 STAN_FILES_FOLDER = Path(__file__).parent / "stan"
