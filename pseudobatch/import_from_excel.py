@@ -5,51 +5,56 @@ Created on Wed Mar 29 23:03:57 2023
 @author: uqtmccub
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  7 15:01:51 2023
-
-Code to read in excel file templates and perform pseudo-batch correction
-
-Excel/csv-type files are typical ways to store bioreactor data on and offline.
-
-Data can be quality controlled by the user with guidance from the spreadsheet.
-
-Measurements are populated into the excel file either programmatically or
-manually from a mix of on and off-line data. 
-
-This code is designed to read the template and supply data to the Python pseudo-batch
-implementation that provides additional functionality.
-
-inputs: 
-    1) filename and path to file if outside of directory
-    2) Variable "phase" to specify boundaries of rate calculations and source of outlier information.
-        Practically, this picks where the outlier information is tkaen from and records phase 
-        bounds which can be considered later - e.g. restricting rate calculations to a 
-        a pre-defined phase.
-    3) Variable outlier_removal used to remove data points or not based on excel document
-requirements:
-    1) pandas
-    2) numpy
-
-useage: Filename is required, phase is optional and defaults to 'all', permitted values are ["1","2","all"]
-        Idea is that we will read in individual phases into their own data frame.
-        Outlier removal optional argument that can take on True or False values and defaults to False
-        Note: if outlier removal is set to True and phase is set to all, we will assume that only values in Phase 1 on the template are to be considered outliers
-
-May need to consider whether it is meaningful/worthwhile modifying the existing code to only return average values across a specified phase, for example, the finite differences method
-
-@author: uqtmccub
-"""
-
 import pandas as pd
 import numpy as np
 from .data_correction import pseudobatch_transform_pandas
+from typing import Union, Literal, Tuple, List
+import pathlib
 
-def process_excel_template(file_name, phase='all', outlier_removal = False):
- 
+def process_excel_template(
+        file_name: Union[str, pathlib.Path], 
+        phase: Literal['all', "1", "2"] = 'all', 
+        outlier_removal: bool = False
+    )-> Tuple[pd.DataFrame, Union[pd.DataFrame, pd.Series], List[str], List[str]]:
+    """
+    Reads in data from excel template and perform pseudo-batch correction. Excel/csv-type 
+    files are typical ways to store bioreactor data on and offline.
+    Measurements are populated into the excel file either programmatically or
+    manually from a mix of on and off-line data. 
+
+    Data can be quality controlled by the user with guidance from the spreadsheet.
+
+    Parameters
+    ----------
+    file_name : str or pathlib.Path
+        Filename and path to the file if outside of the directory.
+    phase : {'all', '1', '2'}, optional
+        Specifies the boundaries of rate calculations and the source of outlier information.
+        Practically, this picks where the outlier information is taken from and records 
+        phase bounds which can be considered later, e.g., restricting rate calculations 
+        to a predefined phase. Default is 'all'.
+    outlier_removal : bool, optional
+        Flag to indicate whether to remove data points based on the Excel document. 
+        Default is False.
+
+    Usage
+    -----
+    The idea is to read in individual phases into their own data frame.
+    Note: if outlier removal is set to True and phase is set to 'all', we will assume 
+    that only values in Phase 1 on the template are to be considered outliers.
+
+    May need to consider whether it is meaningful/worthwhile modifying the existing code 
+    to only return average values across a specified phase, for example, the finite 
+    differences method.
+
+    Notes
+    -----
+    Created on Tue Mar 7 15:01:51 2023
+    Author: uqtmccub
+    """
+
     #Check function inputs
-    assert phase in ["1","2","all"], "phase is not set to an allowable value of '1', '2' or 'all'"
+    assert phase in ["1","2","all", 1, 2], "phase is not set to an allowable value of '1', '2' or 'all'"
     assert type(outlier_removal) is bool, "outlier_removal may only be True or False"
 
     #Bioreactor data#
