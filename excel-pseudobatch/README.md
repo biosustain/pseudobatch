@@ -1,2 +1,0 @@
-# Pseudo-batch transformation in Excel
-This folder contains an Excel sheet setup to perform pseudo-batch transformation on users own data. To use it simply download the excel-file and input your data. Documentation on how to use the Excel sheet can be found at XXX. 
