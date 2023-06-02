@@ -69,7 +69,7 @@ def load_product_inhibited_fedbatch(sampling_points_only: bool = False):
     return _prepare_simulated_dataset(data_path, sampling_points_only=sampling_points_only)
 
 
-def load_cho_cell_like_fedbatch(sample_points_only: bool = False):
+def load_cho_cell_like_fedbatch(sampling_points_only: bool = False):
     """Load the CHO cell like fed-batch process dataset. This dataset
     mimicks fed-batch process carried out in a AMBR15 cultivation system.
     The main characteristic is that this simulation utilises two substrates
