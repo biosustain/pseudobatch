@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from typing import Union, Iterable
 from numpy.typing import NDArray
+import logging
+
 
 def _shift(xs, n):
     """Shifts the elements of a numpy array by n steps.
@@ -39,11 +41,11 @@ def accumulated_dilution_factor(
     Parameters
     ----------
     after_sample_reactor_volume : NDArray
-        The volume of the bioreactor. At the sampling time points, this has to 
+        The volume of the bioreactor. At the sampling time points, this has to
         be the volume AFTER the sample was taken.
     sample_volume : NDArray
         The volume of the sample taken at each time point.
-    
+
     Returns
     -------
     NDArray
@@ -67,7 +69,7 @@ def pseudobatch_transform(
     concentration_in_feed: Union[NDArray, float],
     sample_volume: NDArray,
 ) -> NDArray:
-    """Pseudo batch transformation function for a single species. This function 
+    """Pseudo batch transformation function for a single species. This function
     transforms the measured concentrations to the pseudo concentrations.
 
     Parameters
@@ -161,7 +163,7 @@ def pseudobatch_transform_multiple(
     concentration_in_feed: Union[Iterable, NDArray],
     sample_volume: NDArray,
 ) -> NDArray:
-    """Perform the pseudo batch transformation on multiple species at once. This 
+    """Perform the pseudo batch transformation on multiple species at once. This
     function simply wraps the `pseudobatch_transform()` function.
 
     Parameters
@@ -176,20 +178,20 @@ def pseudobatch_transform_multiple(
     feed_in_interval : NDArray
         a NDArray of the feed volumen in the interval since last timepoint.
     concentration_in_feed : Iterable or NDArray
-        the concentration of each species in the feed medium. This can be an iterable 
-        of the same length as the number of columns in the measured_concentrations array. 
+        the concentration of each species in the feed medium. This can be an iterable
+        of the same length as the number of columns in the measured_concentrations array.
         Alternatively an NDArray which contain the concetration for each
         individual time step. Again the order of the columns has to match in order
         in measured_concentration.
     sample_volume : NDArray
         a NDArray of the sample volumes at given time points. The array should
         contain 0 at timepoints where no samples was taken
-    
+
     Returns
     -------
     NDArray
-        A NDArray of the same shape as the measured_concentration argument with the 
-        pseudo concentrations of the species. The columns correspond to the columns 
+        A NDArray of the same shape as the measured_concentration argument with the
+        pseudo concentrations of the species. The columns correspond to the columns
         in measured_concentration.
     """
     bad_shape_msg = (
@@ -290,3 +292,33 @@ def pseudobatch_transform_pandas(
     # Copy the index from the original dataframe
     out.index = df.index
     return out
+
+
+def convert_volumetric_rates_from_pseudo_to_real(
+    pseudo_volumetric_rates: Union[pd.Series, NDArray],
+    reactor_volume: Union[pd.Series, NDArray],
+    sample_volume: Union[pd.Series, NDArray],
+) -> Union[pd.Series, NDArray]:
+    """
+    Convert pseudo concentration to real concentration.
+
+    Parameters
+    ----------
+    pseudo_concentration : Union[pd.Series, NDArray]
+        Pseudo volumetric rates to be converted.
+    reactor_volume : Union[pd.Series, NDArray]
+        Reactor volume, this must be the BEFORE sampling volume.
+    sample_volume : Union[pd.Series, NDArray]
+        Sample volume.
+
+    Returns
+    -------
+    Union[pd.Series, NDArray]
+        Real volumetric rates.
+
+
+    """
+    adf = accumulated_dilution_factor(
+        reactor_volume - sample_volume, sample_volume
+    )
+    return pseudo_volumetric_rates / adf

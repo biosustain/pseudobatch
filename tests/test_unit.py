@@ -11,7 +11,8 @@ from pseudobatch.datasets import (
     load_product_inhibited_fedbatch,
     load_cho_cell_like_fedbatch,
 )
-
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 def test_input_contain_nan(simulated_fedbatch: pd.DataFrame):
     # correct glucose data
@@ -61,3 +62,4 @@ def test_pseudobatch_transform_pandas_preserves_index():
         sample_volume_colname="sample_volume",
     )
     assert df.index.equals(transformed_df.index)
+    
