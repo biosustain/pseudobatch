@@ -1,18 +1,10 @@
 import pytest
 import pandas as pd
 import numpy as np
-<<<<<<< HEAD
-from pseudobatch import (
-    pseudobatch_transform, 
-    reverse_pseudobatch_transform,
-    pseudobatch_transform_pandas,
-    reverse_pseudobatch_transform_pandas,
-=======
 
 from pseudobatch import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
->>>>>>> main
 )
 from pseudobatch.datasets import (
     load_standard_fedbatch,
