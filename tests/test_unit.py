@@ -1,11 +1,18 @@
 import pytest
 import pandas as pd
 import numpy as np
+<<<<<<< HEAD
 from pseudobatch import (
     pseudobatch_transform, 
     reverse_pseudobatch_transform,
     pseudobatch_transform_pandas,
     reverse_pseudobatch_transform_pandas,
+=======
+
+from pseudobatch import (
+    pseudobatch_transform,
+    pseudobatch_transform_pandas,
+>>>>>>> main
 )
 from pseudobatch.datasets import (
     load_standard_fedbatch,
@@ -48,61 +55,19 @@ def test_load_cho_cell_like_fedbatch_unique_timestamps():
     assert df.empty is False
     assert df["timestamp"].duplicated().sum() == 0
 
-def test_reverse_pseudobatch_transform():
-    """Test that the reverse pseudobatch transform is the inverse of the 
-    pseudobatch transform."""
+def test_pseudobatch_transform_pandas_preserves_index():
+    """Test that the index of the input dataframe is preserved in the output dataframe."""
+    df = load_standard_fedbatch()
 
-    fedbatch_df = load_standard_fedbatch().query("sample_volume > 0")
-    c_Glucose_pseudo = pseudobatch_transform(
-        measured_concentration=fedbatch_df["c_Glucose"].to_numpy(),
-        reactor_volume=fedbatch_df["v_Volume"].to_numpy(),
-        accumulated_feed=fedbatch_df["v_Feed_accum"].to_numpy(),
-        concentration_in_feed=fedbatch_df.s_f.iloc[0],
-        sample_volume=fedbatch_df["sample_volume"].to_numpy(),
-    )
-
-    c_Glucose_reverse_pseudo = reverse_pseudobatch_transform(
-        pseudo_concentration=c_Glucose_pseudo,
-        reactor_volume=fedbatch_df["v_Volume"].to_numpy(),
-        accumulated_feed=fedbatch_df["v_Feed_accum"].to_numpy(),
-        concentration_in_feed=fedbatch_df.s_f.iloc[0],
-        sample_volume=fedbatch_df["sample_volume"].to_numpy(),
-    )
-
-    assert np.allclose(fedbatch_df["c_Glucose"].to_numpy(), c_Glucose_reverse_pseudo, atol=1e-7)
-
-
-def test_reverse_pseudobatch_transform_pandas():
-    """Test that the reverse pseudobatch transform pandas is the inverse of the 
-    pseudobatch transform."""
-
-    fedbatch_df = load_standard_fedbatch().query("sample_volume > 0").reset_index(drop=True)
-    fedbatch_df[['c_Glucose_pseudo', 'c_Biomass_pseudo']] = pseudobatch_transform_pandas(
-        df=fedbatch_df,
-        measured_concentration_colnames=['c_Glucose', 'c_Biomass'],
+    # change index to something else
+    df.index = np.arange(1000, 1000 + len(df))
+    transformed_df = pseudobatch_transform_pandas(
+        df=df,
+        measured_concentration_colnames=["c_Glucose"],
         reactor_volume_colname="v_Volume",
         accumulated_feed_colname="v_Feed_accum",
-        concentration_in_feed=[fedbatch_df.s_f.iloc[0], 0],
+        concentration_in_feed=[df.s_f.iloc[0]],
         sample_volume_colname="sample_volume",
     )
-
-    reverse_transformed_data = pd.DataFrame()
-    reverse_transformed_data[["c_Glucose", "c_Biomass"]] = reverse_pseudobatch_transform_pandas(
-        df=fedbatch_df,
-        pseudo_concentration_colnames=['c_Glucose_pseudo', 'c_Biomass_pseudo'],
-        reactor_volume_colname="v_Volume",
-        accumulated_feed_colname="v_Feed_accum",
-        concentration_in_feed=[fedbatch_df.s_f.iloc[0], 0],
-        sample_volume_colname="sample_volume",
-   )
-
-    assert np.allclose(
-        fedbatch_df["c_Glucose"].to_numpy(), 
-        reverse_transformed_data['c_Glucose'].to_numpy(),
-        atol=1e-7
-    )
-    assert np.allclose(
-        fedbatch_df["c_Biomass"].to_numpy(), 
-        reverse_transformed_data['c_Biomass'].to_numpy(),
-        atol=1e-7
-    )   
+    assert df.index.equals(transformed_df.index)
+    

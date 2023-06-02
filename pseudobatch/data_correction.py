@@ -107,15 +107,16 @@ def pseudobatch_transform(
     after_sample_reactor_volume = reactor_volume - sample_volume
 
     for i in [
-        measured_concentration,
         reactor_volume,
         accumulated_feed,
         sample_volume,
     ]:
         if np.isnan(i).sum() > 0:
             msg = (
-                "Nan was found in input data. Replace nan with an appropriate"
-                " number - this is often 0."
+                "Nan was found in either the reactor volume, accumulated feed or "
+                "the sample volume. Replace nan with an appropriate value."
+                "For example, if no sample was taken, the sample volume should be "
+                "set to 0."
             )
             raise ValueError(msg)
         adf = accumulated_dilution_factor(
@@ -288,6 +289,8 @@ def pseudobatch_transform_pandas(
             concentration_in_feed=conc,
             sample_volume=df[sample_volume_colname].to_numpy(),
         )
+    # Copy the index from the original dataframe
+    out.index = df.index
     return out
 
 
