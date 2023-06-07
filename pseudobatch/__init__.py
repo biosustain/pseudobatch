@@ -1,6 +1,7 @@
 import shutil
 import warnings
 from pathlib import Path
+from .import_from_excel import process_excel_template
 from .data_correction import pseudobatch_transform_multiple, pseudobatch_transform, pseudobatch_transform_pandas, accumulated_dilution_factor, convert_volumetric_rates_from_pseudo_to_real
 import cmdstanpy
 

@@ -10,3 +10,4 @@ Here you will find tutorial for how to use the pseudo batch transformation in re
    2 - Estimate overall rates and yields
    3 - Estimate time series parameters
    4 - Dealing with multiple feeds
+   5 - Importing data from Excel template
