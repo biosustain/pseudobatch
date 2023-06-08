@@ -1,5 +1,5 @@
 # Pseudo-batch transformation article
-This folder contains all information that is required to reproduce the results of the article. We provide a Docker image that contains a copy of the full github repository. Inside this image the simulations and data analysis can be redone.
+This folder contains all information that is required to reproduce the results of the article. We provide a Docker image that contains a copy of the full github repository. Inside this image the simulations and data analysis can be redone. Because the purpose of the Docker image is to reproduce the results in the article the version of the pseudobatch code will be locked at the state of publication.
 
 ## This folder
 - **figures** - figures used for the publication and extra figures for presentations.
@@ -10,6 +10,9 @@ This folder contains all information that is required to reproduce the results o
 
 
 ## How to reproduce results
+### 0. Install docker on your local machine
+See how to install Docker on your machine at the [Docker website](https://docs.docker.com/get-docker/).
+
 ### 1. Download the docker image
 - The docker image can be found here: XXX
 - load the image to your local docker by running `docker load --input PATH-TO-IMAGE-TAR-FILE`

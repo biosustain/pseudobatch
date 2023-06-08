@@ -37,7 +37,7 @@ If you use the pseudobatch transformation please cite the original article XXX.
 The [article folder](./article/) holds the code which was used create the simulated datasets, to proof that the transformation works, analyse the error propagation and create the illustrations for the paper. 
 
 ### Docker container
-To increase reproducibility we have provided a docker container. Inside this container all analysis can be reproduced. Instructions on how to download and use the docker container is found XXXX.
+To increase reproducibility we have provided a docker container. Inside this container all simulations and analysis can be reproduced. Instructions on how to download and use the docker container is found in the [article folder](./article/README.md).
 
 ## Building the documentation
 
@@ -55,7 +55,7 @@ build/html/index.html` or just click through to this file using your file
 explorer.
 
 ## Building docker image 
-This is a note to developers who what to rebuild/update the docker image. If you simply want to use the docker image see the description in the [article folder](./article/README.md). 
+This is a note to developers who wants to rebuild/update the docker image. If you simply want to use the docker image see the description in the [article folder](./article/README.md). 
 
 The Docker container relies on the [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/tags/), see also [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook). We used this image because it includes both Python and Julia out of the box, the down side is that it is quite large. To create the image you need a local copy of this repository and inside that folder run the following command:
 
@@ -63,4 +63,4 @@ The Docker container relies on the [jupyter/datascience-notebook](https://hub.do
 docker build . -t pseudobatch:{version}
 ```
 
-This recreates the docker image. Be aware that installing the Julia packages and cmdstan are both take quite some time, thus expect that it take ~ 15 - 30 min to build. For that exact reason the docker-compose specifies the current folder as a volume.
+This recreates the docker image. Be aware that installing the Julia packages and cmdstan are both take quite some time, thus expect that it take ~ 15 - 30 min to build.
