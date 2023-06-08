@@ -2,13 +2,22 @@
 import pytest
 
 import numpy as np
+import pandas as pd
 from pseudobatch.data_correction import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
 )
+from pseudobatch.datasets import load_standard_fedbatch
 from patsy import dmatrices
 import statsmodels.api as sm
+import logging
 
+
+def fit_ols_model(formula_like: str, data: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
+    y, X = dmatrices(formula_like, data)
+    model = sm.OLS(endog=y, exog=X)
+    res = model.fit()
+    return res
 
 ###################### INTEGRATION TESTS ##################################
 def test_pseudobatch_transform_full_data_set(simulated_fedbatch):
@@ -156,3 +165,51 @@ def test_pseudobatch_transform_multiple_feeds(simulated_multiple_feeds):
     Yxs = res_corrected.params[1]
 
     assert Yxs == pytest.approx(simulated_multiple_feeds["Yxs"].iloc[0])
+
+def test_accepts_nan():
+    """Test if the pseudobatch_transform function handles nan values correctly, 
+    i.e. calculates the mu_hat when the nan are present in the data. This mimicks
+    the situation where not all species where measured in all samples."""
+
+    fedbatch_df = (load_standard_fedbatch()
+        .query("sample_volume > 0")
+        .reset_index(drop=True)
+        # change every 2nd biomass measurement to nan
+        .assign(c_Biomass = lambda df: pd.Series([
+            x if idx % 2 != 0 else np.nan for idx, x in df['c_Biomass'].items()
+        ]))
+    )
+    logging.debug(fedbatch_df.filter(['timestamp', 'c_Biomass', 'v_Volume']))
+    fedbatch_df['c_Biomass_pseudo'] = pseudobatch_transform(
+        fedbatch_df['c_Biomass'].to_numpy(),
+        fedbatch_df['v_Volume'].to_numpy(),
+        fedbatch_df['v_Feed_accum'].to_numpy(),
+        0,
+        fedbatch_df['sample_volume'].to_numpy(),
+    )
+    
+    fedbatch_df['c_Glucose_pseudo'] = pseudobatch_transform(
+        fedbatch_df['c_Glucose'].to_numpy(),
+        fedbatch_df['v_Volume'].to_numpy(),
+        fedbatch_df['v_Feed_accum'].to_numpy(),
+        fedbatch_df.s_f.iloc[0],
+        fedbatch_df['sample_volume'].to_numpy(),
+    )
+
+    growth_rate_model = fit_ols_model(
+        "np.log(c_Biomass_pseudo) ~ timestamp",
+        fedbatch_df,
+    )
+
+    substrate_yield_model = fit_ols_model(
+        "c_Glucose_pseudo ~ c_Biomass_pseudo",
+        fedbatch_df,
+    )
+
+    # fetching the true values used in the simulation
+    Yxs_true = fedbatch_df.Yxs.iloc[0]
+    mu_true = fedbatch_df.mu0.iloc[0]
+
+    assert growth_rate_model.params[1] == pytest.approx(mu_true, 1e-6) 
+    assert np.abs(substrate_yield_model.params[1]) == pytest.approx(Yxs_true, 1e-6)
+     
