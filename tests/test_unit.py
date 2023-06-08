@@ -10,6 +10,7 @@ from pseudobatch.datasets import (
     load_standard_fedbatch,
     load_product_inhibited_fedbatch,
     load_cho_cell_like_fedbatch,
+    load_real_world_yeast_fedbatch
 )
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -46,6 +47,15 @@ def test_load_cho_cell_like_fedbatch_unique_timestamps():
     df = load_cho_cell_like_fedbatch()
     assert df.empty is False
     assert df["timestamp"].duplicated().sum() == 0
+
+
+def test_load_real_world_yeast_fedbatch():
+    """Test that the dataset is loaded correctly and that the shape is correct."""
+    df = load_real_world_yeast_fedbatch()
+    logging.debug(df.shape)
+    assert df.empty is False
+    assert df.shape == (11400, 12), "The dataset has changed. Update the test."
+
 
 def test_pseudobatch_transform_pandas_preserves_index():
     """Test that the index of the input dataframe is preserved in the output dataframe."""

@@ -84,3 +84,11 @@ def load_cho_cell_like_fedbatch(sampling_points_only: bool = False):
     """
     data_path = pathlib.Path(__file__).parent / "data" / "multiple_impulse_feed_process.csv"
     return _prepare_simulated_dataset(data_path, sampling_points_only=sampling_points_only)
+
+
+def load_real_world_yeast_fedbatch():
+    """Load the real world yeast fed-batch process dataset. This dataset
+    is obtained from an experiment carried out in a biolector."""
+
+    data_path = pathlib.Path(__file__).parent / "data" / "biolector_yeast_fedbatch.csv"
+    return pd.read_csv(data_path)
