@@ -295,8 +295,6 @@ def pseudobatch_transform_pandas(
         )
 
     if isinstance(accumulated_feed_colname, Iterable) and not isinstance(accumulated_feed_colname, str):
-        logging.info(type(accumulated_feed_colname))
-        logging.info(accumulated_feed_colname)
         # if multiple feed streams are given, we validate that each list in the
         # the concentration_in_feed has the same length as the number of feeds
         for conc_lst in concentration_in_feed: 
