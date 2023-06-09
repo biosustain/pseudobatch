@@ -13,7 +13,7 @@ The grey line show the simulated biomass in mass units (not concentration). The 
 
 A typical analysis of such fermentation data is the estimate the growth rate. This is typically done through a log-linear model, i.e. first log-transforming the biomass measurements and the fit a linear model. If we fit a log-linear model to the raw growth data, we obtain the wrong estimate of the growth rate (blue line). It visually clear that the slope of the blue line is not the same as the slope of the grey line. However, if we first apply the Pseudobatch transformation, we remove the sudden drops in mass and now we obtain the correct growth rate from the log-linear model.
 
-![](./article/figures/transformed_and_non-transformed_logscale.png)
+![](./article/figures/transformed_and_non-transformed_logscale_paper.png)
 
 ## How to use?
 There are multiple ways to use the pseudobatch transformation. 
