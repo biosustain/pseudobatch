@@ -65,11 +65,28 @@ def test_pseudobatch_transform_pandas_preserves_index():
     df.index = np.arange(1000, 1000 + len(df))
     transformed_df = pseudobatch_transform_pandas(
         df=df,
-        measured_concentration_colnames=["c_Glucose"],
+        measured_concentration_colnames="c_Glucose",
         reactor_volume_colname="v_Volume",
         accumulated_feed_colname="v_Feed_accum",
-        concentration_in_feed=[df.s_f.iloc[0]],
+        concentration_in_feed=df.s_f.iloc[0],
         sample_volume_colname="sample_volume",
     )
     assert df.index.equals(transformed_df.index)
+
+
+def test_pseudobatch_transform_pandas_validation_missing_concentration_in_feed():
+    """Test that the validation fails when the number of measured_concentration_colnames is
+    not equal to the number of length of concentration in feed."""
+    df = load_standard_fedbatch()
+
+    # missing concentration in feed data
+    with pytest.raises(ValueError) as _:
+        pseudobatch_transform_pandas(
+            df=df,
+            measured_concentration_colnames=["c_Glucose", 'c_Biomass'],
+            reactor_volume_colname="v_Volume",
+            accumulated_feed_colname="v_Feed_accum",
+            concentration_in_feed=df.s_f.iloc[0],
+            sample_volume_colname="sample_volume",
+        )
     
