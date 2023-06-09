@@ -130,10 +130,10 @@ def pseudobatch_transform(
     ) -> NDArray[np.float64]:
         """Calculate the feed in interval.
 
-        Prepand 0 to make the length of the array the same as the other arrays.
-
+        Prepend the first value of the accumulated feed to the array because the
+        is the feed added during the first interval.
         """
-        feed_in_interval = np.diff(accum_feed, prepend=0)
+        feed_in_interval = np.diff(accum_feed, prepend=accum_feed[0])
         return adf * feed_in_interval * conc_in_feed / reactor_vol
 
     if len(np.shape(accumulated_feed)) == 1:
