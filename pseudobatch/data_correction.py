@@ -255,8 +255,8 @@ def pseudobatch_transform_pandas(
         given in measured_concentration_colnames. If multiple feed streams are
         given, the concentration_in_feed should be a list of lists. E.g.
         [[conc_Glc_feed1, conc_Glc_feed2], [conc_Biomass_feed1,
-        conc_Biomass_feed2]]. Thus, the outer list iterates over the feed
-        streams and the inner list iterates over the species. The order has to
+        conc_Biomass_feed2]]. Thus, the outer list iterates over the species
+        and the inner list iterates over the feed streams. The order has to
         match the order of the species, and accumulated feeds given in
         measured_concentration_colnames and accumulated_feed_colname.
 
@@ -278,6 +278,41 @@ def pseudobatch_transform_pandas(
         species for each column.
 
     """
+
+    # convert input to list if only one column name is given
+    if isinstance(measured_concentration_colnames, str):
+        measured_concentration_colnames = [measured_concentration_colnames]
+    if isinstance(concentration_in_feed, float) | isinstance(concentration_in_feed, int):
+        concentration_in_feed = [concentration_in_feed]
+
+    # validate input
+    if len(measured_concentration_colnames) != len(concentration_in_feed):
+        raise ValueError(
+            "The number of species given in measured_concentration_colnames and "
+            "concentration_in_feed does not match. Please check the input."
+            "Remeber also add concentration of the species that are present in the "
+            "feed, i.e. 0."
+        )
+
+    if isinstance(accumulated_feed_colname, Iterable) and not isinstance(accumulated_feed_colname, str):
+        # if multiple feed streams are given, we validate that each list in the
+        # the concentration_in_feed has the same length as the number of feeds
+        for conc_lst in concentration_in_feed: 
+            if not(isinstance(conc_lst, Iterable)):
+                raise ValueError(
+                    "If multiple feeds are given, the "
+                    "concentration_in_feed argument should be a list of Iterables. "
+                    f"{conc_lst} is not an Iterable. Please check the input."
+                )
+
+            if len(conc_lst) != len(accumulated_feed_colname):
+                raise ValueError(
+                    f"{len(accumulated_feed_colname)} feeds are given, but "
+                    "one of the lists in concentration_in_feed has length "
+                    f"{len(conc_lst)}. Please check the input."
+                )
+
+
     out = pd.DataFrame()
     for species, conc in zip(
         measured_concentration_colnames, concentration_in_feed
