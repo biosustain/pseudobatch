@@ -1,7 +1,7 @@
 Tutorials
 ======================================
 
-Here you will find tutorial for how to use the pseudo batch transformation in real world scenarios.
+Here you will find tutorial for how to use the pseudo batch transformation.
 
 .. toctree::
    :maxdepth: 1
@@ -11,3 +11,5 @@ Here you will find tutorial for how to use the pseudo batch transformation in re
    3 - Estimate time series parameters
    4 - Dealing with multiple feeds
    5 - Importing data from Excel template
+   6 - Real data example: Yeast Biolector Fermentation
+   7 - Pseudobatch transformation with uncertainties
