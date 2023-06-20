@@ -1,7 +1,7 @@
 Tutorials
 ======================================
 
-Here you will find tutorial for how to use the pseudo batch transformation.
+Here you will find tutorials for how to use the pseudobatch transformation.
 
 .. toctree::
    :maxdepth: 1
