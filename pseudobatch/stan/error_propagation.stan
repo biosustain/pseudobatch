@@ -86,9 +86,9 @@ model {
 generated quantities {
   real cfeed = y_cfeed == 0 ? 0 : cfeed_nonzero;
   real pump_bias = log(alpha_pump);
-  matrix[N, S] pseudo_batch_c;
+  matrix[N, S] pseudobatch_c;
   for (species_i in 1 : S){
-    pseudo_batch_c[, species_i] = pseudo_batch_transform(v, s, c[,species_i], f, cfeed);
+    pseudobatch_c[, species_i] = pseudobatch_transform(v, s, c[,species_i], f, cfeed);
   }
 }
 

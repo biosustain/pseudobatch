@@ -13,7 +13,7 @@ vector cumulative_product_vector(vector v){
 }
 
 /* Function that does the pseudo-batch transformation */
-vector pseudo_batch_transform(vector v,   // before sampling volumes
+vector pseudobatch_transform(vector v,   // before sampling volumes
                               vector s,   // sample volumes
                               vector c,   // target concentration
                               vector f,   // feed in previous interval

@@ -1,0 +1,2 @@
+# Julia scripts for simulation of fed-batch fermentations
+This scripts are used to simulate fed-batch processes where samples are withdrawn. The scripts are not written to be generalizable, but solely to simulate the fed-batch process required to test the pseudo batch transformation.
