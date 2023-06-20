@@ -2,8 +2,8 @@ from importlib.resources import files
 
 import numpy as np
 import pandas as pd
-from scipy.special import logit
 import pytest
+from scipy.special import logit
 
 from pseudobatch import run_error_propagation, simulated_data
 
@@ -16,15 +16,15 @@ KNOWN_QUANTITIES = {
 }
 
 PRIORS_GOOD = {
-    "prior_alpha_pump": {"pct1": np.log(1-0.1), "pct99": 0}, 
+    "prior_alpha_pump": {"pct1": np.log(1 - 0.1), "pct99": 0},
     "prior_alpha_s": {"pct1": logit(0.05), "pct99": logit(0.4)},
-    "prior_v0": {"pct1": 1000, "pct99": 1030},     # Here is the bad bit!
+    "prior_v0": {"pct1": 1000, "pct99": 1030},  # Here is the bad bit!
     "prior_m": [
         {"pct1": 200, "pct99": 200000},
         {"pct1": 2, "pct99": 2000},
         {"pct1": 200, "pct99": 200000},
     ],
-    "prior_f_nonzero":     {"pct1": 10, "pct99": 1000},
+    "prior_f_nonzero": {"pct1": 10, "pct99": 1000},
     "prior_cfeed_nonzero": {"pct1": 0.01, "pct99": 0.1},
 }
 
@@ -37,7 +37,9 @@ def test_error_propagation():
         .dropna(subset=["sample_volume"])
         .drop_duplicates(subset=["timestamp"], keep="first")
         .assign(
-            v_feed_interval=lambda df: (df["v_Feed_accum"] - df["v_Feed_accum"].shift(1)).fillna(0),
+            v_feed_interval=lambda df: (
+                df["v_Feed_accum"] - df["v_Feed_accum"].shift(1)
+            ).fillna(0),
         )
         .reset_index()
     )
@@ -48,6 +50,5 @@ def test_error_propagation():
         concentration_in_feed=0.0,
         sample_volume=samples["sample_volume"].values,
         prior_input=PRIORS_GOOD,
-        known_quantities=KNOWN_QUANTITIES
+        known_quantities=KNOWN_QUANTITIES,
     )
-

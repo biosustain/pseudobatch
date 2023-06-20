@@ -1,17 +1,17 @@
 from enum import Enum
-from typing import Dict, List, Optional, Union
 from importlib.resources import files
+from typing import Dict, List, Optional, Union
 
 import arviz as az
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
 from pydantic import BaseModel, Field, root_validator
 
+from pseudobatch import stan
 from pseudobatch.util import (
     get_lognormal_params_from_quantiles,
     get_normal_params_from_quantiles,
 )
-from pseudobatch import stan
 
 KNOWN_QUANTITIES = {
     "sigma_v": 0.05,
@@ -21,6 +21,7 @@ KNOWN_QUANTITIES = {
     "sigma_cfeed": 0.05,
 }
 STAN_FILE = files(stan).joinpath("error_propagation.stan")
+
 
 class Distribution0d(str, Enum):
     normal = "normal"
@@ -70,6 +71,7 @@ class Prior0dNormal(Prior0d):
 class Prior0dLogNormal(Prior0d):
     distribution = Distribution0d.lognormal
 
+
 class PriorInput(BaseModel):
     prior_alpha_pump: Prior0dNormal
     prior_alpha_s: Prior0dNormal
@@ -112,7 +114,6 @@ def run_error_propagation(
 
     """
     N, S = measured_concentration.shape
-
     pi = PriorInput.parse_obj(prior_input)
     if not isinstance(concentration_in_feed, float):
         raise ValueError(
@@ -136,22 +137,10 @@ def run_error_propagation(
             pi.prior_alpha_pump.loc,
             pi.prior_alpha_pump.scale,
         ],
-        "prior_alpha_s": [
-            pi.prior_alpha_s.loc,
-            pi.prior_alpha_s.scale,
-        ],
-        "prior_v0": [
-            pi.prior_v0.loc,
-            pi.prior_v0.scale,
-        ],
-        "prior_m": [
-            [p.loc for p in pi.prior_m],
-            [p.scale for p in pi.prior_m],
-        ],
-        "prior_f_nonzero": [
-            pi.prior_f_nonzero.loc,
-            pi.prior_f_nonzero.scale,
-        ],
+        "prior_alpha_s": [pi.prior_alpha_s.loc, pi.prior_alpha_s.scale],
+        "prior_v0": [pi.prior_v0.loc, pi.prior_v0.scale],
+        "prior_m": [[p.loc for p in pi.prior_m], [p.scale for p in pi.prior_m]],
+        "prior_f_nonzero": [pi.prior_f_nonzero.loc, pi.prior_f_nonzero.scale],
         "prior_cfeed_nonzero": [
             pi.prior_cfeed_nonzero.loc,
             pi.prior_cfeed_nonzero.scale,
