@@ -2,10 +2,10 @@ from importlib.resources import files
 
 import numpy as np
 import pandas as pd
-import pytest
 from scipy.special import logit
 
-from pseudobatch import run_error_propagation, simulated_data
+from pseudobatch import run_error_propagation
+from pseudobatch.datasets import data
 
 KNOWN_QUANTITIES = {
     "sigma_v": 0.05,
@@ -16,8 +16,8 @@ KNOWN_QUANTITIES = {
 }
 
 PRIORS_GOOD = {
-    "prior_alpha_pump": {"pct1": np.log(1 - 0.1), "pct99": 0},
-    "prior_alpha_s": {"pct1": logit(0.05), "pct99": logit(0.4)},
+    "prior_apump": {"pct1": np.log(1 - 0.1), "pct99": np.log(1 + 0.1)},
+    "prior_as": {"pct1": logit(0.05), "pct99": logit(0.4)},
     "prior_v0": {"pct1": 1000, "pct99": 1030},  # Here is the bad bit!
     "prior_m": [
         {"pct1": 200, "pct99": 200000},
@@ -30,7 +30,7 @@ PRIORS_GOOD = {
 
 
 def test_error_propagation():
-    data_path = files(simulated_data).joinpath("standard_fed-batch_process.csv")
+    data_path = files(data).joinpath("standard_fed-batch_process.csv")
     species = ["Product", "Glucose", "Biomass"]
     samples = (
         pd.read_csv(str(data_path), index_col=0)
