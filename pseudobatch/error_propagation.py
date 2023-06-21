@@ -3,6 +3,8 @@ from importlib.resources import files
 from typing import Dict, List, Optional, Union
 
 import arviz as az
+import numpy as np
+
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
 from pydantic import BaseModel, Field, root_validator
@@ -73,8 +75,8 @@ class Prior0dLogNormal(Prior0d):
 
 
 class PriorInput(BaseModel):
-    prior_alpha_pump: Prior0dNormal
-    prior_alpha_s: Prior0dNormal
+    prior_apump: Prior0dNormal
+    prior_as: Prior0dNormal
     prior_v0: Prior0dLogNormal
     prior_m: List[Prior0dLogNormal]
     prior_f_nonzero: Prior0dLogNormal
@@ -115,29 +117,31 @@ def run_error_propagation(
     """
     N, S = measured_concentration.shape
     pi = PriorInput.parse_obj(prior_input)
-    if not isinstance(concentration_in_feed, float):
+    try:
+        concentration_in_feed = float(concentration_in_feed)
+    except TypeError as e:
         raise ValueError(
             "Error propagation currently only supports a single feed concentration:"
             " please make sure this input is a float not an NDArray."
         )
+    interval_feed = np.concatenate(
+        [np.array([accumulated_feed[0]]), np.diff(accumulated_feed)]
+    )
     data = {
         "N": N,
         "S": S,
         "y_v": reactor_volume,
         "y_c": measured_concentration,
         "y_s": sample_volume,
-        "y_f": accumulated_feed,
+        "y_f": interval_feed,
         "y_cfeed": concentration_in_feed,
         "sigma_v": known_quantities["sigma_v"],
         "sigma_c": known_quantities["sigma_c"],
         "sigma_s": known_quantities["sigma_s"],
         "sigma_f": known_quantities["sigma_f"],
         "sigma_cfeed": known_quantities["sigma_cfeed"],
-        "prior_alpha_pump": [
-            pi.prior_alpha_pump.loc,
-            pi.prior_alpha_pump.scale,
-        ],
-        "prior_alpha_s": [pi.prior_alpha_s.loc, pi.prior_alpha_s.scale],
+        "prior_apump": [pi.prior_apump.loc, pi.prior_apump.scale],
+        "prior_as": [pi.prior_as.loc, pi.prior_as.scale],
         "prior_v0": [pi.prior_v0.loc, pi.prior_v0.scale],
         "prior_m": [[p.loc for p in pi.prior_m], [p.scale for p in pi.prior_m]],
         "prior_f_nonzero": [pi.prior_f_nonzero.loc, pi.prior_f_nonzero.scale],
@@ -145,8 +149,10 @@ def run_error_propagation(
             pi.prior_cfeed_nonzero.loc,
             pi.prior_cfeed_nonzero.scale,
         ],
-        "likelihood": 1,
     }
+    data_prior = {**data, **{"likelihood": 0}}
+    data_posterior = {**data, **{"likelihood": 1}}
     model = CmdStanModel(stan_file=STAN_FILE)
-    mcmc = model.sample(data=data)
-    return az.from_cmdstanpy(mcmc)
+    mcmc_prior = model.sample(data=data_prior, show_progress=False)
+    mcmc_posterior = model.sample(data=data_posterior, show_progress=False)
+    return az.from_cmdstanpy(mcmc_posterior, prior=mcmc_prior)
