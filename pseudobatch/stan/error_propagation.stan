@@ -14,17 +14,16 @@ data {
   array[N, S] real y_c;
   vector[N] y_s;
   vector[N] y_f;
-  vector[N] t;
   real y_cfeed;
   real<lower=0> sigma_v;
   vector<lower=0>[S] sigma_c;
   real<lower=0> sigma_s;
   real<lower=0> sigma_f;
   real<lower=0> sigma_cfeed;
-  array[2] real prior_alpha_pump;
-  array[2] real prior_alpha_s;
+  array[2] real prior_apump;
+  array[2] real prior_as;
   array[2] real prior_v0;
-  array[S, 2] real prior_m;
+  array[2, S] real prior_m;
   array[2] real prior_f_nonzero;
   array[2] real prior_cfeed_nonzero;
   int<lower=0, upper=1> likelihood;
@@ -41,10 +40,10 @@ transformed data {
 parameters {
   real<lower=0> v0; // starting volume
   matrix<lower=0>[N, S] m;  // mass of each species
-  vector[N] alpha_s; // logit fraction of current volume sampled at each point
+  vector[N] as; // logit fraction of current volume sampled at each point
   vector<lower=0>[N_f_nonzero] f_nonzero; // amount of feed in interval prior to each point
   real<lower=0> cfeed_nonzero; // concentration of feed
-  real<lower=0> alpha_pump; // multiplicative factor by which the pump is biased
+  real<lower=0> apump; // multiplicative factor by which the pump is biased
 }
 transformed parameters {
   vector[N] f;
@@ -54,21 +53,21 @@ transformed parameters {
   f[ix_f_zero] = zeros_vector(N_f_zero);
   f[ix_f_nonzero] = f_nonzero;
   v[1] = v0 + f[1];
-  s[1] = v[1] * inv_logit(alpha_s[1]);
+  s[1] = v[1] * inv_logit(as[1]);
   for (n in 2 : N) {
     v[n] = v0 + sum(f[ : n]) - sum(s[ : n - 1]);
-    s[n] = v[n] * inv_logit(alpha_s[n]);
+    s[n] = v[n] * inv_logit(as[n]);
   }
   for (species_i in 1 : S){
     c[,species_i] = m[,species_i] ./ v;
   }
 }
 model {
-  alpha_pump ~ normal(prior_alpha_pump[1], prior_alpha_pump[2]);
-  alpha_s ~ normal(prior_alpha_s[1], prior_alpha_s[2]);
+  apump ~ normal(prior_apump[1], prior_apump[2]);
+  as ~ normal(prior_as[1], prior_as[2]);
   v0 ~ lognormal(prior_v0[1], prior_v0[2]);
   for (species_i in 1 : S){
-    m[,species_i] ~ lognormal(prior_m[species_i, 1], prior_m[species_i, 2]);
+    m[,species_i] ~ lognormal(prior_m[1, species_i], prior_m[2, species_i]);
   }
   f_nonzero ~ lognormal(prior_f_nonzero[1], prior_f_nonzero[2]);
   cfeed_nonzero ~ lognormal(prior_cfeed_nonzero[1], prior_cfeed_nonzero[2]);
@@ -78,7 +77,7 @@ model {
       y_c[,species_i] ~ lognormal(log(c[,species_i]), sigma_c[species_i]);
     }
     y_s[ix_s_nonzero] ~ lognormal(log(s[ix_s_nonzero]), sigma_s);
-    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero] + alpha_pump), sigma_f);
+    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero] + apump), sigma_f);
     if (y_cfeed != 0) {
       y_cfeed ~ lognormal(log(cfeed_nonzero), sigma_cfeed);
     }
@@ -86,7 +85,7 @@ model {
 }
 generated quantities {
   real cfeed = y_cfeed == 0 ? 0 : cfeed_nonzero;
-  real pump_bias = log(alpha_pump);
+  real pump_bias = log(apump);
   matrix[N, S] pseudobatch_c;
   for (species_i in 1 : S){
     pseudobatch_c[, species_i] = pseudobatch_transform(v, s, c[,species_i], f, cfeed);

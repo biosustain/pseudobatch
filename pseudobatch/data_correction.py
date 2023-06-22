@@ -1,8 +1,8 @@
-import pandas as pd
+from typing import Iterable, Union
+
 import numpy as np
-from typing import Union, Iterable
+import pandas as pd
 from numpy.typing import NDArray
-import logging
 
 
 def _shift(xs, n):

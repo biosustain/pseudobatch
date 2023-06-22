@@ -1,7 +1,8 @@
-import sys
 import os
-import pandas as pd
+import sys
+
 import numpy as np
+import pandas as pd
 
 OUTPUT_FILE = os.path.join(
     "tests", "test_data", "fed-batch3_measurements_only.csv"

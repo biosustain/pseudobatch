@@ -1,16 +1,17 @@
 ## This scripts contain integration tests of all fedbatch data correction function.
-import pytest
+import logging
 
 import numpy as np
+import pytest
+import statsmodels.api as sm
+from patsy import dmatrices
 import pandas as pd
+
 from pseudobatch.data_correction import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
 )
 from pseudobatch.datasets import load_standard_fedbatch
-from patsy import dmatrices
-import statsmodels.api as sm
-import logging
 
 
 def fit_ols_model(formula_like: str, data: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
