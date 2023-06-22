@@ -5,8 +5,7 @@ permissions:
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-  CMDSTAN_VERSION: "2.31.0"   steps:
-
+  CMDSTAN_VERSION: "2.31.0" 
 
 jobs:
   docs:
