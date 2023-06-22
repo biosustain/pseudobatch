@@ -2,3 +2,4 @@ ipython
 sphinx
 nbsphinx
 pydata-sphinx-theme
+.
