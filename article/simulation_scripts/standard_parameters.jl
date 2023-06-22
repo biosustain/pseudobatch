@@ -27,8 +27,8 @@ mu0 = 0.1
 mu_max = 0.3
 Kc_s = 150 / 1000 # mg / ml from table 7.1 from Bioreaction Engineering Principples 
 s_f = 100 # gGLC/L = µgGLC/µL
-n_samples = 12
-sample_volume = 100
+n_samples = 8
+sample_volume = 170
 
 ## Generated parameters
 # The yield coefficients for CO2 and product are calculatedto ensure stoichiometric
