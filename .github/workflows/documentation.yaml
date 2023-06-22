@@ -3,9 +3,6 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
     contents: write
 
-env:
-  CMDSTAN_VERSION: "2.31.0"
-
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -14,6 +11,7 @@ jobs:
       - uses: actions/setup-python@v3
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      CMDSTAN_VERSION: "2.31.0"
     steps:
       - name: Install cmdstanpy
         run: |
