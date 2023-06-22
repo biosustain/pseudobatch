@@ -3,13 +3,14 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
     contents: write
 
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  CMDSTAN_VERSION: "2.31.0"   steps:
+
+
 jobs:
   docs:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      CMDSTAN_VERSION: "2.31.0"   steps:
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
