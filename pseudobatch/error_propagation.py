@@ -91,24 +91,32 @@ def run_error_propagation(
     sample_volume: NDArray,
     prior_input: dict,
     known_quantities: Dict = KNOWN_QUANTITIES,
+    species_names: Optional[List[Union[str,int]]] = None,
 ) -> az.InferenceData:
     """Run the error propagation analysis, returning and InferenceData object.
 
     Parameters
     ----------
-    measured_concentration : NDArray
 
-    reactor_volume : NDArray
+    measured_concentration : The measured concentrations. Note that this can be
+    a 2d array.
 
-    accumulated_feed : NDArray
+    reactor_volume : Array of reactor volume measurements.
 
-    concentration_in_feed : Union[NDArray, float]
+    accumulated_feed : Array of accumulated feed measurements.
 
-    sample_volume : NDArray
+    concentration_in_feed : Union[NDArray, float] Optional array for feed
+    concentration measurements. If provided the array should contain only one
+    number.
 
-    prior_input : PriorInput
+    sample_volume : Array of sample volume measurements.
 
-    known_quantities : Dict
+    prior_input : Dictionary that can be used to load a PriorInput object.
+
+    known_quantities : Dictionary of known quantities.
+
+    species_names: Optional List of species names. Must match the number of
+    species with measured concentration.
 
     Returns
     -------
@@ -150,9 +158,21 @@ def run_error_propagation(
             pi.prior_cfeed_nonzero.scale,
         ],
     }
+    if species_names is None:
+        species_names = list(range(len(known_quantities["sigma_c"])))
+    coords = {"sample": list(range(N)), "species": species_names}
+    dims = {
+        "m": ["sample", "species"],
+        "as": ["sample"],
+        "s": ["sample"],
+        "f": ["sample"],
+        "c": ["sample", "species"],
+        "v": ["sample"],
+        "pseudobatch_c": ["sample", "species"]
+    }
     data_prior = {**data, **{"likelihood": 0}}
     data_posterior = {**data, **{"likelihood": 1}}
     model = CmdStanModel(stan_file=STAN_FILE)
     mcmc_prior = model.sample(data=data_prior, show_progress=False)
     mcmc_posterior = model.sample(data=data_posterior, show_progress=False)
-    return az.from_cmdstanpy(mcmc_posterior, prior=mcmc_prior)
+    return az.from_cmdstanpy(mcmc_posterior, prior=mcmc_prior, coords=coords, dims=dims)
