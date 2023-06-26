@@ -1,12 +1,13 @@
 from enum import Enum
 from importlib.resources import files
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import arviz as az
 import numpy as np
 
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
+from pandas.core.generic import is_number
 from pydantic import BaseModel, Field, root_validator
 
 from pseudobatch import stan
@@ -78,19 +79,22 @@ class PriorInput(BaseModel):
     prior_apump: Prior0dNormal
     prior_as: Prior0dNormal
     prior_v0: Prior0dLogNormal
-    prior_m: List[Prior0dLogNormal]
     prior_f_nonzero: Prior0dLogNormal
-    prior_cfeed_nonzero: Prior0dLogNormal
+    prior_cfeed_nonzero: Optional[Prior0dLogNormal] = None
 
 
 def run_error_propagation(
-    measured_concentration: NDArray,
-    reactor_volume: NDArray,
-    accumulated_feed: NDArray,
-    concentration_in_feed: Union[NDArray, float],
-    sample_volume: NDArray,
+    y_concentration: NDArray,
+    y_reactor_volume: NDArray,
+    y_feed_in_interval: NDArray,
+    y_sample_volume: NDArray,
+    sd_concentration: List[float],
+    sd_reactor_volume: float,
+    sd_feed_in_interval: float,
+    sd_sample_volume: float,
     prior_input: dict,
-    known_quantities: Dict = KNOWN_QUANTITIES,
+    y_concentration_in_feed: Optional[float] = None,
+    sd_concentration_in_feed: Optional[float] = None,
     species_names: Optional[List[Union[str,int]]] = None,
 ) -> az.InferenceData:
     """Run the error propagation analysis, returning and InferenceData object.
@@ -98,22 +102,30 @@ def run_error_propagation(
     Parameters
     ----------
 
-    measured_concentration : The measured concentrations. Note that this can be
+    y_concentration : The measured concentrations. Note that this should be
     a 2d array.
 
-    reactor_volume : Array of reactor volume measurements.
+    y_reactor_volume : Array of reactor volume measurements.
 
-    accumulated_feed : Array of accumulated feed measurements.
+    y_feed_in_interval : Array of accumulated feed measurements.
 
-    concentration_in_feed : Union[NDArray, float] Optional array for feed
-    concentration measurements. If provided the array should contain only one
-    number.
+    y_sample_volume : Array of sample volume measurements.
 
-    sample_volume : Array of sample volume measurements.
+    sd_concentration : List of concentration measurement errors.
+
+    sd_reactor_volume : Reactor volume measurement error.
+
+    sd_feed_in_interval : Feed in interval measurement_error.
+
+    sd_sample_volume : Sample volume measurement error.
 
     prior_input : Dictionary that can be used to load a PriorInput object.
 
-    known_quantities : Dictionary of known quantities.
+    y_concentration_in_feed : Optional single numerical measurement of feed
+    concentration.
+
+    sd_concentration_in_feed : Optional error for feed
+    concentration measurements. 
 
     species_names: Optional List of species names. Must match the number of
     species with measured concentration.
@@ -123,43 +135,50 @@ def run_error_propagation(
     az.InferenceData
 
     """
-    N, S = measured_concentration.shape
+    N, S = y_concentration.shape
     pi = PriorInput.parse_obj(prior_input)
-    try:
-        concentration_in_feed = float(concentration_in_feed)
-    except TypeError as e:
-        raise ValueError(
-            "Error propagation currently only supports a single feed concentration:"
-            " please make sure this input is a float not an NDArray."
+    if y_concentration_in_feed is not None:
+        assert sd_concentration_in_feed is not None, (
+            "sd_concentration_in_feed can only be None "
+            "if y_concentration_in_feed is also None."
         )
-    interval_feed = np.concatenate(
-        [np.array([accumulated_feed[0]]), np.diff(accumulated_feed)]
-    )
+        assert pi.prior_cfeed_nonzero is not None, (
+            "prior_cfeed_nonzero can only be None "
+            "if y_concentration_in_feed is also None."
+        )
+    else:
+        y_concentration_in_feed = 0.
+        sd_concentration_in_feed = 1.
+    if pi.prior_cfeed_nonzero is None:
+        prior_cfeed_nonzero = Prior0dLogNormal(loc=0, scale=1)
+    else:
+        prior_cfeed_nonzero = pi.prior_cfeed_nonzero
+    prior_m = [Prior0dLogNormal(pct1=1e-9, pct99=1e9) for _ in range(S)]
     data = {
         "N": N,
         "S": S,
-        "y_v": reactor_volume,
-        "y_c": measured_concentration,
-        "y_s": sample_volume,
-        "y_f": interval_feed,
-        "y_cfeed": concentration_in_feed,
-        "sigma_v": known_quantities["sigma_v"],
-        "sigma_c": known_quantities["sigma_c"],
-        "sigma_s": known_quantities["sigma_s"],
-        "sigma_f": known_quantities["sigma_f"],
-        "sigma_cfeed": known_quantities["sigma_cfeed"],
+        "y_v": y_reactor_volume,
+        "y_c": y_concentration,
+        "y_s": y_sample_volume,
+        "y_f": y_feed_in_interval,
+        "y_cfeed": y_concentration_in_feed,
+        "sigma_v": sd_reactor_volume,
+        "sigma_c": sd_concentration,
+        "sigma_s": sd_sample_volume,
+        "sigma_f": sd_feed_in_interval,
+        "sigma_cfeed": sd_concentration_in_feed,
         "prior_apump": [pi.prior_apump.loc, pi.prior_apump.scale],
         "prior_as": [pi.prior_as.loc, pi.prior_as.scale],
         "prior_v0": [pi.prior_v0.loc, pi.prior_v0.scale],
-        "prior_m": [[p.loc for p in pi.prior_m], [p.scale for p in pi.prior_m]],
+        "prior_m": [[p.loc for p in prior_m], [p.scale for p in prior_m]],
         "prior_f_nonzero": [pi.prior_f_nonzero.loc, pi.prior_f_nonzero.scale],
         "prior_cfeed_nonzero": [
-            pi.prior_cfeed_nonzero.loc,
-            pi.prior_cfeed_nonzero.scale,
+            prior_cfeed_nonzero.loc,
+            prior_cfeed_nonzero.scale,
         ],
     }
     if species_names is None:
-        species_names = list(range(len(known_quantities["sigma_c"])))
+        species_names = list(range(S))
     coords = {"sample": list(range(N)), "species": species_names}
     dims = {
         "m": ["sample", "species"],
