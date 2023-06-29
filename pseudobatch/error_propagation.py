@@ -1,13 +1,11 @@
 from enum import Enum
 from importlib.resources import files
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 import arviz as az
-import numpy as np
 
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
-from pandas.core.generic import is_number
 from pydantic import BaseModel, Field, root_validator
 
 from pseudobatch import stan
@@ -16,13 +14,6 @@ from pseudobatch.util import (
     get_normal_params_from_quantiles,
 )
 
-KNOWN_QUANTITIES = {
-    "sigma_v": 0.05,
-    "sigma_c": [0.05] * 3,
-    "sigma_f": 0.05,
-    "sigma_s": 0.05,
-    "sigma_cfeed": 0.05,
-}
 STAN_FILE = files(stan).joinpath("error_propagation.stan")
 
 
@@ -80,7 +71,7 @@ class PriorInput(BaseModel):
     prior_as: Prior0dNormal
     prior_v0: Prior0dLogNormal
     prior_f_nonzero: Prior0dLogNormal
-    prior_cfeed_nonzero: Optional[Prior0dLogNormal] = None
+    prior_cfeed: Optional[List[Prior0dLogNormal]] = None
 
 
 def run_error_propagation(
@@ -88,13 +79,13 @@ def run_error_propagation(
     y_reactor_volume: NDArray,
     y_feed_in_interval: NDArray,
     y_sample_volume: NDArray,
+    y_concentration_in_feed: NDArray,
     sd_concentration: List[float],
     sd_reactor_volume: float,
     sd_feed_in_interval: float,
+    sd_concentration_in_feed: float,
     sd_sample_volume: float,
     prior_input: dict,
-    y_concentration_in_feed: Optional[float] = None,
-    sd_concentration_in_feed: Optional[float] = None,
     species_names: Optional[List[Union[str,int]]] = None,
 ) -> az.InferenceData:
     """Run the error propagation analysis, returning and InferenceData object.
@@ -111,6 +102,9 @@ def run_error_propagation(
 
     y_sample_volume : Array of sample volume measurements.
 
+    y_concentration_in_feed : Array of species concentrations in the feed, one
+    per species.
+
     sd_concentration : List of concentration measurement errors.
 
     sd_reactor_volume : Reactor volume measurement error.
@@ -119,13 +113,9 @@ def run_error_propagation(
 
     sd_sample_volume : Sample volume measurement error.
 
+    sd_concentration_in_feed : Error for concentration in feed measurements. 
+
     prior_input : Dictionary that can be used to load a PriorInput object.
-
-    y_concentration_in_feed : Optional single numerical measurement of feed
-    concentration.
-
-    sd_concentration_in_feed : Optional error for feed
-    concentration measurements. 
 
     species_names: Optional List of species names. Must match the number of
     species with measured concentration.
@@ -137,22 +127,18 @@ def run_error_propagation(
     """
     N, S = y_concentration.shape
     pi = PriorInput.parse_obj(prior_input)
-    if y_concentration_in_feed is not None:
-        assert sd_concentration_in_feed is not None, (
-            "sd_concentration_in_feed can only be None "
-            "if y_concentration_in_feed is also None."
+    if pi.prior_cfeed is None:
+        msg = (
+            "If y_concentration_in_feed has non-zero elements, "
+            "then prior_cfeed must not be None."
         )
-        assert pi.prior_cfeed_nonzero is not None, (
-            "prior_cfeed_nonzero can only be None "
-            "if y_concentration_in_feed is also None."
-        )
+        assert all(y == 0 for y in y_concentration_in_feed), msg
+        prior_cfeed = [[0. for _ in range(S)], [1. for _ in range(S)]]
     else:
-        y_concentration_in_feed = 0.
-        sd_concentration_in_feed = 1.
-    if pi.prior_cfeed_nonzero is None:
-        prior_cfeed_nonzero = Prior0dLogNormal(loc=0, scale=1)
-    else:
-        prior_cfeed_nonzero = pi.prior_cfeed_nonzero
+        prior_cfeed = [
+            [p.loc for p in pi.prior_cfeed], 
+            [p.scale for p in pi.prior_cfeed]
+        ]
     prior_m = [Prior0dLogNormal(pct1=1e-9, pct99=1e9) for _ in range(S)]
     data = {
         "N": N,
@@ -172,10 +158,7 @@ def run_error_propagation(
         "prior_v0": [pi.prior_v0.loc, pi.prior_v0.scale],
         "prior_m": [[p.loc for p in prior_m], [p.scale for p in prior_m]],
         "prior_f_nonzero": [pi.prior_f_nonzero.loc, pi.prior_f_nonzero.scale],
-        "prior_cfeed_nonzero": [
-            prior_cfeed_nonzero.loc,
-            prior_cfeed_nonzero.scale,
-        ],
+        "prior_cfeed": prior_cfeed,
     }
     if species_names is None:
         species_names = list(range(S))
@@ -187,6 +170,7 @@ def run_error_propagation(
         "f": ["sample"],
         "c": ["sample", "species"],
         "v": ["sample"],
+        "cfeed": ["species"],
         "pseudobatch_c": ["sample", "species"]
     }
     data_prior = {**data, **{"likelihood": 0}}
@@ -194,4 +178,6 @@ def run_error_propagation(
     model = CmdStanModel(stan_file=STAN_FILE)
     mcmc_prior = model.sample(data=data_prior, show_progress=False)
     mcmc_posterior = model.sample(data=data_posterior, show_progress=False)
-    return az.from_cmdstanpy(mcmc_posterior, prior=mcmc_prior, coords=coords, dims=dims)
+    return az.from_cmdstanpy(
+        mcmc_posterior, prior=mcmc_prior, coords=coords, dims=dims
+    )
