@@ -14,11 +14,11 @@ vector cumulative_product_vector(vector v){
 
 /* Function that does the pseudo-batch transformation */
 vector pseudobatch_transform(vector v,   // before sampling volumes
-                              vector s,   // sample volumes
-                              vector c,   // target concentration
-                              vector f,   // feed in previous interval
-                              real cfeed  // concentration of feed
-                              ) {
+                             vector s,   // sample volumes
+                             vector c,   // target concentration
+                             vector f,   // feed in previous interval
+                             real cfeed  // concentration of feed
+                             ) {
   // After sample reactor volume is before sample volume minus sample volume.
   vector[rows(v)] a = v - s;
   // Dilution factor is s + a divided by a shifted once (first entry filled by 1).
