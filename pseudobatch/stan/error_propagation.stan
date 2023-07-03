@@ -45,7 +45,7 @@ parameters {
   vector[N] as; // logit fraction of current volume sampled at each point
   vector<lower=0>[N_f_nonzero] f_nonzero; // amount of feed in interval prior to each point
   vector<lower=0>[N_cfeed_nonzero] cfeed_nonzero; // concentration of feed
-  real<lower=0> apump; // multiplicative factor by which the pump is biased
+  real apump; // log-scale factor by which the pump is biased
 }
 transformed parameters {
   vector[N] f;

@@ -70,7 +70,6 @@ class PriorInput(BaseModel):
     prior_apump: Prior0dNormal
     prior_as: Prior0dNormal
     prior_v0: Prior0dLogNormal
-    prior_f_nonzero: Prior0dLogNormal
     prior_cfeed: Optional[List[Prior0dLogNormal]] = None
 
 
@@ -140,6 +139,7 @@ def run_error_propagation(
             [p.scale for p in pi.prior_cfeed]
         ]
     prior_m = [Prior0dLogNormal(pct1=1e-9, pct99=1e9) for _ in range(S)]
+    prior_f = Prior0dLogNormal(pct1=1e-6, pct99=1e6)
     data = {
         "N": N,
         "S": S,
@@ -157,7 +157,7 @@ def run_error_propagation(
         "prior_as": [pi.prior_as.loc, pi.prior_as.scale],
         "prior_v0": [pi.prior_v0.loc, pi.prior_v0.scale],
         "prior_m": [[p.loc for p in prior_m], [p.scale for p in prior_m]],
-        "prior_f_nonzero": [pi.prior_f_nonzero.loc, pi.prior_f_nonzero.scale],
+        "prior_f_nonzero": [prior_f.loc, prior_f.scale],
         "prior_cfeed": prior_cfeed,
     }
     if species_names is None:
