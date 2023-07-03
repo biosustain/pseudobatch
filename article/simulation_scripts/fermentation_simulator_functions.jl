@@ -135,7 +135,7 @@ function affect_sample!(integrator)
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    # integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
     integrator.u[5] -= sample_vol
 
     integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
@@ -147,7 +147,7 @@ function affect_sample_volume_fraction!(integrator)
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    # integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
     integrator.u[5] -= sample_vol
 
     integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
@@ -160,7 +160,7 @@ function affect_sample_volume_fraction_no_log!(integrator, sample_volume_fractio
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    # integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
     integrator.u[5] -= sample_vol
 
     integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
@@ -172,7 +172,7 @@ function affect_sample_multiple_impulse_feeds!(integrator)
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    # integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
     integrator.u[5] -= sample_vol
     integrator.u[8] = remove_mass_through_sampling(integrator.u[8], integrator.u[5], sample_vol)
     
