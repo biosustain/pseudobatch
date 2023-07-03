@@ -78,7 +78,7 @@ model {
       y_c[,species_i] ~ lognormal(log(c[,species_i]), sigma_c[species_i]);
     }
     y_s[ix_s_nonzero] ~ lognormal(log(s[ix_s_nonzero]), sigma_s);
-    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero] + apump), sigma_f);
+    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero]) + apump, sigma_f);
   }
   if (N_cfeed_nonzero > 0){
     cfeed_nonzero ~ lognormal(prior_cfeed[1, ix_cfeed_nonzero],
