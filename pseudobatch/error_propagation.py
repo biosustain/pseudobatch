@@ -1,12 +1,12 @@
 from enum import Enum
 from importlib.resources import files
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 import arviz as az
 
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 
 from pseudobatch import stan
 from pseudobatch.util import (
@@ -24,22 +24,22 @@ class Distribution0d(str, Enum):
 
 class Prior0d(BaseModel):
     distribution: Distribution0d
-    loc: Optional[float] = None
-    pct1: Optional[float] = None
-    pct99: Optional[float] = None
-    scale: Optional[float] = Field(gt=0)
+    loc: Optional[float] = Field(default=None)
+    pct1: Optional[float] = Field(default=None)
+    pct99: Optional[float] = Field(default=None)
+    scale: Optional[float] = Field(default=None, gt=0)
 
-    @root_validator
-    def check_locscale_or_pcts(cls, values):
+    @model_validator(mode="after")
+    def check_locscale_or_pcts(cls, p: "Prior0d"):
         """Either loc and scale should be specified or pct1 and pct99."""
-        missing_locscale = [f for f in ["loc", "scale"] if values[f] is None]
-        missing_pcts = [f for f in ["pct1", "pct99"] if values[f] is None]
+        missing_locscale = [f for f in [p.loc, p.scale] if f is None]
+        missing_pcts = [f for f in [p.pct1, p.pct99] if f is None]
         assert len(missing_locscale) != 1, f"Missing {missing_locscale[0]}"
         assert len(missing_pcts) != 1, f"Missing {missing_pcts[0]}"
         assert not (
-            (len(missing_locscale) == 0) and (len(missing_pcts) == 0)
+            (len(missing_locscale) == 2) and (len(missing_pcts) == 2)
         ), "Prior input is all None."
-        return values
+        return p
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -59,11 +59,11 @@ class Prior0d(BaseModel):
 
 
 class Prior0dNormal(Prior0d):
-    distribution = Distribution0d.normal
+    distribution: Distribution0d = Distribution0d.normal
 
 
 class Prior0dLogNormal(Prior0d):
-    distribution = Distribution0d.lognormal
+    distribution: Distribution0d = Distribution0d.lognormal
 
 
 class PriorInput(BaseModel):
@@ -125,7 +125,7 @@ def run_error_propagation(
 
     """
     N, S = y_concentration.shape
-    pi = PriorInput.parse_obj(prior_input)
+    pi = PriorInput.model_validate(prior_input)
     if pi.prior_cfeed is None:
         msg = (
             "If y_concentration_in_feed has non-zero elements, "
