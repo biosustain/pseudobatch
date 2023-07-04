@@ -45,7 +45,7 @@ parameters {
   vector[N] as; // logit fraction of current volume sampled at each point
   vector<lower=0>[N_f_nonzero] f_nonzero; // amount of feed in interval prior to each point
   vector<lower=0>[N_cfeed_nonzero] cfeed_nonzero; // concentration of feed
-  real<lower=0> apump; // multiplicative factor by which the pump is biased
+  real apump; // log-scale factor by which the pump is biased
 }
 transformed parameters {
   vector[N] f;
@@ -78,7 +78,7 @@ model {
       y_c[,species_i] ~ lognormal(log(c[,species_i]), sigma_c[species_i]);
     }
     y_s[ix_s_nonzero] ~ lognormal(log(s[ix_s_nonzero]), sigma_s);
-    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero] + apump), sigma_f);
+    y_f[ix_f_nonzero] ~ lognormal(log(f[ix_f_nonzero]) + apump, sigma_f);
   }
   if (N_cfeed_nonzero > 0){
     cfeed_nonzero ~ lognormal(prior_cfeed[1, ix_cfeed_nonzero],

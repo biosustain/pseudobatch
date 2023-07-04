@@ -12,7 +12,6 @@ EXAMPLE_PRIOR_INPUT = {
     "prior_apump": {"pct1": np.log(1 - 0.1), "pct99": np.log(1 + 0.1)},
     "prior_as": {"pct1": logit(0.05), "pct99": logit(0.4)},
     "prior_v0": {"pct1": 1000, "pct99": 1030},  # Here is the bad bit!
-    "prior_f_nonzero": {"pct1": 10, "pct99": 1000},
     "prior_cfeed": [
         {"loc": 0, "scale": 1},
         {"pct1": 98, "pct99": 102},
