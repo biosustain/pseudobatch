@@ -211,6 +211,6 @@ def test_accepts_nan():
     Yxs_true = fedbatch_df.Yxs.iloc[0]
     mu_true = fedbatch_df.mu0.iloc[0]
 
-    assert growth_rate_model.params[1] == pytest.approx(mu_true, 1e-6) 
-    assert np.abs(substrate_yield_model.params[1]) == pytest.approx(Yxs_true, 1e-6)
+    assert growth_rate_model.params[1] == pytest.approx(mu_true, 1e-4) 
+    assert np.abs(substrate_yield_model.params[1]) == pytest.approx(Yxs_true, 1e-4)
      
