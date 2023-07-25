@@ -16,6 +16,7 @@ x0 = 0.5 # g/L
 p0 = 0. # g/L
 co2_0 = 0. # g/L
 V0 = 1000. # µL 
+kla = 1. # 1/h
 
 save_ode_timesteps = LinRange(0,60, 1000)
 

@@ -36,6 +36,15 @@ function growth_rate_two_substrates(c_s1, c_s2, mu_max1, mu_max2, Kc_s1, Kc_s2)
     return (mu_max1 * mu_max2 * c_s1 * c_s2) / ((c_s1 + Kc_s1) * (c_s2 + Kc_s2))
 end
 
+function volumetric_gas_transfer_rate(kla, aqueous_concentration, gas_concentration)
+    """
+    Implements the volumetric gas transfer rate as a function of the concentration 
+    difference between the aqueous and gas phase. This equation is obtained from
+    eq. 10.1 from Bioreaction Engineering Principples by Villadsen, et. al.
+    """
+    return kla * (aqueous_concentration - gas_concentration)
+end
+
 ############################ ODE SYSTEMS #######################################
 function fedbatch!(dudt, u, p, t)
     Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f = p      
@@ -54,10 +63,10 @@ function fedbatch!(dudt, u, p, t)
     dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
     dudt[2] = mu * u[2]
     dudt[3] = Yxp * mu * u[2]
-    dudt[4] = Yxco2 * mu * u[2]
+    dudt[4] = Yxco2 * mu * u[2] - volumetric_gas_transfer_rate(kla, u[4]/u[5], 0) * u[5]
     dudt[5] = v_feed(t, F0, mu0) # volume
     dudt[6] = v_feed(t, F0, mu0) # feed used to integrate feed_accum
-
+    dudt[7] = volumetric_gas_transfer_rate(kla, u[4]/u[5], 0) * u[5] # co2 transfer rate, 
 
     return dudt
 end
@@ -135,7 +144,7 @@ function affect_sample!(integrator)
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    # integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
     integrator.u[5] -= sample_vol
 
     integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
