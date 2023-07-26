@@ -54,9 +54,10 @@ function fedbatch!(dudt, u, p, t)
     dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
     dudt[2] = mu * u[2]
     dudt[3] = Yxp * mu * u[2]
-    dudt[4] = Yxco2 * mu * u[2]
+    dudt[4] = Yxco2 * mu * u[2] - Yxco2 * mu * u[2] # co2 production - co2 evaporation
     dudt[5] = v_feed(t, F0, mu0) # volume
     dudt[6] = v_feed(t, F0, mu0) # feed used to integrate feed_accum
+    dudt[7] = Yxco2 * mu * u[2] # all co2 evaporates immidately into off-gas analyzer
 
 
     return dudt
@@ -80,9 +81,10 @@ function fedbatch_prod_inhib!(dudt, u, p, t)
     dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
     dudt[2] = mu * u[2]
     dudt[3] = Yxp * mu * u[2]
-    dudt[4] = Yxco2 * mu * u[2]
+    dudt[4] = Yxco2 * mu * u[2] - Yxco2 * mu * u[2] # co2 production - co2 evaporation
     dudt[5] = v_feed(t, F0, mu0) # volume
     dudt[6] = v_feed(t, F0, mu0) # feed used to integrate feed_accum
+    dudt[7] = Yxco2 * mu * u[2] # all co2 evaporates immidately into off-gas analyzer
 
 
     return dudt
@@ -106,11 +108,12 @@ function fedbatch_multiple_step_feeds!(dudt, u, p, t)
     dudt[1] = -Yxs1 * mu * u[2] 
     dudt[2] = mu * u[2]
     dudt[3] = Yxp * mu * u[2]
-    dudt[4] = Yxco2 * mu * u[2]
+    dudt[4] = Yxco2 * mu * u[2] - Yxco2 * mu * u[2] # co2 production - co2 evaporation
     dudt[5] = 0 # volume is only changed through sampling or step feeds
     dudt[6] = 0 # Feed1 only changed through feeding
     dudt[7] = 0 # Feed2 only changed through feeding
     dudt[8] = -Yxs2 * mu * u[2] 
+    dudt[9] = Yxco2 * mu * u[2] # all co2 evaporates immidately into off-gas analyzer
 
 
     return dudt

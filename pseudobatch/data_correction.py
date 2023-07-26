@@ -357,3 +357,47 @@ def convert_volumetric_rates_from_pseudo_to_real(
         reactor_volume - sample_volume, sample_volume
     )
     return pseudo_volumetric_rates / adf
+
+
+def preprocess_gaseous_species(
+    accumulated_amount_of_gaseous_species: np.ndarray,
+    reactor_volume: np.ndarray,
+    sample_volume: np.ndarray
+) -> np.ndarray:
+    """Preprocess the gaseous species data to prepared it for the pseudo batch
+    transformation. NB This method assumes that the amount of species in the aqueous
+    phase is neglectable compared to the amount of species in the gas phase.
+
+    Parameters
+    ----------
+    accumulated_amount_of_gaseous_species : np.ndarray
+        Total amount of gaseous species produced or consumed in mass or mole.
+    reactor_volume : np.ndarray
+        Reactor volume BEFORE sampling.
+    sample_volume : np.ndarray
+        Sample volume.
+   
+    Returns
+    -------
+    np.ndarray
+        Hypothetical liquid concentration of gaseous species if the gas species
+        did not evaporate.
+    """
+    # Initialize an empty array to store the accumulated mass loss due to sampling.
+    accumulated_amount_loss_due_to_sampling = np.zeros_like(accumulated_amount_of_gaseous_species)
+
+    # Calculate the accumulated mass loss due to sampling.
+    for i in range(len(accumulated_amount_of_gaseous_species)):
+        if i == 0:
+            # The first element of the array is calculated differently.
+            accumulated_amount_loss_due_to_sampling[i] = accumulated_amount_of_gaseous_species[i] * sample_volume[i] / reactor_volume[i]
+        else:
+            accumulated_amount_loss_due_to_sampling[i] = (
+                (accumulated_amount_of_gaseous_species[i] - accumulated_amount_loss_due_to_sampling[i-1]) * sample_volume[i] / reactor_volume[i]
+                + accumulated_amount_loss_due_to_sampling[i-1]
+            )
+
+    # Calculate the sampling-adjusted gas concentration for each gaseous species.
+    sampling_adjusted_concentration = (accumulated_amount_of_gaseous_species - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
+    
+    return sampling_adjusted_concentration
