@@ -8,7 +8,6 @@ Kc_s2 = 1 # mg / ml from table 7.1 from Bioreaction Engineering Principples
 mu_max2 = 0.8
 Yxs2 = 0.02 # gSubstrate2/gDW 
 tspan = (0., 80.)
-save_ode_timesteps = LinRange(0,80, 1000)
 
 # Override standard sampling times
 sampling_times = collect(tspan[1]+10 : 6 : tspan[2]) # sample every 12 hour starting from hour 10
@@ -17,8 +16,8 @@ sampling_times = collect(tspan[1]+10 : 6 : tspan[2]) # sample every 12 hour star
 init_glucose = 50 # mg / ml
 init_glutamate = 1 # mg / ml
 
-s_f1 = [100, 0, 0, 0, 0, 0, 0, 1] # Feed medium 1, indexed the same as state variables, thus there are 100 mg of Glucose and 50 mg of Glutamate
-s_f2 = [0, 0, 0, 0, 0, 0, 0, 10] # Feed medium 2, indexed the same as state variables
+s_f1 = [100, 0, 0, 0, 0, 0, 0, 1, 0] # Feed medium 1, indexed the same as state variables, thus there are 100 mg of Glucose and 50 mg of Glutamate
+s_f2 = [0, 0, 0, 0, 0, 0, 0, 10, 0] # Feed medium 2, indexed the same as state variables
 feeding_times = [0, 24., 48., 72.]
 feeding_volumes1 = [100, 100, 200, 100]
 feeding_volumes2 = [5, 5., 5., 5.]
@@ -63,9 +62,11 @@ cb_feed2 = PresetTimeCallback(feeding_times, affect_feed2!, filter_tstops = true
 cbs = CallbackSet(cb_samples, cb_feed1, cb_feed2)
 
 # Setting up ODE input
-state_variable_names = [:m_Glucose, :m_Biomass, :m_Product, :m_CO2, :v_Volume, :v_Feed_accum1, :v_Feed_accum2, :m_Glutamate]
-init_cond = [init_glucose*V0, x0*V0, p0*V0, co2_0*V0, V0, 0, 0., init_glutamate*V0] # input for the model is masses not concentrations, accum feed at time zero is 0
-sample_volume_dict = Dict(zip(sampling_times, repeat([sample_volume], n_samples))) # defines timepoints and sample volumes
+# make sure that the sampling and feeding times are included in the timesteps
+save_ode_timesteps = unique(sort([feeding_times; sampling_times; LinRange(tspan[1], tspan[2], 1000)]))
+state_variable_names = [:m_Glucose, :m_Biomass, :m_Product, :m_CO2, :v_Volume, :v_Feed_accum1, :v_Feed_accum2, :m_Glutamate, :m_CO2_gas]
+init_cond = [init_glucose*V0, x0*V0, p0*V0, co2_0*V0, V0, 0, 0., init_glutamate*V0, 0.] # input for the model is masses not concentrations, accum feed at time zero is 0
+sample_volume_dict = Dict(zip(sampling_times, repeat([sample_volume], length(sampling_times)))) # defines timepoints and sample volumes
 ode_input_p = [Kc_s, Kc_s2, mu_max, mu_max2, Yxs, Yxs2, Yxp, Yxco2]
 
 ode_func = ODEFunction(fedbatch_multiple_step_feeds!, syms=state_variable_names)
@@ -76,7 +77,7 @@ sol = solve(prob, Tsit5(), callback=cbs, saveat=save_ode_timesteps, abstol = 1e-
 df = DataFrame(sol)
 for state_variable in state_variable_names
     # It is not meaningfull to calculate the concentration of the feed_accum or volume
-    if state_variable in [:v_Feed_accum, :v_Volume]
+    if state_variable in [:v_Feed_accum, :v_Volume, :m_CO2_gas]
         continue
     end
     metabolite = split(string(state_variable), "_")[2]
