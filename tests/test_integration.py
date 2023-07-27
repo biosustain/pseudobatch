@@ -10,8 +10,9 @@ import pandas as pd
 from pseudobatch.data_correction import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
+    preprocess_gaseous_species,
 )
-from pseudobatch.datasets import load_standard_fedbatch, load_cho_cell_like_fedbatch
+from pseudobatch.datasets import load_standard_fedbatch, load_product_inhibited_fedbatch, load_cho_cell_like_fedbatch
 
 
 def fit_ols_model(formula_like: str, data: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
@@ -183,4 +184,34 @@ def test_accepts_nan():
 
     assert growth_rate_model.params[1] == pytest.approx(mu_true, 1e-4) 
     assert np.abs(substrate_yield_model.params[1]) == pytest.approx(Yxs_true, 1e-4)
-     
+
+
+def test_calculation_of_gaseous_yield():
+    '''Tests that the gaseous yield can be correctly estimated using the 
+    preprocess_gaseous_species() and the pseudobatch_transform functions.'''
+    fedbatch_df = load_product_inhibited_fedbatch()
+    fedbatch_df['preprocessed_CO2'] = preprocess_gaseous_species(
+        accumulated_amount_of_gaseous_species=fedbatch_df["m_CO2_gas"].values,
+        reactor_volume=fedbatch_df['v_Volume'].values,
+        sample_volume=fedbatch_df['sample_volume'].values
+    )
+
+    # Pseudobatch transform
+    fedbatch_df[['pseudo_biomass', 'pseudo_CO2']] = pseudobatch_transform_pandas(
+        fedbatch_df,
+        ['c_Biomass', 'preprocessed_CO2'],
+        'v_Volume',
+        'v_Feed_accum',
+        [0,0],
+        'sample_volume',
+    )
+
+    # Estimate CO2 yield
+    res = fit_ols_model(
+        "pseudo_CO2 ~ pseudo_biomass",
+        fedbatch_df
+    )
+
+    Yxco2_true = fedbatch_df.Yxco2.iloc[0]
+
+    assert res.params[1] == pytest.approx(Yxco2_true, 1e-6)

@@ -21,7 +21,6 @@ In the following figure, a simulated exponential fed-batch process of substrate 
 
    install
    Tutorials/index
-   FAQ
    api
    
 Indices and tables

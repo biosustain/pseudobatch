@@ -13,3 +13,5 @@ Here you will find tutorials for how to use the pseudobatch transformation.
    5 - Importing data from Excel template
    6 - Real data example: Yeast Biolector Fermentation
    7 - Pseudobatch transformation with uncertainties
+   8 - Special cases gaseous species
+   9 - Special case non-feed additions
