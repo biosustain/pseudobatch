@@ -1,3 +1,7 @@
+# This file setups, and runs the ODE systems for the CHO cell like fedbatch 
+# process simulation. Finally, some simple data processing is carried out to format 
+# the data into a self containing .csv file.
+
 using OrdinaryDiffEq, DiffEqCallbacks, CSV, DataFrames
 include("fermentation_simulator_functions.jl")
 include("fermentation_utils_functions.jl")
@@ -24,6 +28,9 @@ feeding_volumes2 = [5, 5., 5., 5.]
 feeding_dict1 = Dict(zip(feeding_times, feeding_volumes1))
 feeding_dict2 = Dict(zip(feeding_times, feeding_volumes2))
 
+"""
+Event handler function that simulates step feed addtion to the ODE system.
+"""
 function affect_add_feed!(integrator, feed_state_variable_idx::Int, feeding_dict::Dict, feed_concentrations::Array)
     volume = feeding_dict[integrator.t]
     
@@ -36,10 +43,11 @@ function affect_add_feed!(integrator, feed_state_variable_idx::Int, feeding_dict
     return 
 end
 
-
+# Create affect functions for each feed
 affect_feed1!(integrator) = affect_add_feed!(integrator, 6, feeding_dict1, s_f1)
 affect_feed2!(integrator) = affect_add_feed!(integrator, 7, feeding_dict2, s_f2)
 
+# Setup callback, when the execute the affects
 cb_samples = PresetTimeCallback(sampling_times, affect_sample_multiple_impulse_feeds!, filter_tstops = true) # creates new sampling callback
 cb_feed1 = PresetTimeCallback(feeding_times, affect_feed1!, filter_tstops = true) # creates new sampling callback
 cb_feed2 = PresetTimeCallback(feeding_times, affect_feed2!, filter_tstops = true) # creates new sampling callback

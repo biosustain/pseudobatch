@@ -1,3 +1,6 @@
+# This file setups, and runs the ODE systems for the standard exponential fedbatch 
+# process simulation. Finally, some simple data processing is carried out to format 
+# the data into a self containing .csv file.
 using OrdinaryDiffEq, DiffEqCallbacks, CSV, DataFrames
 include("fermentation_simulator_functions.jl")
 include("fermentation_utils_functions.jl")
