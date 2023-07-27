@@ -1,14 +1,30 @@
+# This file contains all the functions used to simulate the fed-batch fermentations.
+# Thus here the ODE systems, utility functions and event handling functions are defined.
+
 ############################## UNITILITY FUNCTIONS ###########################
+
+"""
+Calcualtes the initial feeding rate to achive a constants growth rate.
+This equation is obtained from eq. 9.53 from Bioreaction Engineering Principples by Villadsen, et. al.
+"""
 function calc_F0(Yxs, x0, V0, mu0, s_f, s0)
     F0 = (Yxs * x0 * V0 * mu0 / (s_f - s0))
     return F0
 end
 
-v_feed(t, F0, mu0) = F0 * exp(mu0*t)
-integral_of_v_feed(t, F0, mu0) = F0 * exp(mu0*t) / mu0
+"""
+Calculates feeding rate at any give time point of a exponential feed profile.
+This equation is obtained from eq. 9.53 from Bioreaction Engineering Principples by Villadsen, et. al.
+"""
+function v_feed(t, F0, mu0) 
+    return F0 * exp(mu0*t)
+end
 
-V(t, V0, F0, mu0) = V0 + integral_of_v_feed(t, F0, mu0) - integral_of_v_feed(0, F0, mu0)
 
+"""
+Monods equation for growth rate as a function of substrate concentration.
+This equation is obtained from eq. 7.16 from Bioreaction Engineering Principples by Villadsen, et. al.
+"""
 function monod_kinetics(c_s, mu_max, Kc_s)
     if c_s < 0
         return 0
@@ -16,20 +32,32 @@ function monod_kinetics(c_s, mu_max, Kc_s)
     return mu_max * c_s / (c_s + Kc_s)
 end
 
+
+"""
+Calculates the substrate concentration required to achieve a certain growth rate.
+The equation is obtained via isolating c_s from the monod kinetics equation 
+(eq. 7.16 in Bioreaction Engineering Principples by Villadsen, et. al.).
+"""
 function monod_ss_substrate_conc(mu, mu_max, Kc_s)
     # Calcualtes the substrate concentration required to achieve a certain growth rate
     return (mu * Kc_s) / (mu_max - mu)
 end
 
-monod_with_product_inhibition = function(c_s, c_p, mu_max, Kc_s, Ki_p)
+
+"""
+Calculated the growth rate with product inhibition. This equation is obtained
+from eq. 7.19 from Bioreaction Engineering Principples by Villadsen, et. al.
+"""
+function monod_with_product_inhibition(c_s, c_p, mu_max, Kc_s, Ki_p)
     return mu_max * (c_s / (c_s + Kc_s)) * (1 + (c_p/Ki_p))^(-1)
 end
 
+
+"""
+Implements the growth rate as funciton of two substrates concentrations. This 
+equation is obtained eq. 7.22 from Bioreaction Engineering Principples by Villadsen, et. al.
+"""
 function growth_rate_two_substrates(c_s1, c_s2, mu_max1, mu_max2, Kc_s1, Kc_s2)
-    """
-    Implements the growth rate as funciton of two substrates concentrations. This 
-    equation is obtained eq. 7.22 from Bioreaction Engineering Principples by Villadsen, et. al.
-    """
     if c_s1 < 0 || c_s2 < 0
         return 0
     end 
@@ -37,18 +65,27 @@ function growth_rate_two_substrates(c_s1, c_s2, mu_max1, mu_max2, Kc_s1, Kc_s2)
 end
 
 ############################ ODE SYSTEMS #######################################
+"""
+Defines the ODE system for a fed-batch fermentation operated with an exponential
+feed profile. The growth of the microorganism is modelled through monods equation.
+
+The system holds 7 state variables with are defined as follows:
+    dudt[1] : mass of substrate in the liquid
+    dudt[2] : mass of biomass in the liquid
+    dudt[3] : mass of product in the liquid
+    dudt[4] : mass of co2 in liquid
+    dudt[5] : volume of liquid
+    dudt[6] : feeding rate
+    dudt[7] : mass of co2 in off-gas
+
+The systems is build under the assumption that the CO2 evaporates instantly
+after production.
+"""
 function fedbatch!(dudt, u, p, t)
     Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f = p      
 
-    # Refacotring ideas 
-    ### reorganise dudt, so generic ones are first, e.g. volume and feed
-
-    # sV = u[1] moles susbtrate
-    # xV = u[2]
-    # pV = u[3]
-
     # Growth kinetics consider moving this as a seperate function
-    c_s = u[1]/u[5]  #V(t, V0, F0, mu0) # calculating concentration
+    c_s = u[1]/u[5] 
     mu = monod_kinetics(c_s, mu_max, Kc_s)
 
     dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
@@ -63,18 +100,28 @@ function fedbatch!(dudt, u, p, t)
     return dudt
 end
 
+"""
+Defines the ODE system for a fed-batch fermentation operated with an exponential
+feed profile. The growth of the microorganism is modelled through monods equation 
+with product inhibition.
+
+The system holds 7 state variables with are defined as follows:
+    dudt[1] : mass of substrate in the liquid
+    dudt[2] : mass of biomass in the liquid
+    dudt[3] : mass of product in the liquid
+    dudt[4] : mass of co2 in liquid
+    dudt[5] : volume of liquid
+    dudt[6] : feeding rate
+    dudt[7] : mass of co2 in off-gas
+
+The systems is build under the assumption that the CO2 evaporates instantly
+after production.
+"""
 function fedbatch_prod_inhib!(dudt, u, p, t)
     Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f, Ki_p = p      
-
-    # Refacotring ideas 
-    ### reorganise dudt, so generic ones are first, e.g. volume and feed
-
-    # sV = u[1] moles susbtrate
-    # xV = u[2]
-    # pV = u[3]
-
+    
     # Growth kinetics consider moving this as a seperate function
-    c_s = u[1]/u[5]  #V(t, V0, F0, mu0) # calculating concentration
+    c_s = u[1]/u[5]  
     c_p = u[3]/u[5]
     mu = monod_with_product_inhibition(c_s, c_p, mu_max, Kc_s, Ki_p)
 
@@ -90,18 +137,33 @@ function fedbatch_prod_inhib!(dudt, u, p, t)
     return dudt
 end
 
+"""
+Defines the ODE system for a fed-batch fermentation operated step feed (e.g. manually 
+pipeting a certain volume into the reactor). The growth of the microorganism is modelled 
+through monods equation with two limiting substrates. This system models a fermentation 
+of e.g. Chinese hamster ovary cells (CHO cells) which are grown on a mixture of glucose
+and glutamine. Furthermore the system utilises two different feed mediums which can be 
+added independently of each other.
+
+The system holds 9 state variables with are defined as follows:
+    dudt[1] : mass of substrate in the liquid
+    dudt[2] : mass of biomass in the liquid
+    dudt[3] : mass of product in the liquid
+    dudt[4] : mass of co2 in liquid
+    dudt[5] : volume of liquid
+    dudt[6] : feeding rate of feed1
+    dudt[7] : feeding rate feed2
+    dudt[8] : mass of substrate2 in the liquid
+    dudt[9] : mass of co2 in off-gas
+
+The systems is build under the assumption that the CO2 evaporates instantly
+after production.
+"""
 function fedbatch_multiple_step_feeds!(dudt, u, p, t)
     Kc_s1, Kc_s2, mu_max1, mu_max2, Yxs1, Yxs2, Yxp, Yxco2 = p      
 
-    # Refacotring ideas 
-    ### reorganise dudt, so generic ones are first, e.g. volume and feed
-
-    # sV = u[1] moles susbtrate
-    # xV = u[2]
-    # pV = u[3]
-
     # Growth kinetics consider moving this as a seperate function
-    c_s1 = u[1]/u[5]  #V(t, V0, F0, mu0) # calculating concentration
+    c_s1 = u[1]/u[5]  # calculating concentration
     c_s2 = u[8]/u[5]
     mu = growth_rate_two_substrates(c_s1, c_s2, mu_max1, mu_max2, Kc_s1, Kc_s2)
 
@@ -120,19 +182,21 @@ function fedbatch_multiple_step_feeds!(dudt, u, p, t)
 end
 
 ############################# EVENT HANDLING / CALLBACKS #####################
-function condition_sampling_time(sampling_times)
-    # function that sets conditions which triggers the event
-    return condition(u,t,integrator) = t ∈ sampling_times
-end
-
+"""
+Calculates the amount of mass removed when a give volume is sampled from the
+fermenter.
+"""
 function remove_mass_through_sampling(mass_state_variable, volume_state_variable, sample_volume)
     return mass_state_variable - (mass_state_variable / volume_state_variable) * sample_volume
 end
 
-function sample_volume_from_volume_fraction(volume_state_variable, sample_volume_fraction)
-    return volume_state_variable * sample_volume_fraction
-end
+"""
+Defines an event handling function which that modifies the state variables when the event is 
+triggered. This function is used to simulate the sampling of the fermenter. Removes mass from
+the fermenter and adjusts the feed rate to account for the removed biomass.
 
+The adjustment of the feed ensures that growth rate is kept constant throughout the fermentation.
+"""
 function affect_sample!(integrator)
     sample_vol = sample_volume_dict[integrator.t]
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
@@ -145,31 +209,12 @@ function affect_sample!(integrator)
     
 end
 
-function affect_sample_volume_fraction!(integrator)
-    sample_vol = sample_volume_from_volume_fraction(integrator.u[5], sample_volume_fraction) # calculates the sample volume to constantly sample the same volume fraction
-    integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
-    integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
-    integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
-    integrator.u[5] -= sample_vol
-
-    integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
-
-    sample_volume_dict[integrator.t] = sample_vol # logs the sample volume and time
-end
-
-function affect_sample_volume_fraction_no_log!(integrator, sample_volume_fraction)
-    sample_vol = sample_volume_from_volume_fraction(integrator.u[5], sample_volume_fraction) # calculates the sample volume to constantly sample the same volume fraction
-    integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
-    integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
-    integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
-    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
-    integrator.u[5] -= sample_vol
-
-    integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
-
-end
-
+"""
+Defines an event handling function which that modifies the state variables when the event is
+triggered. This function is used to simulate the sampling of the fermenter. Removes mass from
+the fermenter. This does not adjust the feeding rate because the feeding is predetermined 
+volume additions at certain time points and not attempting a reach a specific growth rate.
+"""
 function affect_sample_multiple_impulse_feeds!(integrator)
     sample_vol = sample_volume_dict[integrator.t]
     integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)

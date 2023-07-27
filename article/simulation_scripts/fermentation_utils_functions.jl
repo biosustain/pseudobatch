@@ -1,7 +1,10 @@
-calculate_co2_yield_gg = function(Yxp, Yxs, MW_x, MW_s, MW_p, MW_co2)
-    #C alculates the yield coefficient of CO2 assuming the carbon which isn't used for either product or biomass is turned into CO2. 
-    # Furthermore the number of carbons in the molecules (biomass, substrate, product and CO2) is currently hard coded.
-    
+# This file contains utility functions that is used during the simulation 
+# of fedbatch processes.
+"""
+Calculates the yield coefficient of CO2 assuming the carbon which isn't used for either product or biomass is turned into CO2. 
+Furthermore the number of carbons in the molecules (biomass, substrate, product and CO2) is currently hard coded.
+"""
+function calculate_co2_yield_gg(Yxp, Yxs, MW_x, MW_s, MW_p, MW_co2)
     # solve carbon balance to set theoretical CO2 yield
     ## we need the yield coef's in substrate basis
     Ysp = Yxp/Yxs
@@ -26,13 +29,17 @@ calculate_co2_yield_gg = function(Yxp, Yxs, MW_x, MW_s, MW_p, MW_co2)
     return Yxco2
 end
 
+"""
+Convert a yield coefficient of the form Y_{g2/g1} to the equivalent yield coefficient in cmol/cmol
+"""
 function gg_to_cmolcmol(yield_coef, MW1, MW2, n_c1, n_c2)
-    # Convert a yield coefficient of the form Y_{g2/g1} to the equivalent yield coefficient in cmol/cmol
     return yield_coef * (MW1/MW2) * (n_c1/n_c2)
 end
 
+"""
+Convert a yield coefficient of the form Y_{cmol2/cmol1} to the equivalent yield coefficient in g/g
+"""
 function cmolcmol_to_gg(yield_coef, MW1, MW2, n_c1, n_c2)
-    # Convert a yield coefficient of the form Y_{cmol2/cmol1} to the equivalent yield coefficient in g/g
     return yield_coef * (MW2/MW1) * (n_c2/n_c1)
 end
 
