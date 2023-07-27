@@ -5,7 +5,7 @@ import pandas as pd
 from scipy.special import logit
 
 from pseudobatch import run_error_propagation
-from pseudobatch.datasets import data
+from pseudobatch.datasets import load_standard_fedbatch
 
 
 EXAMPLE_PRIOR_INPUT = {
@@ -21,12 +21,10 @@ EXAMPLE_PRIOR_INPUT = {
 
 
 def test_error_propagation():
-    data_path = files(data).joinpath("standard_fed-batch_process.csv")
+    
     species = ["Product", "Glucose", "Biomass"]
     samples = (
-        pd.read_csv(str(data_path), index_col=0)
-        .dropna(subset=["sample_volume"])
-        .drop_duplicates(subset=["timestamp"], keep="first")
+        load_standard_fedbatch(sampling_points_only=True)
         .assign(
             v_feed_interval=lambda df: (
                 df["v_Feed_accum"] - df["v_Feed_accum"].shift(1)
