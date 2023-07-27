@@ -40,21 +40,6 @@ end
 affect_feed1!(integrator) = affect_add_feed!(integrator, 6, feeding_dict1, s_f1)
 affect_feed2!(integrator) = affect_add_feed!(integrator, 7, feeding_dict2, s_f2)
 
-# function add_feed!(integrator, v::Tuple, feed_concentrations::Dict)::Function
-#     integrator.u[6] += v[1] + v[2]
-#     for (idx, conc) in feed_concentrations
-#         integrator.u[idx] += v[1] * conc[1]
-#         integrator.u[idx] += v[2] * conc[2]
-#     end
-# end
-
-# cb_list = []
-# for i in eachindex(feeding_times)
-#     timepoint = feeding_times[i]
-#     add_feed_affect!(integrator) = add_feed!(integrator, feeding_volumes[i], conc_in_feeds)
-#     cb = [PresetTimeCallback([timepoint], add_feed_affect!, filter_tstops = true)]
-#     append!(cb_list, cb)
-# end
 cb_samples = PresetTimeCallback(sampling_times, affect_sample_multiple_impulse_feeds!, filter_tstops = true) # creates new sampling callback
 cb_feed1 = PresetTimeCallback(feeding_times, affect_feed1!, filter_tstops = true) # creates new sampling callback
 cb_feed2 = PresetTimeCallback(feeding_times, affect_feed2!, filter_tstops = true) # creates new sampling callback

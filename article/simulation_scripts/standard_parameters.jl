@@ -21,7 +21,6 @@ save_ode_timesteps = LinRange(0,60, 1000)
 
 ## Varied parameters
 Yxs = 1.85 # gGLC/gDW from Table 7.3 in Bioreaction Engineering principples
-#Yxp = 0.1 # gET/gDW An abitrary product of 8 carbon atoms
 product_yield_frac = 0.4
 mu0 = 0.1
 mu_max = 0.3
