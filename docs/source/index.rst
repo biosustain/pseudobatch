@@ -20,6 +20,7 @@ In the following figure, a simulated exponential fed-batch process of substrate 
    :caption: Contents:
 
    install
+   Quick start
    Tutorials/index
    api
    
