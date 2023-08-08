@@ -22,7 +22,7 @@ init_glutamate = 1 # mg / ml
 
 s_f1 = [100, 0, 0, 0, 0, 0, 0, 1, 0] # Feed medium 1, indexed the same as state variables, thus there are 100 mg of Glucose and 50 mg of Glutamine
 s_f2 = [0, 0, 0, 0, 0, 0, 0, 10, 0] # Feed medium 2, indexed the same as state variables
-feeding_times = sampling_times
+feeding_times = sampling_times .+ 0.1 # Add 0.1 to avoid feeding at the same time as sampling
 feeding_volumes1 = repeat([100], length(feeding_times))
 feeding_volumes2 = repeat([5], length(feeding_times))
 feeding_dict1 = Dict(zip(feeding_times, feeding_volumes1))
