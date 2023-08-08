@@ -242,7 +242,7 @@ function fedbatch_prod_inhib_volatile!(dudt, u, p, t)
     dudt[8] = evaporation_rate(u[3], evaporation_rate_product) # product evaporation
     dudt[9] = O2_flow_rate_in # O2 flow rate into the reactor
     dudt[10] = u[5] * volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla) - Yxo2 * mu * u[2] # O2 liquid concentration
-    dudt[11] = u[5] * volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla) # O2 that flows into the off-gas analyzer
+    dudt[11] = O2_flow_rate_in - u[5] * volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla) # O2 that flows into the off-gas analyzer
 
 
     return dudt
@@ -302,8 +302,11 @@ function affect_sample_volatile_compounds!(integrator)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
     integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
-    integrator.u[5] -= sample_vol
     integrator.u[10] = remove_mass_through_sampling(integrator.u[10], integrator.u[5], sample_vol)
+
+    # NB it is important to adjust the volume after the mass is removed. Otherwise the removed
+    # mass will be calculated incorrectly using the volume after sampling.
+    integrator.u[5] -= sample_vol
 
     integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
     
