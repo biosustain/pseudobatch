@@ -20,11 +20,11 @@ sampling_times = collect(tspan[1]+10 : 6 : tspan[2]) # sample every 12 hour star
 init_glucose = 50 # mg / ml
 init_glutamate = 1 # mg / ml
 
-s_f1 = [100, 0, 0, 0, 0, 0, 0, 1, 0] # Feed medium 1, indexed the same as state variables, thus there are 100 mg of Glucose and 50 mg of Glutamate
+s_f1 = [100, 0, 0, 0, 0, 0, 0, 1, 0] # Feed medium 1, indexed the same as state variables, thus there are 100 mg of Glucose and 50 mg of Glutamine
 s_f2 = [0, 0, 0, 0, 0, 0, 0, 10, 0] # Feed medium 2, indexed the same as state variables
-feeding_times = [0, 24., 48., 72.]
-feeding_volumes1 = [100, 100, 200, 100]
-feeding_volumes2 = [5, 5., 5., 5.]
+feeding_times = sampling_times
+feeding_volumes1 = repeat([100], length(feeding_times))
+feeding_volumes2 = repeat([5], length(feeding_times))
 feeding_dict1 = Dict(zip(feeding_times, feeding_volumes1))
 feeding_dict2 = Dict(zip(feeding_times, feeding_volumes2))
 
@@ -57,7 +57,7 @@ cbs = CallbackSet(cb_samples, cb_feed1, cb_feed2)
 # Setting up ODE input
 # make sure that the sampling and feeding times are included in the timesteps
 save_ode_timesteps = unique(sort([feeding_times; sampling_times; LinRange(tspan[1], tspan[2], 1000)]))
-state_variable_names = [:m_Glucose, :m_Biomass, :m_Product, :m_CO2, :v_Volume, :v_Feed_accum1, :v_Feed_accum2, :m_Glutamate, :m_CO2_gas]
+state_variable_names = [:m_Glucose, :m_Biomass, :m_Product, :m_CO2, :v_Volume, :v_Feed_accum1, :v_Feed_accum2, :m_Glutamine, :m_CO2_gas]
 init_cond = [init_glucose*V0, x0*V0, p0*V0, co2_0*V0, V0, 0, 0., init_glutamate*V0, 0.] # input for the model is masses not concentrations, accum feed at time zero is 0
 sample_volume_dict = Dict(zip(sampling_times, repeat([sample_volume], length(sampling_times)))) # defines timepoints and sample volumes
 ode_input_p = [Kc_s, Kc_s2, mu_max, mu_max2, Yxs, Yxs2, Yxp, Yxco2]
@@ -94,7 +94,7 @@ for idx in eachindex(state_variable_names)
     end
 end
 # adding the true growth rate
-transform!(df, [:c_Glucose, :c_Glutamate] => ByRow((c_s1, c_s2) -> growth_rate_two_substrates(c_s1, c_s2, mu_max, mu_max2, Kc_s, Kc_s2)) => :mu_true)
+transform!(df, [:c_Glucose, :c_Glutamine] => ByRow((c_s1, c_s2) -> growth_rate_two_substrates(c_s1, c_s2, mu_max, mu_max2, Kc_s, Kc_s2)) => :mu_true)
 
 # adding sampling information
 insertcols!(df, 1, "sample_volume" => NaN)
