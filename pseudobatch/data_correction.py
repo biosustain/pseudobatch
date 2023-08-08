@@ -360,18 +360,26 @@ def convert_volumetric_rates_from_pseudo_to_real(
 
 
 def preprocess_gaseous_species(
-    accumulated_amount_of_gaseous_species: np.ndarray,
+    accumulated_gas_amount: np.ndarray,
+    liquid_concentration: np.ndarray,
     reactor_volume: np.ndarray,
     sample_volume: np.ndarray
 ) -> np.ndarray:
-    """Preprocess the gaseous species data to prepared it for the pseudo batch
-    transformation. NB This method assumes that the amount of species in the aqueous
-    phase is neglectable compared to the amount of species in the gas phase.
+    """Preprocess the gaseous/volatile species data to prepare it for the pseudo batch
+    transformation. The functions calculates the hypothetical liquid concentration
+    of the gaseous species if the gas species did not evaporate. This is done by
+    first calculating the hypothetical concentration of evaporated species including 
+    losses due to sampling. Then the function adds the hypothetical concentration of
+    evaporated species to the measured concentration of the gaseous species to get
+    the preprocessed concentration data.
 
     Parameters
     ----------
-    accumulated_amount_of_gaseous_species : np.ndarray
-        Total amount of gaseous species produced or consumed in mass or mole.
+    accumulated_gas_amount : np.ndarray
+        Total amount of gaseous species produced or consumed in mass or mole, 
+        typicaly calculated through inlets - outlets.
+    liquid_concentration : np.ndarray
+        Measured or estimated concentration of species in the liquid phase.
     reactor_volume : np.ndarray
         Reactor volume BEFORE sampling.
     sample_volume : np.ndarray
@@ -382,22 +390,28 @@ def preprocess_gaseous_species(
     np.ndarray
         Hypothetical liquid concentration of gaseous species if the gas species
         did not evaporate.
+
+    Notes
+    -----
+    For highly volatile species, such as CO2 and O2, the measured concentration
+    in the liquid phase can be assumed to be zero. 
     """
     # Initialize an empty array to store the accumulated mass loss due to sampling.
-    accumulated_amount_loss_due_to_sampling = np.zeros_like(accumulated_amount_of_gaseous_species)
+    accumulated_amount_loss_due_to_sampling = np.zeros_like(accumulated_gas_amount)
 
-    # Calculate the accumulated mass loss due to sampling.
-    for i in range(len(accumulated_amount_of_gaseous_species)):
+    # Calculate the accumulated mass loss due to sampling of the hypothetically 
+    # dissolved gaseous molecules.
+    for i in range(len(accumulated_gas_amount)):
         if i == 0:
             # The first element of the array is calculated differently.
-            accumulated_amount_loss_due_to_sampling[i] = accumulated_amount_of_gaseous_species[i] * sample_volume[i] / reactor_volume[i]
+            accumulated_amount_loss_due_to_sampling[i] = accumulated_gas_amount[i] * sample_volume[i] / reactor_volume[i]
         else:
             accumulated_amount_loss_due_to_sampling[i] = (
-                (accumulated_amount_of_gaseous_species[i] - accumulated_amount_loss_due_to_sampling[i-1]) * sample_volume[i] / reactor_volume[i]
+                (accumulated_gas_amount[i] - accumulated_amount_loss_due_to_sampling[i-1]) * sample_volume[i] / reactor_volume[i]
                 + accumulated_amount_loss_due_to_sampling[i-1]
             )
 
     # Calculate the sampling-adjusted gas concentration for each gaseous species.
-    sampling_adjusted_concentration = (accumulated_amount_of_gaseous_species - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
-    
-    return sampling_adjusted_concentration
+    sampling_adjusted_concentration = (accumulated_gas_amount - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
+
+    return sampling_adjusted_concentration + liquid_concentration
