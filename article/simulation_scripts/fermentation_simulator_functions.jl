@@ -221,7 +221,10 @@ function affect_sample_multiple_impulse_feeds!(integrator)
     integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
     integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
     integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
-    integrator.u[5] -= sample_vol
     integrator.u[8] = remove_mass_through_sampling(integrator.u[8], integrator.u[5], sample_vol)
+    
+    # NB it is important to adjust the volume after the mass is removed. Otherwise the removed
+    # mass will be calculated incorrectly using the volume after sampling.
+    integrator.u[5] -= sample_vol
     
 end
