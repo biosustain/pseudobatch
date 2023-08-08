@@ -218,7 +218,7 @@ def pseudobatch_transform_pandas(
     reactor_volume_colname: str,
     accumulated_feed_colname: Union[str, Iterable[str]],
     concentration_in_feed: Union[
-        Iterable[float], Iterable[NDArray[np.float64]]
+        Iterable[Union[float, int]], Iterable[Iterable[Union[float, int]]]
     ],
     sample_volume_colname: str,
     pseudo_col_postfix: str = "_pseudo",
