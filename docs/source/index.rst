@@ -5,6 +5,7 @@
 
 Welcome to Pseudobatch's documentation!
 =======================================
+**Are you looking for the Excel template? See** `here <https://github.com/biosustain/pseudobatch/tree/main/excel-pseudobatch>`_
 
 When conducting a fed-batch fermentation, one often collects samples during the process and uses these to estimate rates and yields. Unfortunately, when samples are collected the underlying mass evolution curve becomes discontinuous. This makes it difficult to estimate the rates and yields from the data. The pseudobatch package is a tool to transform concentration measurements from a fed-batch reactor into a space where the underlying mass evolution curve is continuous. This allows for easy estimation of rates and yields from the data and enables use of more advanced statistical models such as Gaussian process regression, splines estimation and dFBA.
 
