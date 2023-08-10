@@ -15,4 +15,7 @@ log_cli_level = "INFO"
 
 # Install python packages that are required to install test dependencies
 [tool.cibuildwheel]
-before-test = "pip install '.[development]'"
+before-test = [
+    "pip install '.[development]'",
+    "install_cmdstan",
+]
