@@ -12,3 +12,7 @@ python-version = ['py39', 'py310', 'py311']
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "INFO"
+
+# Install python packages that are required to install test dependencies
+[tool.cibuildwheel]
+before-test = "pip install '.[development]'"
