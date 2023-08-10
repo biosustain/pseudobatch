@@ -17,5 +17,5 @@ log_cli_level = "INFO"
 [tool.cibuildwheel]
 before-test = [
     "pip install '.[development]'",
-    "install_cmdstan",
+    "install_cmdstan --dir $(pwd)/pseudobatch/stan",
 ]
