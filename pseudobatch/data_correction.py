@@ -359,9 +359,8 @@ def convert_volumetric_rates_from_pseudo_to_real(
     return pseudo_volumetric_rates / adf
 
 
-def preprocess_gaseous_species(
-    accumulated_gas_amount: np.ndarray,
-    liquid_concentration: np.ndarray,
+def hypothetical_concentration(
+    metabolised_amount: np.ndarray,
     reactor_volume: np.ndarray,
     sample_volume: np.ndarray
 ) -> np.ndarray:
@@ -375,11 +374,10 @@ def preprocess_gaseous_species(
 
     Parameters
     ----------
-    accumulated_gas_amount : np.ndarray
-        Total amount of gaseous species produced or consumed in mass or mole, 
-        typicaly calculated through inlets - outlets.
-    liquid_concentration : np.ndarray
-        Measured or estimated concentration of species in the liquid phase.
+    metabolised_amount : np.ndarray
+        Net accumulated result of metabolism at each time point. Thus, if the species
+        is consumed, the values are negative, if the species is produced, the values 
+        are positive.
     reactor_volume : np.ndarray
         Reactor volume BEFORE sampling.
     sample_volume : np.ndarray
@@ -397,21 +395,21 @@ def preprocess_gaseous_species(
     in the liquid phase can be assumed to be zero. 
     """
     # Initialize an empty array to store the accumulated mass loss due to sampling.
-    accumulated_amount_loss_due_to_sampling = np.zeros_like(accumulated_gas_amount)
+    accumulated_amount_loss_due_to_sampling = np.zeros_like(metabolised_amount)
 
     # Calculate the accumulated mass loss due to sampling of the hypothetically 
     # dissolved gaseous molecules.
-    for i in range(len(accumulated_gas_amount)):
+    for i in range(len(metabolised_amount)):
         if i == 0:
             # The first element of the array is calculated differently.
-            accumulated_amount_loss_due_to_sampling[i] = accumulated_gas_amount[i] * sample_volume[i] / reactor_volume[i]
+            accumulated_amount_loss_due_to_sampling[i] = metabolised_amount[i] * sample_volume[i] / reactor_volume[i]
         else:
             accumulated_amount_loss_due_to_sampling[i] = (
-                (accumulated_gas_amount[i] - accumulated_amount_loss_due_to_sampling[i-1]) * sample_volume[i] / reactor_volume[i]
+                (metabolised_amount[i] - accumulated_amount_loss_due_to_sampling[i-1]) * sample_volume[i] / reactor_volume[i]
                 + accumulated_amount_loss_due_to_sampling[i-1]
             )
 
     # Calculate the sampling-adjusted gas concentration for each gaseous species.
-    sampling_adjusted_concentration = (accumulated_gas_amount - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
+    sampling_adjusted_concentration = (metabolised_amount - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
 
-    return sampling_adjusted_concentration + liquid_concentration
+    return sampling_adjusted_concentration
