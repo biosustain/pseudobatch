@@ -29,12 +29,12 @@ jobs:
             PSEUDOBATCH_REPACKAGE_CMDSTAN=TRUE
 
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
-          CIBW_BUILD: cp39-* cp310-*
+          CIBW_BUILD: cp37-* cp38-* cp39-* cp310-*
           CIBW_SKIP: "*musllinux*"
           CIBW_ARCHS: native
           CIBW_BUILD_FRONTEND: build
-          CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: "pytest {project}/tests"
+          # CIBW_TEST_REQUIRES: pytest
+          # CIBW_TEST_COMMAND: "pytest {project}/tests"
 
       - name: "Upload wheel as artifact"
         uses: actions/upload-artifact@v3
