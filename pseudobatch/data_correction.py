@@ -413,3 +413,34 @@ def hypothetical_concentration(
     sampling_adjusted_concentration = (metabolised_amount - accumulated_amount_loss_due_to_sampling) / (reactor_volume - sample_volume)
 
     return sampling_adjusted_concentration
+
+def metabolised_amount(
+    off_gas_amount: NDArray,
+    dissolved_amount_after_sampling: NDArray,
+    inlet_gas_amount: NDArray,
+    sampled_amount: NDArray,
+    inlet_liquid_amount: Union[NDArray, None]= None,
+):
+    '''Calulated the amount of metabolised species at a given time.
+    Essentially, solving the mass balance equation for the metabolised species.
+    
+    Parameters
+    ----------
+    off_gas_amount : NDArray
+        Accumulated amount of the species exiting the reactor.
+    dissolved_amount_after_sampling : NDArray
+        Amount of the species in the reactor after sampling.
+    inlet_gas_amount : NDArray
+        Accumulated amount of the species entering the reactor through the gas inlet.
+    sampled_amount : NDArray
+        Accumulated amount of the species removed from the reactor through sampling.
+    inlet_liquid_amount : NDArray, optional
+        Accumulated amount of the species entering the reactor through the liquid inlet.
+        If not given, it is assumed that no mass of the species entering the reactor through the
+        liquid inlet.
+    '''
+
+    if inlet_liquid_amount is None:
+        inlet_liquid_amount = np.zeros_like(off_gas_amount)
+
+    return off_gas_amount + sampled_amount + dissolved_amount_after_sampling - inlet_gas_amount - inlet_liquid_amount 
