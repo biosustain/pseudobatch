@@ -100,6 +100,6 @@ def test_pseudobatch_transform_pandas_validation_multiple_feeds():
             measured_concentration_colnames=["c_Glucose", 'c_Biomass', "c_Glutamine"],
             reactor_volume_colname="v_Volume",
             accumulated_feed_colname=["v_Feed_accum", "v_Feed_accum_2"],
-            concentration_in_feed=[[df.c_Glucose_feed1.iloc[0] , 0, df.c_Glutamate_feed1], [0, 0, df.c_Glutamate_feed2]],
+            concentration_in_feed=[[df.c_Glucose_feed1.iloc[0] , 0, df.c_Glutamine_feed1], [0, 0, df.c_Glutamine_feed2]],
             sample_volume_colname="sample_volume",
         )
