@@ -92,3 +92,19 @@ def load_real_world_yeast_fedbatch():
 
     data_path = pathlib.Path(__file__).parent / "data" / "biolector_yeast_fedbatch.csv"
     return pd.read_csv(data_path)
+
+
+def load_volatile_compounds_fedbatch(sampling_points_only: bool = False):
+    """Load the volatile compounds fed-batch process dataset. This dataset
+    mimicks a substrate limited exponential fed-batch process utilizing
+    a glucose feed. During the fed-batch process, samples are withdrawn.
+    The parameters values use for the simulation is stored in the
+    dataframe.
+
+    Parameters
+    ----------
+    sampling_points_only : bool, optional
+        If True, only the rows where a sample was taken is kept, by default False
+    """
+    data_path = pathlib.Path(__file__).parent / "data" / "volatile_product.csv"
+    return _prepare_simulated_dataset(data_path, sampling_points_only=sampling_points_only)
