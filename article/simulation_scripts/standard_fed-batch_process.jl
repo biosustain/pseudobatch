@@ -11,7 +11,7 @@ include("standard_parameters.jl")
 state_variable_names = [:m_Glucose, :m_Biomass, :m_Product, :m_CO2, :v_Volume, :v_Feed_accum, :m_CO2_gas]
 init_cond = [s0*V0, x0*V0, p0*V0, co2_0*V0, V0, 0., 0.] # input for the model is masses not concentrations, accum feed at time zero is 0
 sample_volume_dict = Dict(zip(sampling_times, repeat([sample_volume], n_samples))) # defines timepoints and sample volumes
-ode_input_p = [Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f]
+ode_input_p = [Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f, evaporation_k]
 
 ode_func = ODEFunction(fedbatch!, syms=state_variable_names)
 prob = ODEProblem(ode_func, init_cond, tspan, ode_input_p)
@@ -38,7 +38,7 @@ insertcols!(df, 1, "sample_volume" => NaN)
 df[[x in sampling_times for x in df.timestamp], "sample_volume"] .= sample_volume
 
 # adding the parameter values to the dataframe
-output_header = [:Kc_s, :mu_max, :Yxs, :Yxp, :Yxco2, :F0, :mu0, :s_f] 
+output_header = [:Kc_s, :mu_max, :Yxs, :Yxp, :Yxco2, :F0, :mu0, :s_f, :evaporation_k] 
 insertcols!(df, 1, (output_header .=> ode_input_p)...)
 
 CSV.write(string("data/standard_fed-batch_process.csv"), df)

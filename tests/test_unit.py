@@ -5,13 +5,15 @@ import numpy as np
 from pseudobatch import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
-    preprocess_gaseous_species,
+    metabolised_amount,
+    hypothetical_concentration,
 )
 from pseudobatch.datasets import (
     load_standard_fedbatch,
     load_product_inhibited_fedbatch,
     load_cho_cell_like_fedbatch,
-    load_real_world_yeast_fedbatch
+    load_real_world_yeast_fedbatch,
+    load_volatile_compounds_fedbatch,
 )
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -41,6 +43,12 @@ def test_load_real_world_yeast_fedbatch():
     logging.debug(df.shape)
     assert df.empty is False
     assert df.shape == (11400, 12), "The dataset has changed. Update the test."
+
+
+def test_load_volatile_compounds_fedbatch_unique_timestamps():
+    df = load_volatile_compounds_fedbatch()
+    assert df.empty is False
+    assert df["timestamp"].duplicated().sum() == 0
 
 
 def test_pseudobatch_transform_pandas_preserves_index():
@@ -95,20 +103,3 @@ def test_pseudobatch_transform_pandas_validation_multiple_feeds():
             concentration_in_feed=[[df.c_Glucose_feed1.iloc[0] , 0, df.c_Glutamine_feed1], [0, 0, df.c_Glutamine_feed2]],
             sample_volume_colname="sample_volume",
         )
-
-
-def test_preprocess_gaseous_species():
-    # Test with a simple case
-    accumulated_amount_of_gaseous_species = np.array([100, 200, 300])
-    reactor_volume = np.array([1000, 1000, 1000])
-    sample_volume = np.array([10, 20, 30])
-
-    expected_result = np.array([0.1, 0.2, 0.296907])  # Calculate the expected result manually
-
-    result = preprocess_gaseous_species(
-        accumulated_amount_of_gaseous_species,
-        reactor_volume,
-        sample_volume
-    )
-
-    np.testing.assert_allclose(result, expected_result, rtol=1e-6, atol=1e-6)

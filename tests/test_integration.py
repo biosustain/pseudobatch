@@ -10,9 +10,10 @@ import pandas as pd
 from pseudobatch.data_correction import (
     pseudobatch_transform,
     pseudobatch_transform_pandas,
-    preprocess_gaseous_species,
+    metabolised_amount,
+    hypothetical_concentration,
 )
-from pseudobatch.datasets import load_standard_fedbatch, load_product_inhibited_fedbatch, load_cho_cell_like_fedbatch
+from pseudobatch.datasets import load_standard_fedbatch, load_product_inhibited_fedbatch, load_cho_cell_like_fedbatch, load_volatile_compounds_fedbatch
 
 
 def fit_ols_model(formula_like: str, data: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
@@ -188,30 +189,38 @@ def test_accepts_nan():
 
 def test_calculation_of_gaseous_yield():
     '''Tests that the gaseous yield can be correctly estimated using the 
-    preprocess_gaseous_species() and the pseudobatch_transform functions.'''
-    fedbatch_df = load_product_inhibited_fedbatch()
-    fedbatch_df['preprocessed_CO2'] = preprocess_gaseous_species(
-        accumulated_amount_of_gaseous_species=fedbatch_df["m_CO2_gas"].values,
-        reactor_volume=fedbatch_df['v_Volume'].values,
-        sample_volume=fedbatch_df['sample_volume'].values
+    hypothetical_concentration(), metabolised_amount and the pseudobatch_transform functions.'''
+    fedbatch_df = load_volatile_compounds_fedbatch()
+
+    # Preprocess the data
+    fedbatch_df['m_O2_after_sample'] = fedbatch_df['m_O2'] - fedbatch_df['c_O2'] * fedbatch_df['sample_volume']
+    fedbatch_df['m_O2_consumed'] = metabolised_amount(
+        off_gas_amount=fedbatch_df['m_O2_gas'].to_numpy(),
+        dissolved_amount_after_sampling=fedbatch_df['m_O2_after_sample'].to_numpy(),
+        inlet_gas_amount=fedbatch_df['m_O2_in'].to_numpy(),
+        sampled_amount=(fedbatch_df['c_O2'] * fedbatch_df['sample_volume']).cumsum().to_numpy(),
+    )
+    fedbatch_df['hypothetical_c_O2'] = hypothetical_concentration(
+        metabolised_amount=fedbatch_df['m_O2_consumed'].to_numpy(),
+        reactor_volume=fedbatch_df['v_Volume'].to_numpy(),
+        sample_volume=fedbatch_df['sample_volume'].to_numpy(),
     )
 
-    # Pseudobatch transform
-    fedbatch_df[['pseudo_biomass', 'pseudo_CO2']] = pseudobatch_transform_pandas(
-        fedbatch_df,
-        ['c_Biomass', 'preprocessed_CO2'],
-        'v_Volume',
-        'v_Feed_accum',
-        [0,0],
-        'sample_volume',
+    # Pseudo batch transform
+    fedbatch_df[['pseudo_Biomass','pseudo_O2']] = pseudobatch_transform_pandas(
+        df=fedbatch_df,
+        measured_concentration_colnames=['c_Biomass','hypothetical_c_O2'],
+        reactor_volume_colname='v_Volume',
+        accumulated_feed_colname='v_Feed_accum',
+        concentration_in_feed=[0,0],
+        sample_volume_colname='sample_volume',
     )
 
     # Estimate CO2 yield
     res = fit_ols_model(
-        "pseudo_CO2 ~ pseudo_biomass",
+        "pseudo_O2 ~ pseudo_Biomass",
         fedbatch_df
     )
 
-    Yxco2_true = fedbatch_df.Yxco2.iloc[0]
-
-    assert res.params[1] == pytest.approx(Yxco2_true, 1e-6)
+    Yxco2_true = fedbatch_df.Yxo2.iloc[0]
+    assert np.abs(res.params[1]) == pytest.approx(Yxco2_true, 1e-6)

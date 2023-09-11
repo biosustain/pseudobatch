@@ -9,7 +9,8 @@ from pseudobatch.data_correction import (
     pseudobatch_transform,
     pseudobatch_transform_multiple,
     pseudobatch_transform_pandas,
-    preprocess_gaseous_species,
+    hypothetical_concentration,
+    metabolised_amount,
 )
 from pseudobatch.error_propagation import run_error_propagation
 

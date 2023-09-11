@@ -64,6 +64,28 @@ function growth_rate_two_substrates(c_s1, c_s2, mu_max1, mu_max2, Kc_s1, Kc_s2)
     return (mu_max1 * mu_max2 * c_s1 * c_s2) / ((c_s1 + Kc_s1) * (c_s2 + Kc_s2))
 end
 
+"""
+Simple calculation the evaporation rate based only based a scalar and the concentration
+of the component in the liquid. return 0 if the concentration is negative.
+"""
+function evaporation_rate(c, k)
+    if c < 0
+        return 0
+    end
+    return c * k
+end
+
+"""
+Calculates the volumetric gas to liquid transfer rate based on the saturation
+concentration of the component, liquid concentration and the mass transfer coefficient (kla).
+The equation is obtained from eq. 10.1 from Bioreaction Engineering Principples by 
+Villadsen, et. al.
+"""
+function volumetric_gas_to_liquid_transfer_rate(c_sat, c_l, kla)
+    return kla * (c_sat - c_l)
+end
+
+
 ############################ ODE SYSTEMS #######################################
 """
 Defines the ODE system for a fed-batch fermentation operated with an exponential
@@ -181,6 +203,51 @@ function fedbatch_multiple_step_feeds!(dudt, u, p, t)
     return dudt
 end
 
+"""
+Defines the ODE system for a fed-batch fermentation operated with an exponential
+feed profile. The growth of the microorganism is modelled through monods equation 
+with product inhibition. The product is volatile and evaporates from the reactor.
+The product evaporation is modelled through a first order reaction.
+
+The system holds 7 state variables with are defined as follows:
+    dudt[1] : mass of substrate in the liquid
+    dudt[2] : mass of biomass in the liquid
+    dudt[3] : mass of product in the liquid
+    dudt[4] : mass of co2 in liquid
+    dudt[5] : volume of liquid
+    dudt[6] : feeding rate
+    dudt[7] : mass of co2 in off-gas
+    dudt[8] : mass of product in off-gas
+
+The systems is build under the assumption that the CO2 evaporates instantly
+after production.
+"""
+function fedbatch_prod_inhib_volatile!(dudt, u, p, t)
+    Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f, Ki_p, evaporation_rate_product, Yxo2, O2_flow_rate_in, kla, c_o2_sat = p      
+    
+    # Growth kinetics consider moving this as a seperate function
+    c_s = u[1]/u[5]  
+    c_p = u[3]/u[5]
+    c_o2 = u[10]/u[5]
+    mu = monod_with_product_inhibition(c_s, c_p, mu_max, Kc_s, Ki_p)
+    qt_o2 = volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla)
+
+    dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
+    dudt[2] = mu * u[2]
+    dudt[3] = Yxp * mu * u[2] - evaporation_rate(u[3], evaporation_rate_product)
+    dudt[4] = Yxco2 * mu * u[2] -  Yxco2 * mu * u[2] # co2 production - co2 evaporation
+    dudt[5] = v_feed(t, F0, mu0) # volume
+    dudt[6] = v_feed(t, F0, mu0) # feed used to integrate feed_accum
+    dudt[7] =  Yxco2 * mu * u[2] # all co2 evaporates immidately into off-gas analyzer
+    dudt[8] = evaporation_rate(u[3], evaporation_rate_product) # product evaporation
+    dudt[9] = O2_flow_rate_in # O2 flow rate into the reactor
+    dudt[10] = u[5] * volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla) - Yxo2 * mu * u[2] # O2 liquid concentration
+    dudt[11] = O2_flow_rate_in - u[5] * volumetric_gas_to_liquid_transfer_rate(c_o2_sat, c_o2, kla) # O2 that flows into the off-gas analyzer
+
+
+    return dudt
+end
+
 ############################# EVENT HANDLING / CALLBACKS #####################
 """
 Calculates the amount of mass removed when a give volume is sampled from the
@@ -226,5 +293,21 @@ function affect_sample_multiple_impulse_feeds!(integrator)
     # NB it is important to adjust the volume after the mass is removed. Otherwise the removed
     # mass will be calculated incorrectly using the volume after sampling.
     integrator.u[5] -= sample_vol
+    
+end
+
+function affect_sample_volatile_compounds!(integrator)
+    sample_vol = sample_volume_dict[integrator.t]
+    integrator.u[1] = remove_mass_through_sampling(integrator.u[1], integrator.u[5], sample_vol)
+    integrator.u[2] = remove_mass_through_sampling(integrator.u[2], integrator.u[5], sample_vol)
+    integrator.u[3] = remove_mass_through_sampling(integrator.u[3], integrator.u[5], sample_vol)
+    integrator.u[4] = remove_mass_through_sampling(integrator.u[4], integrator.u[5], sample_vol)
+    integrator.u[10] = remove_mass_through_sampling(integrator.u[10], integrator.u[5], sample_vol)
+
+    # NB it is important to adjust the volume after the mass is removed. Otherwise the removed
+    # mass will be calculated incorrectly using the volume after sampling.
+    integrator.u[5] -= sample_vol
+
+    integrator.p[6] *= integrator.u[5]/(integrator.u[5]+sample_vol) # adjusting feed to account for removed volume
     
 end
