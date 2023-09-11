@@ -10,5 +10,8 @@ include("standard_fed-batch_process.jl")
 print("Simulating fed-batch with product inhibition \n")
 include("fed-batch_with_product_inhibition.jl")
 
-print("Simulating fed-batch process with multiple feeds")
+print("Simulating fed-batch process with multiple feeds\n")
 include("multiple_step_feed_process.jl")
+
+print("Simulating fed-batch process with volatile product")
+include("fed-batch_volatile_product.jl")
