@@ -19,7 +19,7 @@ A typical analysis of such fermentation data is the estimate the growth rate. Th
 There are multiple ways to use the pseudobatch transformation. 
 
 ### Excel templates
-Download the excel template from the [excel-pseudobatch folder](./excel-pseudobatch/) and follow the instructions in the template. **NB** the excel template can also be used to import data into Python (See LINK-TO-TUTORIAL).
+Download the excel template from the [excel-pseudobatch folder](./excel-pseudobatch/) and follow the instructions in the template. **NB** the excel template can also be used to import data into Python (See [here](https://biosustain.github.io/pseudobatch/Tutorials/5%20-%20Importing%20data%20from%20Excel%20template.html)).
 
 ### Python
 The Python package holds functions which apply the pseudobatch transformation to data either in the form of `Numpy` Arrays or `Pandas` dataframe. Please visit [our documentation]() to how to use the Python package.
