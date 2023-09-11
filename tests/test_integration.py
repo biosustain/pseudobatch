@@ -189,12 +189,11 @@ def test_accepts_nan():
 
 def test_calculation_of_gaseous_yield():
     '''Tests that the gaseous yield can be correctly estimated using the 
-    preprocess_gaseous_species() and the pseudobatch_transform functions.'''
+    hypothetical_concentration(), metabolised_amount and the pseudobatch_transform functions.'''
     fedbatch_df = load_volatile_compounds_fedbatch()
 
     # Preprocess the data
     fedbatch_df['m_O2_after_sample'] = fedbatch_df['m_O2'] - fedbatch_df['c_O2'] * fedbatch_df['sample_volume']
-
     fedbatch_df['m_O2_consumed'] = metabolised_amount(
         off_gas_amount=fedbatch_df['m_O2_gas'].to_numpy(),
         dissolved_amount_after_sampling=fedbatch_df['m_O2_after_sample'].to_numpy(),
@@ -219,10 +218,9 @@ def test_calculation_of_gaseous_yield():
 
     # Estimate CO2 yield
     res = fit_ols_model(
-        "pseudo_O2 ~ pseudo_biomass",
+        "pseudo_O2 ~ pseudo_Biomass",
         fedbatch_df
     )
 
     Yxco2_true = fedbatch_df.Yxo2.iloc[0]
-
     assert np.abs(res.params[1]) == pytest.approx(Yxco2_true, 1e-6)
