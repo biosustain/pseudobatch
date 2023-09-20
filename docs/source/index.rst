@@ -11,7 +11,7 @@ When conducting a fed-batch fermentation, one often collects samples during the 
 
 In the following figure, a simulated exponential fed-batch process of substrate limited growth is shown (grey line). The growth rate is estimated using the measurements at the sampling points (blue dots and line). The measurements are then transformed into a pseudo-batch space (orange dots). The growth rate is estimated using the Pseudo-batch transformed data (orange line). The growth rate estimate using the Pseudo-batch transformed data is correct, while the growth rate estimate using the measurements at the sampling points is incorrect. This is also visually evident by the fact that the orange line has the same slope as the grey line, while the blue line has a different slope.
 
-.. image:: ../../article/figures/transformed_and_non-transformed_logscale.png
+.. image:: ../../article/figures/figure_docs_landing_page.png
    :width: 600
    :align: center
 
