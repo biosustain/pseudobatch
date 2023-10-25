@@ -6,7 +6,8 @@ import arviz as az
 
 from cmdstanpy import CmdStanModel
 from numpy.typing import NDArray
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
+from pydantic.functional_validators import model_validator
 
 from pseudobatch import stan
 from pseudobatch.util import (
