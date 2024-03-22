@@ -134,23 +134,47 @@ def main():
         elif i < scene_splits[3]:
             pass
         elif i < scene_splits[4]:
-            line_pseudo.set_data(
-                plot_data["timestamp"], plot_data["m_Biomass_pseudo"]
+            animate_line(
+                i - scene_splits[3],
+                line_pseudo,
+                plot_data["timestamp"],
+                plot_data["m_Biomass_pseudo"],
             )
+            # line_pseudo.set_data(
+            #     plot_data["timestamp"], plot_data["m_Biomass_pseudo"]
+            # )
         if i == 0:
             ax.texts[-1].set_text(
-                "When a fedbatch culture is sampled the \n"
-                + "biomass curve becomes discontinuous",
+                "What happens when "
+                + r"$\bf{samples}$"
+                + " are drawn from\n"
+                + "a "
+                + r"$\bf{fedbatch \: culture}$",
             )
         if i == scene_splits[2]:
             ax.texts[-1].set_text(
-                "This leads to an INCORRECT estimate of\n"
-                + "the exponential growth rate"
+                "The "
+                + r"$\bf{exponential \: growth \: rate}$"
+                + " estimate is\n"
+                + "WRONG"
+            )
+        if i == scene_splits[3]:
+            ax.texts[-1].set_text(
+                r"With the $\bf{Pseudo \: batch \: transformation}$"
+                + " the\n"
+                + "rates and yields without bias"
             )
         return None
 
     # call the animator.  blit=True means only re-draw the parts that have changed.
-    scenes = [len(plot_data["timestamp"]), 5, len(x_pred), 50, 100]
+    scenes = [
+        len(plot_data["timestamp"]),
+        5,  # pause
+        len(x_pred),
+        50,  # pause
+        len(plot_data["timestamp"]),
+        50,  # pause
+    ]
     n_frames = sum(scenes)
     scene_splits_list = list(np.cumsum(scenes))
 
