@@ -86,7 +86,8 @@ def run_error_propagation(
     sd_concentration_in_feed: float,
     sd_sample_volume: float,
     prior_input: dict,
-    species_names: Optional[List[Union[str,int]]] = None,
+    species_names: Optional[List[Union[str, int]]] = None,
+    seed: Optional[int] = None,
 ) -> az.InferenceData:
     """Run the error propagation analysis, returning and InferenceData object.
 
@@ -177,8 +178,10 @@ def run_error_propagation(
     data_prior = {**data, **{"likelihood": 0}}
     data_posterior = {**data, **{"likelihood": 1}}
     model = CmdStanModel(stan_file=STAN_FILE)
-    mcmc_prior = model.sample(data=data_prior, show_progress=False)
-    mcmc_posterior = model.sample(data=data_posterior, show_progress=False)
+    mcmc_prior = model.sample(data=data_prior, show_progress=False, seed=seed)
+    mcmc_posterior = model.sample(
+        data=data_posterior, show_progress=False, seed=seed
+    )
     return az.from_cmdstanpy(
         mcmc_posterior, prior=mcmc_prior, coords=coords, dims=dims
     )
