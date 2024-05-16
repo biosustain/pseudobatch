@@ -15,7 +15,7 @@ from setuptools.command.build_ext import build_ext
 from distutils.command.clean import clean
 from wheel.bdist_wheel import bdist_wheel
 
-MODEL_DIR = "pseudobatch/stan"
+MODEL_DIR = "pseudobatch/error_propagation/stan"
 
 MODELS = [
     "error_propagation",
@@ -168,7 +168,7 @@ class WheelABINone(bdist_wheel):
 
 setup(
     # Extension marks this as platform-specific
-    ext_modules=[Extension("pseudobatch.stan", [])],
+    ext_modules=[Extension("pseudobatch.error_propagation.stan", [])],
     # override the build and bdist commands
     cmdclass={
         "build_ext": BuildModels,

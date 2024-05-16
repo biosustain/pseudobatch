@@ -9,7 +9,7 @@ from numpy.typing import NDArray
 from pydantic import BaseModel, Field
 from pydantic.functional_validators import model_validator
 
-from pseudobatch import stan
+from pseudobatch.error_propagation import stan
 from pseudobatch.util import (
     get_lognormal_params_from_quantiles,
     get_normal_params_from_quantiles,
@@ -114,7 +114,7 @@ def run_error_propagation(
 
     sd_sample_volume : Sample volume measurement error.
 
-    sd_concentration_in_feed : Error for concentration in feed measurements. 
+    sd_concentration_in_feed : Error for concentration in feed measurements.
 
     prior_input : Dictionary that can be used to load a PriorInput object.
 
@@ -134,11 +134,11 @@ def run_error_propagation(
             "then prior_cfeed must not be None."
         )
         assert all(y == 0 for y in y_concentration_in_feed), msg
-        prior_cfeed = [[0. for _ in range(S)], [1. for _ in range(S)]]
+        prior_cfeed = [[0.0 for _ in range(S)], [1.0 for _ in range(S)]]
     else:
         prior_cfeed = [
-            [p.loc for p in pi.prior_cfeed], 
-            [p.scale for p in pi.prior_cfeed]
+            [p.loc for p in pi.prior_cfeed],
+            [p.scale for p in pi.prior_cfeed],
         ]
     prior_m = [Prior0dLogNormal(pct1=1e-9, pct99=1e9) for _ in range(S)]
     prior_f = Prior0dLogNormal(pct1=1e-6, pct99=1e6)
@@ -173,7 +173,7 @@ def run_error_propagation(
         "c": ["sample", "species"],
         "v": ["sample"],
         "cfeed": ["species"],
-        "pseudobatch_c": ["sample", "species"]
+        "pseudobatch_c": ["sample", "species"],
     }
     data_prior = {**data, **{"likelihood": 0}}
     data_posterior = {**data, **{"likelihood": 1}}

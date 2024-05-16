@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import logit
 
-from pseudobatch import run_error_propagation
+from pseudobatch.error_propagation import run_error_propagation
 from pseudobatch.datasets import load_standard_fedbatch
 
 
