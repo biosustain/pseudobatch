@@ -3,6 +3,10 @@ import warnings
 from pathlib import Path
 from importlib.metadata import distribution
 
+# The error propagation module requires to be installed separately.
+# Cmdstanpy is here used as an indication of whether the error
+# propagation module is installed or not. If cmdstanpy is installed,
+# the error propagation module will be loaded.
 try:
     distribution("cmdstanpy")
     import cmdstanpy
@@ -10,6 +14,13 @@ try:
     cmdstanpy_installed = True
 except:
     cmdstanpy_installed = False
+    raise ImportError(
+        "cmdstanpy is not installed. To use the error propagation module, "
+        "please install cmdstanpy by running 'pip install cmdstanpy'. "
+        "Then install the CmdStan binaries by running 'cmdstanpy.install_cmdstan()'. "
+        "Finally, install the remaining dependencies for the error propagation module "
+        "by running 'pip install pseudobatch[error_propagation]'."
+    )
 
 if cmdstanpy_installed:
     from pseudobatch.error_propagation.error_propagation import (
