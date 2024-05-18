@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir "cmdstanpy==1.0.4"
 # Install cmdstan
 RUN python -m cmdstanpy.install_cmdstan --version "${CMDSTAN_VERSION}" --cores 2
 
-RUN pip install --no-cache-dir -e "." && \
+RUN pip install --no-cache-dir -e ".[error_propagation]" && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
