@@ -25,10 +25,32 @@ Download the excel template from the [excel-pseudobatch folder](./excel-pseudoba
 The Python package holds functions which apply the pseudobatch transformation to data either in the form of `Numpy` Arrays or `Pandas` dataframe. Please visit [our documentation]() to how to use the Python package.
 
 ## How to install?
-The Pseudobatch Python package can be install through PYPI using pip.
-```
+The Pseudobatch Python package can be install through PYPI using pip. Most of the functionality can be installed simply be calling
+
+```shell
 pip install pseudobatch
 ```
+
+The error propagation functionality requires installation of cmdstanpy and CmdStan. Thus, installing the error propagation functionality takes a few steps. First install cmdstanpy in the prefered virtual environment.
+
+```shell
+pip install cmdstanpy
+```
+
+Second, use cmdstanpy to install CmdStan. To due this you need to call use the function `cmdstanpy.install_cmdstan()`. This can for example be done by opening a python session in the terminal and run the following two Python commands
+
+```python
+import cmdstanpy
+cmdstanpy.install_cmdstan()
+```
+
+Now exit the Python session and install the remaining dependencies of the error propagation module through pip.
+
+```shell
+pip install pseudobatch[error_propagation]
+```
+
+Now the error propagation module is installed and ready to use.
 
 ## How to cite
 If you use the pseudobatch transformation please cite the original article XXX.
