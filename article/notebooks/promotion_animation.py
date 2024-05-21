@@ -14,6 +14,7 @@ from typing import Tuple, List
 from pseudobatch import pseudobatch_transform, pseudobatch_transform_pandas
 from pseudobatch.datasets._dataloaders import _prepare_simulated_dataset
 
+FIGURES_DIR = pathlib.Path("article/figures")
 
 def animate_line(i, line, xdata: pd.Series, ydata: pd.Series):
     line.set_data(
@@ -33,8 +34,6 @@ def prepare_data():
     # this makes sure if the simulations are rerun the new data is used
     data_path = pathlib.Path("article/data/standard_fed-batch_process.csv")
     fedbatch_df = _prepare_simulated_dataset(data_path)
-
-    FIGURES_DIR = pathlib.Path("article/figures")
 
     # pseudo batch transform
     fedbatch_df["c_Biomass_pseudo"] = pseudobatch_transform(
@@ -149,14 +148,14 @@ def main():
                 + r"$\bf{samples}$"
                 + " are drawn from\n"
                 + "a "
-                + r"$\bf{fedbatch \: culture}$",
+                + r"$\bf{fedbatch \: culture}$?",
             )
         if i == scene_splits[2]:
             ax.texts[-1].set_text(
                 "The "
                 + r"$\bf{exponential \: growth \: rate}$"
                 + " estimate is\n"
-                + "WRONG"
+                + r"$\bf{WRONG}$"
             )
         if i == scene_splits[3]:
             ax.texts[-1].set_text(
@@ -169,11 +168,11 @@ def main():
     # call the animator.  blit=True means only re-draw the parts that have changed.
     scenes = [
         len(plot_data["timestamp"]),
-        5,  # pause
+        50,  # pause
         len(x_pred),
-        50,  # pause
+        100,  # pause
         len(plot_data["timestamp"]),
-        50,  # pause
+        100,  # pause
     ]
     n_frames = sum(scenes)
     scene_splits_list = list(np.cumsum(scenes))
@@ -192,8 +191,8 @@ def main():
         interval=10,
     )
     print("Saving animation")
-    plt.show()
-    # anim.save(FIGURES_DIR / "animation.gif", fps=10)
+    # plt.show()
+    anim.save(FIGURES_DIR / "promotion_animation.gif", fps=10)
 
 
 if __name__ == "__main__":
