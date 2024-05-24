@@ -44,4 +44,5 @@ def test_error_propagation():
         sd_feed_in_interval=0.05,
         sd_sample_volume=0.05,
         sd_concentration_in_feed=0.05,
+        seed=123,
     )
