@@ -1,5 +1,5 @@
 # Start from a core stack version
-FROM jupyter/datascience-notebook:latest
+FROM quay.io/jupyter/datascience-notebook:2024-05-20
 
 ENV CMDSTAN_VERSION=2.31.0
 
