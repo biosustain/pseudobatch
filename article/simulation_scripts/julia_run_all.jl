@@ -3,6 +3,7 @@ using Pkg
 print("Running Julia scripts \n")
 print("Activating the library. This can take several minutes \n")
 Pkg.activate("julia-env")
+Pkg.instantiate()
 
 print("Simulating standard fed-batch process \n")
 include("standard_fed-batch_process.jl")
