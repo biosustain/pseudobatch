@@ -25,32 +25,19 @@ Download the excel template from the [excel-pseudobatch folder](./excel-pseudoba
 The Python package holds functions which apply the pseudobatch transformation to data either in the form of `Numpy` Arrays or `Pandas` dataframe. Please visit [our documentation]() to how to use the Python package.
 
 ## How to install?
-The Pseudobatch Python package can be install through PYPI using pip. Most of the functionality can be installed simply be calling
+The Pseudobatch Python package can be install through PYPI using pip. Most of the functionality can be installed simply by calling
 
 ```shell
 pip install pseudobatch
 ```
 
-The error propagation functionality requires installation of cmdstanpy and CmdStan. Thus, installing the error propagation functionality takes a few steps. First install cmdstanpy in the prefered virtual environment.
-
-```shell
-pip install cmdstanpy
-```
-
-Second, use cmdstanpy to install CmdStan. To due this you need to call use the function `cmdstanpy.install_cmdstan()`. This can for example be done by opening a python session in the terminal and run the following two Python commands
-
-```python
-import cmdstanpy
-cmdstanpy.install_cmdstan()
-```
-
-Now exit the Python session and install the remaining dependencies of the error propagation module through pip.
+The error propagation functionality requires installation of cmdstanpy and CmdStan. Please see the cmdstanpy documentation for how to install both cmdstanpy and CmdStan in your specific setup (https://mc-stan.org/cmdstanpy/installation.html). After successfully installing both proceed to install the remaining dependencies of the error propagation module through pip.
 
 ```shell
 pip install pseudobatch[error_propagation]
 ```
 
-Now the error propagation module is installed and ready to use.
+Now the error propagation module is installed and ready to use. Note that the first time you import the error propagation module CmdStan will compile the Stan model this will take several minutes.
 
 ## How to cite
 If you use the pseudobatch transformation please cite the original article XXX.
@@ -75,14 +62,3 @@ have installed all the dependencies by running `pip install -e
 run the command `make html`. To view your changes run `open
 build/html/index.html` or just click through to this file using your file
 explorer.
-
-## Building docker image 
-This is a note to developers who wants to rebuild/update the docker image. If you simply want to use the docker image see the description in the [article folder](./article/README.md). 
-
-The Docker container relies on the [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/tags/), see also [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook). We used this image because it includes both Python and Julia out of the box, the down side is that it is quite large. To create the image you need a local copy of this repository and inside that folder run the following command:
-
-```
-docker build . -t pseudobatch:{version}
-```
-
-This recreates the docker image. Be aware that installing the Julia packages and cmdstan are both take quite some time, thus expect that it take ~ 15 - 30 min to build.
