@@ -16,6 +16,7 @@ This folder contains all information that is required to reproduce the results o
 See how to install Docker on your machine at the [Docker website](https://docs.docker.com/get-docker/).
 
 ### 1. Download the docker image
+- Currently, the publication of the Docker image is under review in the data repository (data.dtu.dk). Until, the image can be made public you can build the image from yourself. Please see section "Building docker image" below for instructions on how to build the image. After building the repository proceed to step "2. Start the docker container".
 - The docker image can be found here: XXX
 - load the image to your local docker by running `docker load --input PATH-TO-IMAGE-TAR-FILE`
 
@@ -33,3 +34,15 @@ The simulated data that is used to test and show case the pseudo-batch transform
 
 ### 4. Rerun analysis
 To rerun the analysis simply open the notebooks, CHANGE THE KERNEL to `venv_pseudobatch` (do this in the upper right corner), and run all cells. The error propagation analysis will take a while because it needs first has to compile the stan model.
+
+
+## Building docker image 
+This is a note to developers who wants to rebuild/update the docker image. If you simply want to use the docker image see the description in the [article folder](./article/README.md). 
+
+The Docker container relies on the [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/tags/), see also [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook). We used this image because it includes both Python and Julia out of the box, the down side is that it is quite large. To create the image you need a local copy of this repository and inside that folder run the following command:
+
+```
+docker build . -t pseudobatch:{version}
+```
+
+This recreates the docker image, expect that it take ~ 15 - 30 min to build.
