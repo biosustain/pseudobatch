@@ -5,7 +5,7 @@ permissions:
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-  CMDSTAN_VERSION: "2.31.0" 
+  CMDSTAN_VERSION: "2.33.0" 
 
 jobs:
   docs:
@@ -16,7 +16,7 @@ jobs:
       - name: Install cmdstanpy
         run: |
           python -m pip install --upgrade pip wheel
-          pip install "cmdstanpy==1.0.4"
+          pip install "cmdstanpy==1.1.0"
       - name: CmdStan installation cacheing
         uses: actions/cache@v2
         with:
