@@ -15,34 +15,32 @@ This folder contains all information that is required to reproduce the results o
 ### 0. Install docker on your local machine
 See how to install Docker on your machine at the [Docker website](https://docs.docker.com/get-docker/).
 
-### 1. Download the docker image
-- Currently, the publication of the Docker image is under review in the data repository (data.dtu.dk). Until, the image can be made public you can build the image from yourself. Please see section "Building docker image" below for instructions on how to build the image. After building the repository proceed to step "2. Start the docker container".
-- The docker image can be found here: XXX
-- load the image to your local docker by running `docker load --input PATH-TO-IMAGE-TAR-FILE`
+### 1. Building docker image 
+Currently, the publication of the Docker image is under review in the data repository (data.dtu.dk). Until, the image can be made public you can build the image from yourself. 
+
+The Docker container relies on the [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/tags/), see also [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook). We used this image because it includes both Python and Julia out of the box, the down side is that it is quite large. To create the image you need a local copy of the pseudobatch repository and inside the repository root folder run the following command (Be sure to have the docker client running):
+
+```
+docker build . -t pseudobatch:1.2
+```
+
+This recreates the docker image, expect that it take ~ 15 - 30 min to build.
 
 ### 2. Start the docker container
-- Ensure that the image is correctly loaded by running `docker image ls`. An image named *pseudobatch:1.0* should be found on that list.
+- Ensure that the image is correctly build by running `docker image ls`. An image named *pseudobatch:1.2* should be found on that list.
 - Run `docker run --rm -it -p 8888:8888 "pseudobatch:1.2"`
 - Open the container using the instructions printed in the terminal
 
 ### 3. Rerun the simulations
-The simulated data that is used to test and show case the pseudo-batch transformation can be recreated by running a series of Julia scripts. To simplify the process they can be all be run at once using the shell script `article/run_all.sh`. Please use the following commands
+We used several simulated datasets to test and showcase the pseudobatch transformation. This simulated datasets can be recreated by running a series of Julia scripts. To simplify the process they can be all be run at once using the shell script `article/run_all.sh`. Please use the following commands
 
 1. Open a terminal inside the Docker container
 2. Navigate into the `article` folder, using `cd article`
 3. Run the shell script using the command `./run_all.sh`
 
+This will take 10 - 20 minutes because the all the simulation dependencies has to be installed.
+
 ### 4. Rerun analysis
-To rerun the analysis simply open the notebooks, CHANGE THE KERNEL to `venv_pseudobatch` (do this in the upper right corner), and run all cells. The error propagation analysis will take a while because it needs first has to compile the stan model.
+To rerun the analysis simply open the notebooks, **CHANGE THE KERNEL** to `venv_pseudobatch` (do this in the upper right corner), and run all cells. The error propagation analysis will take a while because it needs first has to compile the stan model.
 
 
-## Building docker image 
-This is a note to developers who wants to rebuild/update the docker image. If you simply want to use the docker image see the description in the [article folder](./article/README.md). 
-
-The Docker container relies on the [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook/tags/), see also [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook). We used this image because it includes both Python and Julia out of the box, the down side is that it is quite large. To create the image you need a local copy of this repository and inside that folder run the following command:
-
-```
-docker build . -t pseudobatch:{version}
-```
-
-This recreates the docker image, expect that it take ~ 15 - 30 min to build.
