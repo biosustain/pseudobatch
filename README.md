@@ -40,7 +40,11 @@ pip install pseudobatch[error_propagation]
 Now the error propagation module is installed and ready to use. Note that the first time you import the error propagation module CmdStan will compile the Stan model this will take several minutes.
 
 ## How to cite
-If you use the pseudobatch transformation please cite the original article XXX.
+If you use the pseudobatch transformation please cite the preprint article until the peer reviewed article is published.
+
+> Pseudo batch transformation: A novel method to correct for mass removal through sample withdrawal of fed-batch fermentations
+> Viktor Hesselberg-Thomsen, Teddy Groves, Timothy McCubbin, Igor Marin de Mas, Ivan Martinez-Monge, Lars K Nielsen
+> bioRxiv 2024.05.27.596043; doi: https://doi.org/10.1101/2024.05.27.596043
 
 ## How to reproduce the simulations, analysis and figures from the article?
 The [article folder](./article/) holds the code which was used create the simulated datasets, to proof that the transformation works, analyse the error propagation and create the illustrations for the paper. 
