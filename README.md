@@ -1,5 +1,5 @@
 # Welcome to the Pseudobatch transformation repository
-This repository holds the code for the Pseudobatch Python package, Excel-templates, the documentation, example datasets and the code required to reproduce simulations, analysis and figures in the article LINK-TO-ARTICLE.
+This repository holds the code for the Pseudobatch Python package, Excel-templates, the documentation, example datasets and the code required to reproduce simulations, analysis and figures in the article https://www.biorxiv.org/content/10.1101/2024.05.27.596043v2.
 
 
 ## What is this?
