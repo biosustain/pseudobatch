@@ -42,7 +42,7 @@ def test_load_real_world_yeast_fedbatch():
     df = load_real_world_yeast_fedbatch()
     logging.debug(df.shape)
     assert df.empty is False
-    assert df.shape == (11400, 12), "The dataset has changed. Update the test."
+    assert df.shape == (10712, 12), "The dataset has changed. Update the test."
 
 
 def test_load_volatile_compounds_fedbatch_unique_timestamps():

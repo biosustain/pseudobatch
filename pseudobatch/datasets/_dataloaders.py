@@ -91,7 +91,20 @@ def load_real_world_yeast_fedbatch():
     is obtained from an experiment carried out in a biolector."""
 
     data_path = pathlib.Path(__file__).parent / "data" / "biolector_yeast_fedbatch.csv"
-    return pd.read_csv(data_path)
+    data = pd.read_csv(data_path)
+
+    def truncate_after_last_sample(
+        df: pd.DataFrame, time_col: str, sample_col: str
+    ) -> pd.DataFrame:
+        last_sample_time = df.query(f"`{sample_col}` > 0")[time_col].max()
+
+        return df.query(f"`{time_col}` <= @last_sample_time")
+
+    data_truncated = data.groupby("Biolector well").apply(
+        lambda x: truncate_after_last_sample(x, "Time", "Sample volume")
+    )
+
+    return data_truncated.reset_index(drop=True)
 
 
 def load_volatile_compounds_fedbatch(sampling_points_only: bool = False):
