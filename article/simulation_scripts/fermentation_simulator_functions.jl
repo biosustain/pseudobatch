@@ -248,6 +248,42 @@ function fedbatch_prod_inhib_volatile!(dudt, u, p, t)
     return dudt
 end
 
+"""
+Defines the ODE system for a fed-batch fermentation operated with an exponential
+feed profile. The growth of the microorganism is modelled through monods equation.
+In this simulation water evaporates at a constant rate from the reactor.
+
+The system holds 7 state variables with are defined as follows:
+    dudt[1] : mass of substrate in the liquid
+    dudt[2] : mass of biomass in the liquid
+    dudt[3] : mass of product in the liquid
+    dudt[4] : mass of co2 in liquid
+    dudt[5] : volume of liquid
+    dudt[6] : feeding rate
+    dudt[7] : mass of co2 in off-gas
+
+The systems is build under the assumption that the CO2 evaporates instantly
+after production.
+"""
+function fedbatch_evaporation!(dudt, u, p, t)
+    Kc_s, mu_max, Yxs, Yxp, Yxco2, F0, mu0, s_f, evap_rate = p      
+
+    # Growth kinetics consider moving this as a seperate function
+    c_s = u[1]/u[5] 
+    mu = monod_kinetics(c_s, mu_max, Kc_s)
+
+    dudt[1] = -Yxs * mu * u[2] + v_feed(t, F0, mu0) * s_f
+    dudt[2] = mu * u[2]
+    dudt[3] = Yxp * mu * u[2]
+    dudt[4] = Yxco2 * mu * u[2] - Yxco2 * mu * u[2] # co2 production - co2 evaporation
+    dudt[5] = v_feed(t, F0, mu0) -  evap_rate # volume
+    dudt[6] = v_feed(t, F0, mu0) # feed used to integrate feed_accum
+    dudt[7] = Yxco2 * mu * u[2] # all co2 evaporates immidately into off-gas analyzer
+
+
+    return dudt
+end
+
 ############################# EVENT HANDLING / CALLBACKS #####################
 """
 Calculates the amount of mass removed when a give volume is sampled from the
