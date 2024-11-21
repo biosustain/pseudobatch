@@ -13,7 +13,13 @@ from pseudobatch.data_correction import (
     metabolised_amount,
     hypothetical_concentration,
 )
-from pseudobatch.datasets import load_standard_fedbatch, load_product_inhibited_fedbatch, load_cho_cell_like_fedbatch, load_volatile_compounds_fedbatch
+from pseudobatch.datasets import (
+    load_standard_fedbatch,
+    load_product_inhibited_fedbatch,
+    load_cho_cell_like_fedbatch,
+    load_volatile_compounds_fedbatch,
+    load_evaporation_fedbatch,
+)
 
 
 def fit_ols_model(formula_like: str, data: pd.DataFrame) -> sm.regression.linear_model.RegressionResultsWrapper:
@@ -224,3 +230,49 @@ def test_calculation_of_gaseous_yield():
 
     Yxco2_true = fedbatch_df.Yxo2.iloc[0]
     assert np.abs(res.params[1]) == pytest.approx(Yxco2_true, 1e-6)
+
+
+def test_pseudobatch_transformation_evaporation():
+    """Tests that the growth rate and substrate yields are correctly estimated
+    pseudo batch transformed data. This test utilises all simulated data points
+    """
+    # correct glucose data
+    fedbatch_df = load_evaporation_fedbatch()
+    fedbatch_df["corrected_glucose"] = pseudobatch_transform(
+        measured_concentration=fedbatch_df["c_Glucose"].to_numpy(),
+        reactor_volume=fedbatch_df["v_Volume"].to_numpy(),
+        accumulated_feed=fedbatch_df["v_Feed_accum"].to_numpy(),
+        concentration_in_feed=fedbatch_df.s_f.iloc[
+            0
+        ],  # the glucose concentration in the feed is stored in the dataframe
+        sample_volume=fedbatch_df["sample_volume"].to_numpy(),
+    )
+
+    # correct biomass data
+    fedbatch_df["corrected_biomass"] = pseudobatch_transform(
+        measured_concentration=fedbatch_df["c_Biomass"].to_numpy(),
+        reactor_volume=fedbatch_df["v_Volume"].to_numpy(),
+        accumulated_feed=fedbatch_df["v_Feed_accum"].to_numpy(),
+        concentration_in_feed=0,
+        sample_volume=fedbatch_df["sample_volume"].to_numpy(),
+    )
+
+    ## Calculate growth rate
+    res_corrected = fit_ols_model(
+        formula_like="np.log(corrected_biomass) ~ timestamp", data=fedbatch_df
+    )
+    mu_hat = res_corrected.params[1]
+
+    ## Calculate glucose yield coefficient
+    model_dat = fedbatch_df
+    res_corrected = fit_ols_model(
+        formula_like="corrected_glucose ~ corrected_biomass", data=model_dat
+    )
+    Yxs = np.abs(res_corrected.params[1])  # yields have to be positive
+
+    # True values
+    mu_true = fedbatch_df.mu_true.iloc[0]
+    Yxs_true = fedbatch_df.Yxs.iloc[0]
+
+    assert mu_hat == pytest.approx(mu_true, 1e-4)
+    assert Yxs == pytest.approx(Yxs_true, 1e-6)
