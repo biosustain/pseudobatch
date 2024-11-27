@@ -12,6 +12,7 @@ on:
       - '**'
     paths:
       - '**.py'
+      - '**.stan'
   pull_request:
   workflow_dispatch: {}
 
