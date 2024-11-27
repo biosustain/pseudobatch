@@ -10,6 +10,8 @@ on:
       - 'develop'
     tags:
       - '**'
+    paths:
+      - '**.py'
   pull_request:
   workflow_dispatch: {}
 
