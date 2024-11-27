@@ -1,5 +1,12 @@
 name: Docs
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
+    # only when docs files have been modified
+    path: ['docs/**']
 permissions:
     contents: write
 
@@ -10,6 +17,11 @@ env:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    # Checks that pull request was merged
+    if: >
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && 
+      github.event.pull_request.merged == true)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,7 +50,6 @@ jobs:
           cd ..
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
