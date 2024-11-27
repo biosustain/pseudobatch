@@ -14,3 +14,4 @@ Here you will find tutorials for how to use the pseudobatch transformation.
    7 - Pseudobatch transformation with uncertainties
    8 - Special case gaseous species
    9 - Special case non-feed additions
+   10 - Special case evaporation
