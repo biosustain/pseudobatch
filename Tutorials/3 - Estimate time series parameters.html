@@ -1,0 +1,879 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Estimate time series parameters using pseudo batch transformed data &#8212; Pseudobatch  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Tutorials/3 - Estimate time series parameters';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dealing with multiple feeds" href="4%20-%20Dealing%20with%20multiple%20feeds.html" />
+    <link rel="prev" title="Estimating overall rates and yields from pseudo batch transformed data" href="2%20-%20Estimate%20overall%20rates%20and%20yields.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pseudobatch  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2%20-%20Estimate%20overall%20rates%20and%20yields.html">Estimating overall rates and yields from pseudo batch transformed data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Estimate time series parameters using pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4%20-%20Dealing%20with%20multiple%20feeds.html">Dealing with multiple feeds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5%20-%20Importing%20data%20from%20Excel%20template.html">Read in and process data from the Excel template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html">Real world example: Yeast Biolector Fermentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html">Pseudobatch transformation with uncertainties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8%20-%20Special%20case%20gaseous%20species.html">Special case: gaseous species</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9%20-%20Special%20case%20non-feed%20additions.html">Special case: Non-feed additions such as anti-foam, and pH control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10%20-%20Special%20case%20evaporation.html">Special case: evaporation of water</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Estimate time series parameters using pseudo batch transformed data</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Estimate-time-series-parameters-using-pseudo-batch-transformed-data">
+<h1>Estimate time series parameters using pseudo batch transformed data<a class="headerlink" href="#Estimate-time-series-parameters-using-pseudo-batch-transformed-data" title="Link to this heading">#</a></h1>
+<p>This tutorial will walk through how to estimate a series for the rates and yields from a fed-batch fermentation. This can be useful to detect changes in the phenotype during the fed-batch process. We will work with simulated data, thus the true parameters will be known.</p>
+<section id="Initialise-session-and-loading-data">
+<h2>Initialise session and loading data<a class="headerlink" href="#Initialise-session-and-loading-data" title="Link to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">,</span> <span class="n">convert_volumetric_rates_from_pseudo_to_real</span>
+<span class="kn">from</span> <span class="nn">pseudobatch.datasets</span> <span class="kn">import</span> <span class="n">load_product_inhibited_fedbatch</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/s143838/.virtualenvs/pseudobatch-dev/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;stan_version_major&#39;: &#39;2&#39;, &#39;stan_version_minor&#39;: &#39;29&#39;, &#39;stan_version_patch&#39;: &#39;2&#39;, &#39;STAN_THREADS&#39;: &#39;false&#39;, &#39;STAN_MPI&#39;: &#39;false&#39;, &#39;STAN_OPENCL&#39;: &#39;false&#39;, &#39;STAN_NO_RANGE_CHECKS&#39;: &#39;false&#39;, &#39;STAN_CPP_OPTIMS&#39;: &#39;false&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df_measurement</span> <span class="o">=</span> <span class="n">load_product_inhibited_fedbatch</span><span class="p">(</span><span class="n">sampling_points_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># for visualization purposes we will also load the full dataset</span>
+<span class="n">fedbatch_df</span> <span class="o">=</span> <span class="n">load_product_inhibited_fedbatch</span><span class="p">(</span><span class="n">sampling_points_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>First, let’s quickly inspect the dataframe</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">fedbatch_df_measurement</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Glucose&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Product&#39;</span><span class="p">,</span> <span class="s1">&#39;v_Volume&#39;</span><span class="p">,</span> <span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>timestamp</th>
+      <th>sample_volume</th>
+      <th>c_Biomass</th>
+      <th>c_Glucose</th>
+      <th>c_Product</th>
+      <th>v_Volume</th>
+      <th>v_Feed_accum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10.000000</td>
+      <td>100.0</td>
+      <td>1.315046</td>
+      <td>0.117208</td>
+      <td>0.676000</td>
+      <td>1015.906036</td>
+      <td>15.906036</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>14.545455</td>
+      <td>100.0</td>
+      <td>2.026109</td>
+      <td>0.171224</td>
+      <td>1.265827</td>
+      <td>928.960902</td>
+      <td>28.960902</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>19.090909</td>
+      <td>100.0</td>
+      <td>3.083525</td>
+      <td>0.296168</td>
+      <td>2.143140</td>
+      <td>847.314262</td>
+      <td>47.314262</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>23.636364</td>
+      <td>100.0</td>
+      <td>4.568350</td>
+      <td>0.651151</td>
+      <td>3.375809</td>
+      <td>772.816654</td>
+      <td>72.816654</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>28.181818</td>
+      <td>100.0</td>
+      <td>6.410392</td>
+      <td>1.735493</td>
+      <td>4.907704</td>
+      <td>707.795685</td>
+      <td>107.795685</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>This dataframe is structured exactly similar to the one use in the previous tutorial, though the data is different. We can go straight to the pseudo batch transformation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">glucose_in_feed</span> <span class="o">=</span> <span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;s_f&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># The glucose concentration in the feed is constant and store in a row in the dataframe.</span>
+
+<span class="n">fedbatch_df_measurement</span><span class="p">[[</span><span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_CO2_pseudo&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">(</span>
+    <span class="n">fedbatch_df_measurement</span><span class="p">,</span>
+    <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_Biomass&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product&quot;</span><span class="p">,</span> <span class="s2">&quot;c_CO2&quot;</span><span class="p">],</span>
+    <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s2">&quot;v_Volume&quot;</span><span class="p">,</span>
+    <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s2">&quot;v_Feed_accum&quot;</span><span class="p">,</span>
+    <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s2">&quot;sample_volume&quot;</span><span class="p">,</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">glucose_in_feed</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="c1"># The biomass, product, CO2 concentrations in the feed are all 0.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we have transformed the data we can estimate parameters.</p>
+</section>
+<section id="Estimate-the-growth-rate">
+<h2>Estimate the growth rate<a class="headerlink" href="#Estimate-the-growth-rate" title="Link to this heading">#</a></h2>
+<p>We want to obtain estimates the growth rate as a function of time, i.e. to estimate <span class="math notranslate nohighlight">\(\mu(t)\)</span>. First, we will look at the mass balance for biomass. Because we can treat the pseudo batch transformed data as a batch process, we can do the mass balance on pseudo concentration basis instead of mass basis. Assuming that the death rate is 0, the mass balance for the biomass is as follows:</p>
+<div class="math notranslate nohighlight">
+\[\frac{dC^{\star}_{Biomass}(t)}{dt} = \mu(t) * C^{\star}_{Biomass}(t)\]</div>
+<p>Where <span class="math notranslate nohighlight">\(X(t)\)</span> is the biomass in grams, and <span class="math notranslate nohighlight">\(\mu\)</span> is the specific growth rate, The goal is to find <span class="math notranslate nohighlight">\(\mu(t)\)</span>, therefore we can isolate <span class="math notranslate nohighlight">\(\mu(t)\)</span> to get</p>
+<div class="math notranslate nohighlight">
+\[\mu(t) = \frac{dC^{\star}_{Biomass}(t)}{dt} * C^{\star}_{Biomass}(t)^{-1}\]</div>
+<p>Thus, to calculate the time dependent growth rate, we will need the time derivative of the pseudo biomass concentration (<span class="math notranslate nohighlight">\(\frac{dC^{\star}_{Biomass}(t)}{dt}\)</span>) and the pseudo biomass concentration (<span class="math notranslate nohighlight">\(C^{\star}_{Biomass}(t)\)</span>). We already have the pseudo biomass concentration measurements, but we need to estimate <span class="math notranslate nohighlight">\(\frac{dC^{\star}_{Biomass}(t)}{dt}\)</span>. There are many methods that are capable of estimating the derivative of an underlying function (the true growth curve). Typically,
+these methods assume that the underlying function is continuous. This is not the case for the biomass time series, because samples where drawn from this cultivation. Fortunately, the pseudo batch transformation transform the measurements into a space where underlying growth curve is continuous and therefore the pseudo batch transformation enables the use of many methods to estimate rates as a function of time.</p>
+<p>Here, we will show how to use finite differences to estimate the growth rate at each measurement time point. First, we will define a function that estimate the time derivative using the finite difference method in the <code class="docutils literal notranslate"><span class="pre">np.gradient()</span></code> function.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">finite_difference_derivative</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">x_colname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_colname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">x_colname</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">log_transform_y</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">y_colname</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">y_colname</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now, we can estimate <span class="math notranslate nohighlight">\(\mu(t)\)</span> as describe in the equation above.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_hat</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">c_Biomass_pseudo</span>
+</pre></div>
+</div>
+</div>
+<p>We can plot <span class="math notranslate nohighlight">\(\hat\mu(t)\)</span> as a function of time to inspect is the growth rate was constant over course of the cultivation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">growth_rate_fig</span><span class="p">,</span> <span class="n">growth_rate_ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">mu_hat</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Estimated growth rate (pseudo batch)&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Growth rate&quot;</span><span class="p">)</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Feeding time [h]&quot;</span><span class="p">)</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Growth rate [1/h]&quot;</span><span class="p">)</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x12dc9b430&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_3_-_Estimate_time_series_parameters_15_1.png" src="../_images/Tutorials_3_-_Estimate_time_series_parameters_15_1.png" />
+</div>
+</div>
+<p>From this specific growth rate time series we can see that the rate decreases during the fed-batch process. This hints that something may build up during the process and inhibiting the growth. Because this data is simulated we know the true growth rate and we can compare this to the estimated growth rates.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;mu_true&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simulated growth rate&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">growth_rate_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">growth_rate_fig</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_3_-_Estimate_time_series_parameters_17_0.png" src="../_images/Tutorials_3_-_Estimate_time_series_parameters_17_0.png" />
+</div>
+</div>
+<p>We see that the estimate is in general close to true growth rate. but close to the boundaries the estimate gets worse. This is because the <code class="docutils literal notranslate"><span class="pre">np.gradient()</span></code> function use a rolling window af 5 data points (centered) to estimate the derivative, but at the boundaries there are not enough data points to fill the window. Therefore the quality of the estimate decreases. Remember that this is simulated data, and therefore we have the accurate measurements. That is not the case in the real world, here
+the measurements will be noisy, which will be reflected in the accuracy of the growth rate estimates.</p>
+</section>
+<section id="Estimate-specific-consumption-or-production-rates">
+<h2>Estimate specific consumption or production rates<a class="headerlink" href="#Estimate-specific-consumption-or-production-rates" title="Link to this heading">#</a></h2>
+<p>Similarly to what we did for growth rate we can setup mass balances for the individual species again on pseudo concentration basis.</p>
+<div class="math notranslate nohighlight">
+\[\frac{dC^{\star}_{species}(t)}{dt} = r_{species} * C^{\star}_{Biomass}(t)\]</div>
+<p>Where <span class="math notranslate nohighlight">\(C^{\star}_{species}(t)\)</span> pseudo concentration of <span class="math notranslate nohighlight">\(species\)</span>, <span class="math notranslate nohighlight">\(r_{species}\)</span> is the specific rate of the <span class="math notranslate nohighlight">\(species\)</span>, and <span class="math notranslate nohighlight">\(C^{\star}_{Biomass}(t)\)</span> pseudo biomass concentration. The goal is to find <span class="math notranslate nohighlight">\(r_{species}(t)\)</span>, therefore we can isolate <span class="math notranslate nohighlight">\(r_{species}(t)\)</span> to get</p>
+<div class="math notranslate nohighlight">
+\[r_{species} = \frac{dC^{\star}_{species}(t)}{dt} * C^{\star}_{Biomass}(t)^{-1}\]</div>
+<p>Similarly to the growth rate, we can estimate <span class="math notranslate nohighlight">\(\frac{dC^{\star}_{species}(t)}{dt}\)</span> as the first order derivative of the time evolution of the species mass. Again using finite difference method we can estimate the rate as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r_glucose_uptake</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">c_Biomass_pseudo</span>
+<span class="n">r_product_production</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">c_Biomass_pseudo</span>
+<span class="n">r_co2_production</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_CO2_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">c_Biomass_pseudo</span>
+</pre></div>
+</div>
+</div>
+<p>We can plot the estimated rate along with the true rates.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the results</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;mu_true&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxs&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simulated glucose uptake rate&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">r_glucose_uptake</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Estimated glucose uptake rate (pseudo batch)&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Glucose uptake rate&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;mu_true&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxp&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simulated product formation rate&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">r_product_production</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Estimated product formation rate (pseudo batch)&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Product formation rate&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;mu_true&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxco2&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simulated CO2 formation rate&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">r_co2_production</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Estimated CO2 formation rate (pseudo batch)&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;CO2 formation rate&quot;</span><span class="p">)</span>
+
+<span class="c1"># setup legend</span>
+<span class="n">true_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;True $r$&#39;</span><span class="p">)</span>
+<span class="n">pseudo_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Estimated $r$&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+    <span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">true_patch</span><span class="p">,</span> <span class="n">pseudo_patch</span><span class="p">],</span>
+    <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.12</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">supxlabel</span><span class="p">(</span><span class="s2">&quot;Feeding time [h]&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Specific rate [g/gDW/h]&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_3_-_Estimate_time_series_parameters_22_0.png" src="../_images/Tutorials_3_-_Estimate_time_series_parameters_22_0.png" />
+</div>
+</div>
+<p>Because this is simulated data the plot these plot are very similar only scaled differently, but it shows how estimate the rates as function of time based on pseudo batch transformed data.</p>
+</section>
+<section id="Estimate-volumetric-rates">
+<h2>Estimate volumetric rates<a class="headerlink" href="#Estimate-volumetric-rates" title="Link to this heading">#</a></h2>
+<p>Sometimes one is interested in the volumetric rates. These can also be calculated from the pseudo batch transformed data, but it requires a bit extra care.</p>
+<p>Recall that in a batch process there is no volume change and therefore all changes in concentrations are due to cellular behavior (if we ignore phenomena as evaporation and gas stripping). Thus the volumetric rates can be calculated from the pseudo batch transformed data by estimating the differential quotient and the concentration time series data.</p>
+<div class="math notranslate nohighlight">
+\[q^{\star}_{species} = \frac{dC_{species}^{\star}}{dt}\]</div>
+<p>Though this volumetric rate describes the rate of change in the pseudo concentration, which is not the same as the rate of change of the real concentration. We can convert it to real concentration using the function <code class="docutils literal notranslate"><span class="pre">convert_volumetric_rates_from_pseudo_to_real()</span></code>.</p>
+<p>In the following we will use the finite difference method to estimate <span class="math notranslate nohighlight">\(\frac{dC_{species}^{\star}}{dt}\)</span> and them convert it into real concentrations to obtain as estimate of the volumetric rates.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimate finite difference derivatives</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_star_biomass_production&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_star_glucose_uptake&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_star_product_production&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_star_co2_production&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">finite_difference_derivative</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;c_CO2_pseudo&quot;</span><span class="p">,</span> <span class="n">log_transform_y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># convert to real volumetric rates</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_biomass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_volumetric_rates_from_pseudo_to_real</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">q_star_biomass_production</span><span class="p">,</span> <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">v_Volume</span><span class="p">,</span> <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">sample_volume</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_glucose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_volumetric_rates_from_pseudo_to_real</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">q_star_glucose_uptake</span><span class="p">,</span> <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">v_Volume</span><span class="p">,</span> <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">sample_volume</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_product&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_volumetric_rates_from_pseudo_to_real</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">q_star_product_production</span><span class="p">,</span> <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">v_Volume</span><span class="p">,</span> <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">sample_volume</span><span class="p">)</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_co2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_volumetric_rates_from_pseudo_to_real</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">q_star_co2_production</span><span class="p">,</span> <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">v_Volume</span><span class="p">,</span> <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">sample_volume</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>For comparison we will now calculate the true volumetric rates</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># true volumetric rates</span>
+<span class="n">true_volumetric_rates</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s1">&#39;timestamp&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s1">&#39;q_biomass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">mu_true</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">c_Biomass</span>
+<span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s1">&#39;q_glucose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">mu_true</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">c_Biomass</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">Yxs</span>
+<span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s1">&#39;q_product&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">mu_true</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">c_Biomass</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">Yxp</span>
+<span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s1">&#39;q_co2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">mu_true</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">c_Biomass</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">Yxco2</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, we can plot true and estimate volumetric rates</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the results</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;q_biomass&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simulated glucose uptake rate&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_biomass&#39;</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Volumetric biomass production rate&quot;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;q_glucose&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_glucose&#39;</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Volumetric glucose uptake rate&quot;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;q_product&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_product&#39;</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Volumetric product production rate&quot;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">true_volumetric_rates</span><span class="p">[</span><span class="s2">&quot;q_co2&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="s1">&#39;q_co2&#39;</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Volumetric product production rate&quot;</span><span class="p">)</span>
+
+<span class="c1"># setup legend</span>
+<span class="n">true_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;True $q$&#39;</span><span class="p">)</span>
+<span class="n">pseudo_patch</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Estimated $q$&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+    <span class="n">handles</span><span class="o">=</span><span class="p">[</span><span class="n">true_patch</span><span class="p">,</span> <span class="n">pseudo_patch</span><span class="p">],</span>
+    <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.12</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">supxlabel</span><span class="p">(</span><span class="s2">&quot;Feeding time [h]&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Volumetric rate [g/L/h]&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_3_-_Estimate_time_series_parameters_31_0.png" src="../_images/Tutorials_3_-_Estimate_time_series_parameters_31_0.png" />
+</div>
+</div>
+<p>We see that the estimate the volumetric rates are very good, but again similar to the specific rates it is difficult to get good estimates close the boundaries of the time series.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2%20-%20Estimate%20overall%20rates%20and%20yields.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Estimating overall rates and yields from pseudo batch transformed data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4%20-%20Dealing%20with%20multiple%20feeds.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Dealing with multiple feeds</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Initialise-session-and-loading-data">Initialise session and loading data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Estimate-the-growth-rate">Estimate the growth rate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Estimate-specific-consumption-or-production-rates">Estimate specific consumption or production rates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Estimate-volumetric-rates">Estimate volumetric rates</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/Tutorials/3 - Estimate time series parameters.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Viktor Hesselberg Thomsen and Teddy Groves.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

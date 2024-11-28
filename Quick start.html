@@ -1,0 +1,813 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick start &#8212; Pseudobatch  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Quick start';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="Tutorials/index.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pseudobatch  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="Tutorials/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="Tutorials/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Quick start</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Quick-start">
+<h1>Quick start<a class="headerlink" href="#Quick-start" title="Link to this heading">#</a></h1>
+<p>This tutorial will show how to use the pseodo batch transformation function in python and explain the data structure of the input data.</p>
+<section id="Loading-fedbatch-data">
+<h2>Loading fedbatch data<a class="headerlink" href="#Loading-fedbatch-data" title="Link to this heading">#</a></h2>
+<p>We will start with setting up the python session and loading the data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">,</span> <span class="n">pseudobatch_transform</span>
+<span class="kn">from</span> <span class="nn">pseudobatch.datasets</span> <span class="kn">import</span> <span class="n">load_standard_fedbatch</span>
+</pre></div>
+</div>
+</div>
+<p>The pseudobatch package includes few datasets of simulated data that are used to showcase the package. We will load the simplest one which is a exponential fed-batch fermentation operated in substrate limited mode.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span> <span class="o">=</span> <span class="n">load_standard_fedbatch</span><span class="p">(</span><span class="n">sampling_points_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Lets start with getting an overview of the data that we have imported by looking at a part of the dataframe.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">fedbatch_df</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Glucose&#39;</span><span class="p">,</span> <span class="s1">&#39;c_Product&#39;</span><span class="p">,</span> <span class="s1">&#39;v_Volume&#39;</span><span class="p">,</span> <span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sample_volume</th>
+      <th>timestamp</th>
+      <th>c_Biomass</th>
+      <th>c_Glucose</th>
+      <th>c_Product</th>
+      <th>v_Volume</th>
+      <th>v_Feed_accum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>170.0</td>
+      <td>10.000000</td>
+      <td>1.337852</td>
+      <td>0.075016</td>
+      <td>0.694735</td>
+      <td>1015.906036</td>
+      <td>15.906036</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>170.0</td>
+      <td>17.142857</td>
+      <td>2.664023</td>
+      <td>0.075103</td>
+      <td>1.794378</td>
+      <td>867.753513</td>
+      <td>37.753513</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>170.0</td>
+      <td>24.285714</td>
+      <td>5.175767</td>
+      <td>0.075053</td>
+      <td>3.877080</td>
+      <td>733.638872</td>
+      <td>73.638872</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>170.0</td>
+      <td>31.428571</td>
+      <td>9.612284</td>
+      <td>0.075015</td>
+      <td>7.555778</td>
+      <td>619.956743</td>
+      <td>129.956743</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>170.0</td>
+      <td>38.571429</td>
+      <td>16.561967</td>
+      <td>0.075011</td>
+      <td>13.318358</td>
+      <td>533.452797</td>
+      <td>213.452797</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>170.0</td>
+      <td>45.714286</td>
+      <td>25.635276</td>
+      <td>0.075009</td>
+      <td>20.841818</td>
+      <td>479.658734</td>
+      <td>329.658734</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>170.0</td>
+      <td>52.857143</td>
+      <td>35.029969</td>
+      <td>0.075033</td>
+      <td>28.631766</td>
+      <td>462.904906</td>
+      <td>482.904906</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>170.0</td>
+      <td>60.000000</td>
+      <td>42.688520</td>
+      <td>0.075012</td>
+      <td>34.982129</td>
+      <td>490.982268</td>
+      <td>680.982268</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>This shows some of the columns in the dataframe.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sample_volume</span></code> columns contain the sample volume at the given time point. In this dataset, we have online measurements thus more measurements than samples and therefore at most timepoint the sample volume is 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code> describe the timepoint</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c_Biomass</span></code>, <code class="docutils literal notranslate"><span class="pre">c_Glucose</span></code>, and <code class="docutils literal notranslate"><span class="pre">c_Product</span></code> is the online concentration measurements</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v_Volume</span></code> is the volume of the bioreactor. <strong>IMPORTANT:</strong> at points where a sample is taken this value represents the volume just <strong>before</strong> the sample was drawn.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v_Feed_accum</span></code> is the accumulated feed added until that timepoint.</p></li>
+</ul>
+<p>This is also the data structure which the <code class="docutils literal notranslate"><span class="pre">pseudobatch_transform()</span></code> expects.</p>
+</section>
+<section id="Transform-a-single-measurement-time-series">
+<h2>Transform a single measurement time series<a class="headerlink" href="#Transform-a-single-measurement-time-series" title="Link to this heading">#</a></h2>
+<p>We will now transform the biomass time series data using the <code class="docutils literal notranslate"><span class="pre">pseudobatch_transform()</span></code> function.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pseudo_biomass</span> <span class="o">=</span> <span class="n">pseudobatch_transform</span><span class="p">(</span>
+    <span class="n">measured_concentration</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;c_Biomass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">accumulated_feed</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="c1"># There is no biomass in the feeding medium</span>
+    <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Transform-multiple-time-series">
+<h2>Transform multiple time series<a class="headerlink" href="#Transform-multiple-time-series" title="Link to this heading">#</a></h2>
+<p>The above show how to transform measurements from a single species (here biomass). However often fermentation datasets often also holds measurements substrate and products, and by-products.</p>
+<p>We expect most users to work with their data in Pandas Dataframes therefore provide a convenience wrapper function that can be applied directly to a Pandas DataFrame. Under the hood this just loops over a list of columns and calls the <code class="docutils literal notranslate"><span class="pre">pseudobatch_transform()</span></code> on each of them. Because we provide a list of species to transform, we also need to provide a list of concentrations in the feed medium. The two lists has to follow the same order.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conc_in_feed</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># [Biomass, Glucose, Product] in g/L</span>
+
+<span class="n">fedbatch_df</span><span class="p">[[</span><span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">(</span>
+    <span class="n">fedbatch_df</span><span class="p">,</span>
+    <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_Biomass&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product&quot;</span><span class="p">],</span>
+    <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s2">&quot;v_Volume&quot;</span><span class="p">,</span>
+    <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s2">&quot;v_Feed_accum&quot;</span><span class="p">,</span>
+    <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s2">&quot;sample_volume&quot;</span><span class="p">,</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="n">conc_in_feed</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>Note 1</strong> In the above, we show how to transform data from a single culture/replicate. In <a class="reference external" href="httpsss/biosustain.github.io/pseudobatch/Tutorials/6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html">this tutorial</a> we show how transform multiple cultures in one go using the Pandas groupby functionality.</p>
+<p><strong>Note 2</strong> Volatile compounds (for example CO2 and O2) requires special treatment, find more about that in <a class="reference external" href="https://biosustain.github.io/pseudobatch/Tutorials/8%20-%20Special%20case%20gaseous%20species.html">this tutorial</a>.</p>
+<p>Now we have the pseudo-batch transformed data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>timestamp</th>
+      <th>c_Biomass_pseudo</th>
+      <th>c_Glucose_pseudo</th>
+      <th>c_Product_pseudo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10.000000</td>
+      <td>1.337852</td>
+      <td>0.075016</td>
+      <td>0.694735</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>17.142857</td>
+      <td>2.732828</td>
+      <td>-2.505689</td>
+      <td>1.840722</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>24.285714</td>
+      <td>5.582507</td>
+      <td>-7.777595</td>
+      <td>4.181762</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>31.428571</td>
+      <td>11.403591</td>
+      <td>-18.546600</td>
+      <td>8.963843</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>38.571429</td>
+      <td>23.294434</td>
+      <td>-40.544661</td>
+      <td>18.732292</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Visualizing-the-pseudobatch-concentrations">
+<h2>Visualizing the pseudobatch concentrations<a class="headerlink" href="#Visualizing-the-pseudobatch-concentrations" title="Link to this heading">#</a></h2>
+<p>We can quickly visualize the data here</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Pseudobatch concentration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time [h]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;Time [h]&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Quick_start_19_1.png" src="_images/Quick_start_19_1.png" />
+</div>
+</div>
+<p>In pseudo batch transformed data consumed species typically becomes negative. This simply shows that the culture have consumed more glucose than was initially present because of the feed. To make a prettier plot we can simply subtract the final pseudo batch concentration from all measurements.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;c_Glucose_pseudo_positive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s2">&quot;c_Glucose_pseudo&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">fedbatch_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_Biomass_pseudo&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Glucose_pseudo_positive&quot;</span><span class="p">,</span> <span class="s2">&quot;c_Product_pseudo&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Pseudobatch concentration&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time [h]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 0, &#39;Time [h]&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Quick_start_21_1.png" src="_images/Quick_start_21_1.png" />
+</div>
+</div>
+<p>Now the data also looks more like what we usually expect from a batch culture. Remember that the y-axis has the units pseudo concentration, thus it is difficult to interpret the actual values. It is safest to only interpret time evolution trends of the pseudo batch concentration data.</p>
+<p>This quick start only shows how to use the pseudo batch transformation. In the tutorials you will find examples of how to integrate the pseudo batch transformation into regular cell cultivation workflows.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="install.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Installation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Tutorials/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tutorials</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Loading-fedbatch-data">Loading fedbatch data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Transform-a-single-measurement-time-series">Transform a single measurement time series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Transform-multiple-time-series">Transform multiple time series</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Visualizing-the-pseudobatch-concentrations">Visualizing the pseudobatch concentrations</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/Quick start.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Viktor Hesselberg Thomsen and Teddy Groves.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

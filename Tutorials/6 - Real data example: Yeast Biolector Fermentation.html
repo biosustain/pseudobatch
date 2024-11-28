@@ -1,0 +1,756 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Real world example: Yeast Biolector Fermentation &#8212; Pseudobatch  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Tutorials/6 - Real data example: Yeast Biolector Fermentation';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pseudobatch transformation with uncertainties" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html" />
+    <link rel="prev" title="Read in and process data from the Excel template" href="5%20-%20Importing%20data%20from%20Excel%20template.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pseudobatch  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2%20-%20Estimate%20overall%20rates%20and%20yields.html">Estimating overall rates and yields from pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3%20-%20Estimate%20time%20series%20parameters.html">Estimate time series parameters using pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4%20-%20Dealing%20with%20multiple%20feeds.html">Dealing with multiple feeds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5%20-%20Importing%20data%20from%20Excel%20template.html">Read in and process data from the Excel template</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Real world example: Yeast Biolector Fermentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html">Pseudobatch transformation with uncertainties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8%20-%20Special%20case%20gaseous%20species.html">Special case: gaseous species</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9%20-%20Special%20case%20non-feed%20additions.html">Special case: Non-feed additions such as anti-foam, and pH control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10%20-%20Special%20case%20evaporation.html">Special case: evaporation of water</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Real world example: Yeast Biolector Fermentation</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Real-world-example:-Yeast-Biolector-Fermentation">
+<h1>Real world example: Yeast Biolector Fermentation<a class="headerlink" href="#Real-world-example:-Yeast-Biolector-Fermentation" title="Link to this heading">#</a></h1>
+<p>I this notebook, we will show how to apply the Pseudobatch transformation to data collected of a fed-batch experiment. We will showcase how to transform data from multiple cultures/replicates in one go and how to estimate the growth rate of each culture.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+
+
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">pseudobatch_transform_pandas</span>
+<span class="kn">from</span> <span class="nn">pseudobatch.datasets</span> <span class="kn">import</span> <span class="n">load_real_world_yeast_fedbatch</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/s143838/.virtualenvs/pseudobatch-dev/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;stan_version_major&#39;: &#39;2&#39;, &#39;stan_version_minor&#39;: &#39;29&#39;, &#39;stan_version_patch&#39;: &#39;2&#39;, &#39;STAN_THREADS&#39;: &#39;false&#39;, &#39;STAN_MPI&#39;: &#39;false&#39;, &#39;STAN_OPENCL&#39;: &#39;false&#39;, &#39;STAN_NO_RANGE_CHECKS&#39;: &#39;false&#39;, &#39;STAN_CPP_OPTIMS&#39;: &#39;false&#39;}
+</pre></div></div>
+</div>
+<p>This data is from a cultivation experiment done in a Biolector (actually a Robolector) operating in fed-batch mode. Four different <strong>S. cerevisiae</strong> strains were cultivated in 8 replicates, there only difference is when the individual culture was sampled and how many times samples were drawn. Thus the dataset contains a total of 32 growth curves. In this tutorial we will show how to use pseudobatch transformation to transform all 32 growth curves and how to estimate the growth rate for each
+replicate.</p>
+<p>The Biolector is capable of collect online biomass measurements through the light scatter sensor. Thus this dataset contains a biomass measurement for each approximately fifth minute.</p>
+<p>First, we will load the dataset which is a part of the <code class="docutils literal notranslate"><span class="pre">pseudobatch.datasets</span></code>, thus is is easily loaded.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span> <span class="o">=</span> <span class="n">load_real_world_yeast_fedbatch</span><span class="p">()</span>
+<span class="n">fedbatch_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Strain</th>
+      <th>Biolector well</th>
+      <th>Biolector column</th>
+      <th>Biolector row</th>
+      <th>Cycle</th>
+      <th>Time</th>
+      <th>Feeding time</th>
+      <th>Volume</th>
+      <th>Accum. feed [uL]</th>
+      <th>Biomass concentration [light scatter]</th>
+      <th>DO%</th>
+      <th>Sample volume</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Yeast_strain_1</td>
+      <td>C01</td>
+      <td>1</td>
+      <td>C</td>
+      <td>145.0</td>
+      <td>14.5028</td>
+      <td>0.2</td>
+      <td>800.32</td>
+      <td>0.32</td>
+      <td>2.89</td>
+      <td>147.440002</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Yeast_strain_1</td>
+      <td>C02</td>
+      <td>2</td>
+      <td>C</td>
+      <td>145.0</td>
+      <td>14.5028</td>
+      <td>0.2</td>
+      <td>800.32</td>
+      <td>0.32</td>
+      <td>2.84</td>
+      <td>146.250000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Yeast_strain_2</td>
+      <td>C03</td>
+      <td>3</td>
+      <td>C</td>
+      <td>145.0</td>
+      <td>14.5028</td>
+      <td>0.2</td>
+      <td>800.32</td>
+      <td>0.32</td>
+      <td>2.93</td>
+      <td>145.429993</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Yeast_strain_2</td>
+      <td>C04</td>
+      <td>4</td>
+      <td>C</td>
+      <td>145.0</td>
+      <td>14.5028</td>
+      <td>0.2</td>
+      <td>800.32</td>
+      <td>0.32</td>
+      <td>2.97</td>
+      <td>145.610001</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Yeast_strain_3</td>
+      <td>C05</td>
+      <td>5</td>
+      <td>C</td>
+      <td>145.0</td>
+      <td>14.5028</td>
+      <td>0.2</td>
+      <td>800.32</td>
+      <td>0.32</td>
+      <td>3.13</td>
+      <td>148.240005</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>This dataset is preprocessed into a format that is very similar to the format of the simulated datasets used in the previous tutorials. This format follows the “Tidy”-format also called “long-format”. Each row represent measurements of one culture at one time point. For example row 0 above hold the biomass, Volume, and Accumulated feed measurements etc of Biolector well C01 at feeding time 0.2 hours (time relative to feed initiation).</p>
+<p>To get started lets have look at the growth curves (light scatter measurements).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># plotting</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;Strain&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;Strain&quot;</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">map_dataframe</span><span class="p">(</span><span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Feeding time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Biomass concentration [light scatter]&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;Biolector well&quot;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;seaborn.axisgrid.FacetGrid at 0x132fecd60&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_6_-_Real_data_example%3A_Yeast_Biolector_Fermentation_5_1.png" src="../_images/Tutorials_6_-_Real_data_example%3A_Yeast_Biolector_Fermentation_5_1.png" />
+</div>
+</div>
+<p>We don’t see the discontinuities in these plots because the light scatter measurements are proportional to the concentration of biomass [1]. However, we cannot calculate the correct growth rate from the concentrations because the volume of the bioreactors (Biolector wells) is not constant. Thus, the changes in the biomass concentration is function of both growth and volume change. Luckily the pseudo batch transformation can alleviate this issue.</p>
+<p>To transform the data correctly, we have to apply the pseudobatch transformation to each culture (Biolector well). This can be done by using the <code class="docutils literal notranslate"><span class="pre">pseudobatch_transform_pandas()</span></code> with a groupby-apply approach.</p>
+<p>In the following code the the <code class="docutils literal notranslate"><span class="pre">.groupby()</span></code> method creates a separate dataframe for culture/Biolector well. Then the <code class="docutils literal notranslate"><span class="pre">.apply()</span></code> method supplies these dataframes one by one first argument in pseudobatch_transform_pandas function and collects the output from all of transformation in a series. The remaining arguments to the <code class="docutils literal notranslate"><span class="pre">pseudobatch_transform_pandas()</span></code> function are the same for each execution, notice that these arguments <strong>HAVE TO</strong> be given as <strong>KEYWORD ARGUMENTS</strong>, i.e.
+<code class="docutils literal notranslate"><span class="pre">argument_name=value</span></code>.</p>
+<p>Notice that the we use the <code class="docutils literal notranslate"><span class="pre">group_keys=False</span></code> argument in the groupby mehtod. This maintains the original index (order of the data), thus allowing us to write the pseudo batch transformed data directly back into the original dataframe.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">biomass_concentration_in_feed</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># There is no yeast cells in the feed medium</span>
+
+<span class="c1"># Apply pseudobatch transformation and save the transformed biomass concentration in a new column</span>
+<span class="n">fedbatch_df</span><span class="p">[[</span><span class="s2">&quot;Biomass pseudo concentration&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fedbatch_df</span>
+    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Biolector well&quot;</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pseudobatch_transform_pandas</span><span class="p">,</span>
+        <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Biomass concentration [light scatter]&quot;</span><span class="p">],</span> <span class="c1"># we wish to transform the biomass concentration measurements</span>
+        <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s1">&#39;Volume&#39;</span><span class="p">,</span>
+        <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s1">&#39;Accum. feed [uL]&#39;</span><span class="p">,</span>
+        <span class="n">concentration_in_feed</span><span class="o">=</span><span class="p">[</span><span class="n">biomass_concentration_in_feed</span><span class="p">],</span>
+        <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s1">&#39;Sample volume&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we have transformed the data we fit a log-linear model to each of the growth curve. Similar to previous tutorials we define a small helper function to fit the model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_ols_model</span><span class="p">(</span><span class="n">formula_like</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sm</span><span class="o">.</span><span class="n">regression</span><span class="o">.</span><span class="n">linear_model</span><span class="o">.</span><span class="n">RegressionResultsWrapper</span><span class="p">:</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="n">formula_like</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">endog</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">exog</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+</div>
+<p>We can now iterate through the data from Biolector well and estimate the growth rate.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">growth_rate_models</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">grp</span><span class="p">,</span> <span class="n">dat</span> <span class="ow">in</span> <span class="n">fedbatch_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Strain&#39;</span><span class="p">,</span> <span class="s1">&#39;Biolector well&#39;</span><span class="p">]):</span>
+    <span class="n">growth_rate_models</span><span class="p">[</span><span class="n">grp</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_ols_model</span><span class="p">(</span><span class="s1">&#39;np.log(Q(&quot;Biomass pseudo concentration&quot;)) ~ Q(&quot;Feeding time&quot;)&#39;</span><span class="p">,</span> <span class="n">dat</span><span class="p">)</span>
+
+<span class="c1"># collect the growth rates in a dataframe</span>
+<span class="n">growth_rates_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="n">strain</span><span class="p">,</span> <span class="n">well</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="p">(</span><span class="n">strain</span><span class="p">,</span> <span class="n">well</span><span class="p">),</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">growth_rate_models</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Strain&#39;</span><span class="p">,</span> <span class="s1">&#39;Biolector well&#39;</span><span class="p">,</span> <span class="s1">&#39;Growth rate&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, we can inspect estimated growth rates for each of cultures.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">growth_rates_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Strain&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Growth rate&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;Strain&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;colorblind&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+([0, 1, 2, 3],
+ [Text(0, 0, &#39;Yeast_strain_1&#39;),
+  Text(1, 0, &#39;Yeast_strain_2&#39;),
+  Text(2, 0, &#39;Yeast_strain_3&#39;),
+  Text(3, 0, &#39;Yeast_strain_4&#39;)])
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_6_-_Real_data_example%3A_Yeast_Biolector_Fermentation_13_1.png" src="../_images/Tutorials_6_-_Real_data_example%3A_Yeast_Biolector_Fermentation_13_1.png" />
+</div>
+</div>
+<p>We can see that strains 1, 2, and 3 have similar growth rates, while strain 4 appears to grow a little slower. In this example we showed how to use the pseudobatch transformation to transform real world data.</p>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">#</a></h2>
+<p>[1] Kensy, Frank, Emerson Zang, Christian Faulhammer, Rung-Kai Tan, and Jochen Büchs. “Validation of a High-Throughput Fermentation System Based on Online Monitoring of Biomass and Fluorescence in Continuously Shaken Microtiter Plates.” Microbial Cell Factories 8, no. 1 (December 2009): 31. <a class="reference external" href="https://doi.org/10.1186/1475-2859-8-31">https://doi.org/10.1186/1475-2859-8-31</a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="5%20-%20Importing%20data%20from%20Excel%20template.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Read in and process data from the Excel template</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Pseudobatch transformation with uncertainties</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/Tutorials/6 - Real data example: Yeast Biolector Fermentation.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Viktor Hesselberg Thomsen and Teddy Groves.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

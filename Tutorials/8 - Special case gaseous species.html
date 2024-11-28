@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Special case: gaseous species &#8212; Pseudobatch  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Tutorials/8 - Special case gaseous species';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Special case: Non-feed additions such as anti-foam, and pH control" href="9%20-%20Special%20case%20non-feed%20additions.html" />
+    <link rel="prev" title="Pseudobatch transformation with uncertainties" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pseudobatch  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2%20-%20Estimate%20overall%20rates%20and%20yields.html">Estimating overall rates and yields from pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3%20-%20Estimate%20time%20series%20parameters.html">Estimate time series parameters using pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4%20-%20Dealing%20with%20multiple%20feeds.html">Dealing with multiple feeds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5%20-%20Importing%20data%20from%20Excel%20template.html">Read in and process data from the Excel template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html">Real world example: Yeast Biolector Fermentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html">Pseudobatch transformation with uncertainties</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Special case: gaseous species</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9%20-%20Special%20case%20non-feed%20additions.html">Special case: Non-feed additions such as anti-foam, and pH control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10%20-%20Special%20case%20evaporation.html">Special case: evaporation of water</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Special case: gaseous species</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Special-case:-gaseous-species">
+<h1>Special case: gaseous species<a class="headerlink" href="#Special-case:-gaseous-species" title="Link to this heading">#</a></h1>
+<p>In this special case tutorial we will discuss how to handle gaseous compounds both in the in- and outlet of the reactor, the most common molecules of this type is CO2 and O2. We can setup the full mass balance for the gaseous species as follows:</p>
+<div class="math notranslate nohighlight">
+\[\frac{dM_{species}}{dt}=In_{gas}+In_{liquid}-Out_{gas}+Metabolism-Sampled\]</div>
+<p>where <span class="math notranslate nohighlight">\(M_{species}\)</span> is the total amount of species in the reactor in both gas and aqueous phase. The term metabolism is the net value and covers both production (positive) and consumption (negative). If we integrate the mass balance we get the following:</p>
+<div class="math notranslate nohighlight">
+\[M_{species}(t)=\int_0^t In_{gas}+\int_0^t In_{liquid}-\int_0^t Out_{gas}+\int_0^t Metabolism-\int_0^t Sampled\]</div>
+<p>This shows that the concentration of the species at a give time is result of the integrated mass balance, i.e. the accumulated “events”, e.g. input of medium, gas, sampling etc. We are interested in how the cells contribute to the changes in mass of the species, thus we will isolate the metabolism term.</p>
+<div class="math notranslate nohighlight">
+\[\int_0^t Metabolism=M_{species}(t)-\int_0^t In_{gas}-\int_0^t In_{liquid}+\int_0^t Out_{gas}+\int_0^t Sampled\]</div>
+<p>The mass balance above works in mass units, however, the pseudo batch transformation can only work with concentrations. Therefore, we treat the integrated metabolism as entirely solubilized and assign it a “hypothetical concentration”, which we then perform the pseudobatch correction on.</p>
+<p>The pseudobatch package presents two functions which aids tranformation of gaseous species. The first calculates the hypothetical concentration from metabolism time series. The second function can calculate the metabolism term in the mass balance from the data.</p>
+<p>In this tutorial we will go through three examples</p>
+<ol class="arabic simple">
+<li><p>Highly insoluble produced compound, exemplified by <span class="math notranslate nohighlight">\(CO_2\)</span></p></li>
+<li><p>Consumed gaseous compound, exemplified by <span class="math notranslate nohighlight">\(O_2\)</span></p></li>
+<li><p>Partially insoluble compound, exemplified by a generic product</p></li>
+</ol>
+<p>Now, we are ready to setup the programming environment and load the data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">,</span> <span class="n">hypothetical_concentration</span><span class="p">,</span> <span class="n">metabolised_amount</span>
+<span class="kn">from</span> <span class="nn">pseudobatch.datasets</span> <span class="kn">import</span> <span class="n">load_volatile_compounds_fedbatch</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/s143838/.virtualenvs/pseudobatch-dev/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;stan_version_major&#39;: &#39;2&#39;, &#39;stan_version_minor&#39;: &#39;29&#39;, &#39;stan_version_patch&#39;: &#39;2&#39;, &#39;STAN_THREADS&#39;: &#39;false&#39;, &#39;STAN_MPI&#39;: &#39;false&#39;, &#39;STAN_OPENCL&#39;: &#39;false&#39;, &#39;STAN_NO_RANGE_CHECKS&#39;: &#39;false&#39;, &#39;STAN_CPP_OPTIMS&#39;: &#39;false&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span> <span class="o">=</span> <span class="n">load_volatile_compounds_fedbatch</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<section id="Transforming-a-highly-insoluble-produced-compound,-CO_2">
+<h2>Transforming a highly insoluble produced compound, <span class="math notranslate nohighlight">\(CO_2\)</span><a class="headerlink" href="#Transforming-a-highly-insoluble-produced-compound,-CO_2" title="Link to this heading">#</a></h2>
+<p>When a compound is highly insoluble one can make a simplifying assumption, i.e. that all the product which is product exists the reactor through the off gas. Furthermore, we assume that there is no <span class="math notranslate nohighlight">\(CO_2\)</span> present in the inlet gas. If we look at the mass balance this assumption has the following effect.</p>
+<div class="math notranslate nohighlight">
+\[\int_0^t Metabolism=\sout{M_{species}(t)}-\sout{\int_0^t In_{gas}}-\sout{\int_0^t In_{liquid}}+\int_0^t Out_{gas}+\sout{\int_0^t Sampled}\]</div>
+<p>Thus, under these two assumptions all <span class="math notranslate nohighlight">\(\int_0^t Metabolism=\int_0^t Out_{gas}\)</span>.</p>
+<p>These two assumptions are true for the simulated test dataset. The data contain simulated the accumulated <span class="math notranslate nohighlight">\(CO_2\)</span> production measurements in mass units in the column <code class="docutils literal notranslate"><span class="pre">m_CO2_gas</span></code>. We can start by looking at the simulated <span class="math notranslate nohighlight">\(CO_2\)</span> data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c_CO2&#39;</span><span class="p">,</span> <span class="s1">&#39;m_CO2_gas&#39;</span><span class="p">],</span> <span class="n">subplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Aqueous concentration CO2 [g/L]&#39;</span><span class="p">,</span> <span class="s1">&#39;Accum. CO2 measured in gas [g]&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[&lt;Axes: xlabel=&#39;timestamp&#39;&gt;],
+       [&lt;Axes: xlabel=&#39;timestamp&#39;&gt;]], dtype=object)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_8_-_Special_case_gaseous_species_4_1.png" src="../_images/Tutorials_8_-_Special_case_gaseous_species_4_1.png" />
+</div>
+</div>
+<p>In the upper panel, we verify that <span class="math notranslate nohighlight">\(CO_2\)</span> does not accumulated in the medium. In the lower panel we see how the production rate of CO2 (g/h) decrease the bioreactor is sampled. This is because the total amount of biomass decrease after sampling, thus there is less biomass to produce CO2.</p>
+<p>We assume that all <span class="math notranslate nohighlight">\(CO_2\)</span> that exists the bioreactor is product of metabolism, i.e. no <span class="math notranslate nohighlight">\(CO_2\)</span> is added through the liquid or gas feed. Therefore, we can directly calculate the hypothetical concentration from the off-gas measurements.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;hypothetical_c_CO2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hypothetical_concentration</span><span class="p">(</span>
+    <span class="n">metabolised_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_CO2_gas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now, we can transform the hypothetical CO2 concentration and the biomass concentration measurements.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[[</span><span class="s1">&#39;pseudo_Biomass&#39;</span><span class="p">,</span> <span class="s1">&#39;pseudo_CO2&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">,</span>
+    <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;c_Biomass&quot;</span><span class="p">,</span> <span class="s2">&quot;hypothetical_c_CO2&quot;</span><span class="p">],</span>
+    <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">,</span>
+    <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">,</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s1">&#39;sample_volume&#39;</span>
+<span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<p>If we estimate the CO2 yield using the pseudobatch transformed data we obtain the exact value used for the simulation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Yxco2_hat</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_Biomass&#39;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_CO2&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Yxco2_hat = </span><span class="si">{</span><span class="n">Yxco2_hat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;true Yxco2 = </span><span class="si">{</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxco2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Yxco2_hat = 0.045193332445214125
+true Yxco2 = 0.0451933324452141
+</pre></div></div>
+</div>
+</section>
+<section id="Consumed-gaseous-species,-Oxygen">
+<h2>Consumed gaseous species, Oxygen<a class="headerlink" href="#Consumed-gaseous-species,-Oxygen" title="Link to this heading">#</a></h2>
+<p>The amount of metabolised <span class="math notranslate nohighlight">\(O_2\)</span> has to be calculated from the mass balance. When the oxygen enters the bioreactor some will go straight through and into the off-gas analyzer, and some will be solubilized in the aqueous phase. From the aqueous phase the <span class="math notranslate nohighlight">\(O_2\)</span> can either be metabolised or removed through sampling (or evaporate again). Thus, we need to solve the mass balance to find the amount of metabolised <span class="math notranslate nohighlight">\(O_2\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\int_0^t Metabolism=M_{species}(t)-\int_0^t In_{gas}-\int_0^t In_{liquid}+\int_0^t Out_{gas}+\int_0^t Sampled\]</div>
+<p>Some of these terms are obtained from measurements and some can be estimated, e.g. the oxygen content in the liquid feed medium is rarely measured, but is likely insignificant. In this example, we will assume that <span class="math notranslate nohighlight">\(\int_0^t In_{liquid}=0\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>You can calculate the metabolized amount of <span class="math notranslate nohighlight">\(O_2\)</span> on your own, but it does require special care to use the correct volume and mass’ regarding before or after sampling. To ease the processes we have made a function which calculates the metabolized amount for you, <code class="docutils literal notranslate"><span class="pre">metabolised_amount()</span></code>.</p>
+<p>At the sampling time points this dataset contains the values just before the sample was taken. However, the <code class="docutils literal notranslate"><span class="pre">metabolised_amount()</span></code> function requires the values from just after the sample withdrawal. In the following we calculate the <span class="math notranslate nohighlight">\(O_2\)</span> mass after sample withdrawal.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_after_sample&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;c_O2&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>Here, we will use the <code class="docutils literal notranslate"><span class="pre">metabolised_amount()</span></code> function to calculate the mass of consumed <span class="math notranslate nohighlight">\(O_2\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_consumed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metabolised_amount</span><span class="p">(</span>
+    <span class="n">off_gas_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_gas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">dissolved_amount_after_sampling</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_after_sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">inlet_gas_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_in&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">sampled_amount</span><span class="o">=</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;c_O2&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">inlet_liquid_amount</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_in&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now, that we have calculated the metabolised amount of <span class="math notranslate nohighlight">\(O_2\)</span> we can calculate the hypothetical concentration and run the pseudo batch transformation on the hypothetical concentration data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;hypothetical_c_O2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hypothetical_concentration</span><span class="p">(</span>
+    <span class="n">metabolised_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_O2_consumed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_O2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">,</span>
+    <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;hypothetical_c_O2&#39;</span><span class="p">],</span>
+    <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">,</span>
+    <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">,</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We are now ready to estimate the oxygen yield coefficient using a linear model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Yxo2_hat</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_Biomass&#39;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_O2&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Yxo2_hat = </span><span class="si">{</span><span class="n">Yxo2_hat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;true Yxo2 = </span><span class="si">{</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxo2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Yxo2_hat = -0.010000000000000162
+true Yxo2 = 0.01
+</pre></div></div>
+</div>
+<p>We see that the estimated oxygen yield coefficient match the one used for simulating the data show the the method works.</p>
+</section>
+<section id="Volatile-product">
+<h2>Volatile product<a class="headerlink" href="#Volatile-product" title="Link to this heading">#</a></h2>
+<p>Finally, we simulated a generic volatile product which is produced in the liquid and then evaporates through first order kinetics. We will assume that we have measurements both of the evaporating amount and the liquid concentration of the product. For the mass balance we will assume that both <span class="math notranslate nohighlight">\(\int_0^t In_{gas}=0\)</span> and <span class="math notranslate nohighlight">\(\int_0^t In_{liquid}=0\)</span>.</p>
+<p>Let’s first inspect the raw simulated data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;m_Product&#39;</span><span class="p">,</span> <span class="s1">&#39;m_product_gas&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: xlabel=&#39;timestamp&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/Tutorials_8_-_Special_case_gaseous_species_22_1.png" src="../_images/Tutorials_8_-_Special_case_gaseous_species_22_1.png" />
+</div>
+</div>
+<p>Some of the dissolved product (m_Product) is removed when the bioreactor is sampled, while the product that has evaporated is not removed through sampling. We need to calculate the total production of the product, i.e. combining the two curves above. We can use the <code class="docutils literal notranslate"><span class="pre">metabolised_amount()</span></code> to calculated the total production.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># again first we need to calculate the mass of product after sampling</span>
+<span class="c1"># to obey the requirements of the metabolised_amount function</span>
+<span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product_after_sample&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;c_Product&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+<span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product_produced&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metabolised_amount</span><span class="p">(</span>
+    <span class="n">off_gas_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_product_gas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">dissolved_amount_after_sampling</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product_after_sample&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">inlet_gas_amount</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product&#39;</span><span class="p">]),</span>
+    <span class="n">sampled_amount</span><span class="o">=</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;c_Product&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;hypothetical_c_Product&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hypothetical_concentration</span><span class="p">(</span>
+    <span class="n">metabolised_amount</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;m_Product_produced&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">reactor_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+    <span class="n">sample_volume</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;sample_volume&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we have the hypothetical concentration we can perform pseudobatch transformation on the data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_Product&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudobatch_transform_pandas</span><span class="p">(</span>
+    <span class="n">df</span><span class="o">=</span><span class="n">fedbatch_df</span><span class="p">,</span>
+    <span class="n">measured_concentration_colnames</span><span class="o">=</span><span class="s1">&#39;hypothetical_c_Product&#39;</span><span class="p">,</span>
+    <span class="n">reactor_volume_colname</span><span class="o">=</span><span class="s1">&#39;v_Volume&#39;</span><span class="p">,</span>
+    <span class="n">accumulated_feed_colname</span><span class="o">=</span><span class="s1">&#39;v_Feed_accum&#39;</span><span class="p">,</span>
+    <span class="n">concentration_in_feed</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">sample_volume_colname</span><span class="o">=</span><span class="s1">&#39;sample_volume&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, we can estimate the product yield coefficient using a linear model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Yxp_hat</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_Biomass&#39;</span><span class="p">],</span> <span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;pseudo_Product&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Yxp_hat = </span><span class="si">{</span><span class="n">Yxp_hat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;true Yxp = </span><span class="si">{</span><span class="n">fedbatch_df</span><span class="p">[</span><span class="s1">&#39;Yxp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Yxp_hat = 0.8215102466751055
+true Yxp = 0.8215102466751038
+</pre></div></div>
+</div>
+<p>Again, we show that the estimated yield coefficient matches the coefficient that was used for the simulation.</p>
+<p>Through out this tutorial we have shown that pseudobatch transformation is capable of handling measurements of gaseous compounds. And how to use the two helper functions <code class="docutils literal notranslate"><span class="pre">hypethetical_concentration</span></code> and <code class="docutils literal notranslate"><span class="pre">metabolised_amount</span></code> to prepare the measurements for pseudo batch transformation.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pseudobatch transformation with uncertainties</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="9%20-%20Special%20case%20non-feed%20additions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Special case: Non-feed additions such as anti-foam, and pH control</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Transforming-a-highly-insoluble-produced-compound,-CO_2">Transforming a highly insoluble produced compound, <span class="math notranslate nohighlight">\(CO_2\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Consumed-gaseous-species,-Oxygen">Consumed gaseous species, Oxygen</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Volatile-product">Volatile product</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/Tutorials/8 - Special case gaseous species.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Viktor Hesselberg Thomsen and Teddy Groves.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

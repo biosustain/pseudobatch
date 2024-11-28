@@ -1,0 +1,37 @@
+{
+ "cells": [
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Special case: Non-feed additions such as anti-foam, and pH control"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Often in bioprocessing different liquids are added to the bioreactor to stabilize or somehow affect the process. This could be anti-foam, pH control, liquid containing inducer molecules, etc. Liquids additives which does not contain any measured species are accounted for through the volume of the bioreactor.\n",
+    "\n",
+    "\n",
+    "If we look at the pseudo batch transformation equation:\n",
+    "\n",
+    "$$\n",
+    "c^{\\star}_{species,\\: i} = ADF_i \\cdot c_{species, \\: i} - \\sum_{j=1}^{nf} \\sum_{k=1}^{i}ADF_k\\frac{c_{species, \\: feed_{j}} \\cdot (F_{k,j}-F_{k-1,j})}{V_k}\n",
+    "$$\n",
+    "\n",
+    "The information about the increased volume due to other additives is included through the $ADF$ and $V_k$ parameters."
+   ]
+  }
+ ],
+ "metadata": {
+  "language_info": {
+   "name": "python"
+  },
+  "orig_nbformat": 4
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

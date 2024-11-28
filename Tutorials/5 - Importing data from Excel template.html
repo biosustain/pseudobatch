@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Read in and process data from the Excel template &#8212; Pseudobatch  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Tutorials/5 - Importing data from Excel template';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Real world example: Yeast Biolector Fermentation" href="6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html" />
+    <link rel="prev" title="Dealing with multiple feeds" href="4%20-%20Dealing%20with%20multiple%20feeds.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Pseudobatch  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../Quick%20start.html">
+    Quick start
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    Api Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2%20-%20Estimate%20overall%20rates%20and%20yields.html">Estimating overall rates and yields from pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3%20-%20Estimate%20time%20series%20parameters.html">Estimate time series parameters using pseudo batch transformed data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4%20-%20Dealing%20with%20multiple%20feeds.html">Dealing with multiple feeds</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Read in and process data from the Excel template</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html">Real world example: Yeast Biolector Fermentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7%20-%20Pseudobatch%20transformation%20with%20uncertainties.html">Pseudobatch transformation with uncertainties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8%20-%20Special%20case%20gaseous%20species.html">Special case: gaseous species</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9%20-%20Special%20case%20non-feed%20additions.html">Special case: Non-feed additions such as anti-foam, and pH control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10%20-%20Special%20case%20evaporation.html">Special case: evaporation of water</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Read in and process data from the Excel template</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Read-in-and-process-data-from-the-Excel-template">
+<h1>Read in and process data from the Excel template<a class="headerlink" href="#Read-in-and-process-data-from-the-Excel-template" title="Link to this heading">#</a></h1>
+<p>This tutorial looks at how to import data from the Excel template and provides an example of how it can be manipulated readily.</p>
+<p>A function is provided (“process_template”) which reads in the Excel file and automatically performs the pseudo-batch conversion. As inputs, it takes the filename of the Excel template to process as well as two optional parameters: 1) “phase” argument (string type, default “all”, allowable “1”,”2”,”all”) 2) “outlier_removal” argument (boolean type, default False) The phase argument allows users to restrict calculations over a particular phase of the data as defined within the template
+(particularly, growth rate on the bioreactor_data tab and yields on the visualisations tab). This is useful if a user wishes to restrict analysis to a particular period of growth (e.g. exponential growth). The template automatically plots biomass over time in the “Bioreactor_data” tab and the logarithmic transformation of this (where linear regions would represent periods of balanced, exponential growth). These periods can be captured by defining time boundaries in the respective cells (AF4-5
+and AN4-5). While all data is still imported and transformed, phase specific boundaries are captured for individual compounds and outlier information, allowing the calculation of rates while eliminating data points with obvious or suspected errors, or the bespoke curation of bounds defining steady production/secretion fluxes which may differ from linear growth periods.</p>
+<p>The visualisations tab allows for specification of phase boundaries for the calculation of rates and yields by selecting the drop down cells (lines 40-41 for phase 1 and 90-91 for phase 2). The following 3 lines allow for the specification of outliers (note that the template will automatically suggest potential outlier values based on Cook’s distance, flagging values greater than 1 (where Cook’s distance specifies how influential a data point is).</p>
+<p>Specification of “1” or “2” will capture the phase specific annotation from the Excel file for the respective phase, while “all” will ignore phase boundary information but still permit the use of outlier information as entered for phase 1.</p>
+<p>The outlier_removal flag enforces whether defined outliers are censored from the data or not.</p>
+<p>Note that the template already captures data from multiple feeds so no additional processing has to be done here.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Grab requirements</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">pseudobatch_transform_pandas</span>
+<span class="kn">from</span> <span class="nn">pseudobatch</span> <span class="kn">import</span> <span class="n">process_excel_template</span>
+<span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="n">PROJECT_DIR</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/s143838/.virtualenvs/pseudobatch-dev/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;stan_version_major&#39;: &#39;2&#39;, &#39;stan_version_minor&#39;: &#39;29&#39;, &#39;stan_version_patch&#39;: &#39;2&#39;, &#39;STAN_THREADS&#39;: &#39;false&#39;, &#39;STAN_MPI&#39;: &#39;false&#39;, &#39;STAN_OPENCL&#39;: &#39;false&#39;, &#39;STAN_NO_RANGE_CHECKS&#39;: &#39;false&#39;, &#39;STAN_CPP_OPTIMS&#39;: &#39;false&#39;}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#First read in and convert the data</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">,</span> <span class="n">phase_bounds</span><span class="p">,</span> <span class="n">pseudo_cpds</span><span class="p">,</span> <span class="n">fed_cpds</span> <span class="o">=</span> <span class="n">process_excel_template</span><span class="p">(</span><span class="n">PROJECT_DIR</span> <span class="o">/</span> <span class="s1">&#39;excel-pseudobatch&#39;</span> <span class="o">/</span> <span class="s1">&#39;Pseudo_batch_template_test2.xlsx&#39;</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">outlier_removal</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The following compounds are not defined in feeds but are measured. They are assumed to not be fed. Compounds: Biomass (OD)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/s143838/.virtualenvs/pseudobatch-dev/lib/python3.10/site-packages/openpyxl/worksheet/_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+  warn(msg)
+</pre></div></div>
+</div>
+<p>The outputs of the above function are: 1) a dataframe (here fedbatch_df_measurement) which contains the compiled bioreactor data, concentration measurements and converted pseudo concentrations. 2) phase_bounds - either a series object containing just the growth phase bounds or a dataframe that contains growth and yield defined phase bounds, depending on whether phase specific information is to be used. Phase bounds are mapped to Sample IDs. 3) pseudo_cpds - a list containing all column names of
+adjusted measured compounds using the pseudo-batch transformation methodology. This is to streamline further calculations 4) fed_cpds - a list containing column names of adjusted measured compounds that are also in the feed (in case they wanted to be screened as potential substrates and redefined as consumed substrate quantities, as per previous tutorials).</p>
+<p>We will now illustrate for example, simple ways how to further analyse this data within the Python framework. As an example we will calcualte growth rate, yields and specific rates of production/consumption</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#First we redefine the helper function wrapper for fitting rates and yields as per previous tutorials:</span>
+
+<span class="k">def</span> <span class="nf">fit_ols_model</span><span class="p">(</span><span class="n">formula_like</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sm</span><span class="o">.</span><span class="n">regression</span><span class="o">.</span><span class="n">linear_model</span><span class="o">.</span><span class="n">RegressionResultsWrapper</span><span class="p">:</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="n">formula_like</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">endog</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">exog</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">res</span>
+<br/></pre></div>
+</div>
+</div>
+<p>In previous tutorials, plotting the data and fits has been an important step. Here we assume that this has already been visualised, inspected and quality controlled for outliers using functionalities of the Excel template. Therefore we can skip this step and jump straight to generating results.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#First, add a log-trasnformed pseudo-biomass column to calculate growth rate</span>
+<span class="c1">#We assume here that all time points have a corresponding biomass measurement.</span>
+<span class="c1">#Rows missing biomass records should be dropped from the dataframe</span>
+
+<span class="n">log_bio_name</span> <span class="o">=</span> <span class="s2">&quot;np.log(&quot;</span> <span class="o">+</span> <span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="c1">#The first column in pseudo_cpds is always the biomass</span>
+<span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="n">log_bio_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">fedbatch_df_measurement</span><span class="p">[</span><span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Next let&#39;s reduce the fedbatch measurement dataframe to consider only the phase of interest if we are considering phases.</span>
+<span class="c1"># We will do this by censoring values that fall outside of the phase range</span>
+
+<span class="n">fedbatch_df_measurement_phase</span> <span class="o">=</span> <span class="n">fedbatch_df_measurement</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># create a copy of the DF</span>
+<span class="c1">#Find matching rows to Sample ID</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phase_bounds</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span> <span class="c1">#we only do this if phase_bounds is a DF, that is we are considering phase specific info</span>
+    <span class="n">phase_bounds</span> <span class="o">=</span> <span class="n">phase_bounds</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">log_bio_name</span><span class="p">})</span> <span class="c1">#update name in phase_bounds</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
+        <span class="n">row_locs</span> <span class="o">=</span> <span class="n">fedbatch_df_measurement_phase</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">fedbatch_df_measurement_phase</span><span class="p">[</span><span class="s1">&#39;Sample ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">phase_bounds</span><span class="p">[</span><span class="n">col</span><span class="p">])]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="c1">#indices corresponding to phase boundary</span>
+        <span class="n">valid_indices</span> <span class="o">=</span> <span class="n">fedbatch_df_measurement_phase</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">row_locs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">row_locs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="c1">#set of indices that can be used to calculate yield/rate</span>
+        <span class="n">fedbatch_df_measurement_phase</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">fedbatch_df_measurement_phase</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">valid_indices</span><span class="p">),</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="c1">#censor data in invalid indices</span>
+</pre></div>
+</div>
+</div>
+<p>After restricting available data we will perform the yield and growth rate calculations, as previously demonstrated in tutorial 2. We begin with the growth rate. Because users may opt for human readable column headers in the Excel template rather than Python friendly headers we will utilise patsy so we can accept any header.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate growth rate</span>
+<span class="n">model_fit</span> <span class="o">=</span> <span class="s2">&quot;Q(&#39;&quot;</span> <span class="o">+</span> <span class="n">log_bio_name</span> <span class="o">+</span> <span class="s2">&quot;&#39;)&quot;</span> <span class="o">+</span> <span class="s2">&quot; ~ &quot;</span> <span class="o">+</span> <span class="s2">&quot;Q(&#39;Time (h)&#39;)&quot;</span> <span class="c1">#using patsy to handle disgusting variable names</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">fedbatch_df_measurement_phase</span><span class="p">[</span><span class="n">log_bio_name</span><span class="p">])</span> <span class="c1">#create a mask to select for rows containing non-NaN values</span>
+<span class="n">res_mu_hat_pseudo</span> <span class="o">=</span> <span class="n">fit_ols_model</span><span class="p">(</span><span class="n">model_fit</span><span class="p">,</span> <span class="n">fedbatch_df_measurement_phase</span><span class="p">)</span> <span class="c1">#perform the fit using our helper function</span>
+<span class="n">growth_rate</span> <span class="o">=</span> <span class="n">res_mu_hat_pseudo</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1">#retrieve rate</span>
+</pre></div>
+</div>
+</div>
+<p>Next we will demonstrate how yields and rates can readily be calculated from these data structures for any number of compounds. Results will be iteratively generated and stored in a dataframe. Note that here we will demonstrate a slightly different way of calculating yields to the previous tutorials (such as Tutorial 2).</p>
+<p>In this instance, we will simplify calculations to deal with the potential for large numbers of measured compounds (such as feeding amino acid supplemented media) which could also be produced transiently (or entirely) across the culture. Here we use the direct pseudo-concentrations for the yield calculations, which can give negative yields. We will then calculate specific uptake/consumption rates by multiplying by the growth rate.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parameter_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Compound&#39;</span><span class="p">,</span><span class="s1">&#39;Yield&#39;</span><span class="p">,</span><span class="s1">&#39;Rate&#39;</span><span class="p">])</span>
+
+<span class="c1">#First add in growth rate:</span>
+<span class="n">parameter_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">,</span><span class="n">growth_rate</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">cpd</span> <span class="ow">in</span> <span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span> <span class="c1">#skipping biomass</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">fedbatch_df_measurement_phase</span><span class="p">[</span><span class="n">cpd</span><span class="p">])</span> <span class="c1">#create a mask to select for rows containing non NaN values</span>
+    <span class="n">model_fit</span> <span class="o">=</span> <span class="s2">&quot;Q(&#39;&quot;</span> <span class="o">+</span> <span class="n">cpd</span> <span class="o">+</span> <span class="s2">&quot;&#39;)&quot;</span> <span class="o">+</span> <span class="s2">&quot; ~ &quot;</span> <span class="o">+</span> <span class="s2">&quot;Q(&#39;&quot;</span> <span class="o">+</span> <span class="n">pseudo_cpds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span><span class="s2">&quot;&#39;)&quot;</span> <span class="c1">#using patsy to handle disgusting variable names</span>
+    <span class="n">res_yield</span> <span class="o">=</span> <span class="n">fit_ols_model</span><span class="p">(</span><span class="n">model_fit</span><span class="p">,</span> <span class="n">fedbatch_df_measurement_phase</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span> <span class="c1">#perform the fit</span>
+    <span class="c1">#Append to DF. We will apply the convention of yields always being positive here</span>
+    <span class="n">parameter_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">parameter_df</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cpd</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="n">res_yield</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="n">res_yield</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">growth_rate</span><span class="p">]</span>
+
+<span class="n">parameter_df</span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4%20-%20Dealing%20with%20multiple%20feeds.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Dealing with multiple feeds</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="6%20-%20Real%20data%20example%3A%20Yeast%20Biolector%20Fermentation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Real world example: Yeast Biolector Fermentation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/Tutorials/5 - Importing data from Excel template.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023, Viktor Hesselberg Thomsen and Teddy Groves.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
